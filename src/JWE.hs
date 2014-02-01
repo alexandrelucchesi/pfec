@@ -41,7 +41,7 @@ encrypt_AES_128_CBC_HMAC_SHA_256 key iv' plaintext =
 encryptJWE :: (K.CPRG c) => c -> K.PublicKey -> T.Text -> B.ByteString
 encryptJWE g pubKey plaintext =
     let (cek', g')        = cek g -- randomly generate a content encryption key.
-        (key, g'')        = jweEncryptedKey g pubKey cek' -- encrypt CEK using the recipient's public key.
+        (key, g'')        = jweEncryptedKey g' pubKey cek' -- encrypt CEK using the recipient's public key.
         (iv', _)          = iv g'' -- randomly generate an Initialization Vector.
         (cipher, authTag) = encrypt_AES_128_CBC_HMAC_SHA_256 cek' iv' (K.padPKCS5 16 . T.encodeUtf8 $ plaintext) -- encrypt the plaintext using PKCS #5 for padding.
         res = [jweHeader, key, iv', cipher, authTag] 
@@ -97,6 +97,7 @@ test = do
         message = "Live long and prosper."
         cipher = encryptJWE g' pubKey message
         origin = decryptJWE privKey cipher
-    C.putStrLn $ fst origin
+    print $ C.split '.' cipher
+   -- C.putStrLn $ fst origin
     T.putStrLn $ snd origin
     

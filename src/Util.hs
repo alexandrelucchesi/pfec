@@ -3,6 +3,7 @@
 module Util where
 
 import Control.Monad
+import qualified Crypto.PubKey.RSA as K
 import qualified "crypto-random" Crypto.Random as K
 import qualified Data.ByteString as B
 import qualified Data.Text as T
@@ -28,3 +29,13 @@ jwsHeader = B64.encode . T.encodeUtf8 $ "{\"alg\":\"RS256\"}"
 jwtHeader :: B.ByteString
 jwtHeader = B64.encode . T.encodeUtf8 $ "{\"alg\":\"RSA1_5\",\"enc\":\"A128CBC-HS256\",\"cty\":\"JWT\"}"
 
+genRS256Keys :: IO ()
+genRS256Keys = do
+    g <- cprg
+    let ((recipientPubKey, recipientPrivKey), g') = K.generate g 256 0x10001
+        ((senderPubKey, senderPrivKey), _) = K.generate g' 256 0x10001
+    writeFile "data/keys/rec_key.pub"  $ show recipientPubKey
+    writeFile "data/keys/rec_key.priv" $ show recipientPrivKey
+    writeFile "data/keys/sen_key.pub"  $ show senderPubKey
+    writeFile "data/keys/sen_key.priv" $ show senderPrivKey
+    
