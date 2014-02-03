@@ -31,8 +31,8 @@ encryptJWT g pubKey plaintext =
 test :: IO ()
 test = do
     -- ENCODE COMPACT JWT
-    myPrivKey   <- liftM read $ readFile "data/keys/sen_key.priv"
-    theirPubKey <- liftM read $ readFile "data/keys/rec_key.pub"
+    myPrivKey   <- liftM read $ readFile "data/keys/rsa/sen_key.priv"
+    theirPubKey <- liftM read $ readFile "data/keys/rsa/rec_key.pub"
     g <- cprg
 
     let msg = "Haskell rulez!"
@@ -42,8 +42,8 @@ test = do
     C.putStrLn jwt
 
     -- DECODE COMPACT JWT
-    myPubKey     <- liftM read $ readFile "data/keys/sen_key.pub"
-    theirPrivKey <- liftM read $ readFile "data/keys/rec_key.priv"
+    myPubKey     <- liftM read $ readFile "data/keys/rsa/sen_key.pub"
+    theirPrivKey <- liftM read $ readFile "data/keys/rsa/rec_key.priv"
 
     let (header, jwe') = E.decryptJWE theirPrivKey jwt 
         (Right msg')    = S.verifyJWS myPubKey (T.encodeUtf8 jwe')

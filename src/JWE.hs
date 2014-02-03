@@ -38,6 +38,12 @@ encrypt_AES_128_CBC_HMAC_SHA_256 key iv' plaintext =
         authTag = K.hmac K.hash 16 macKey hmacInp -- computes Mac Authentication Code using SHA-256 algorithm.
     in (B64.encode cipher, B64.encode authTag)
 
+encrypt_RSA :: (K.CPRG c) => c -> K.PublicKey -> B.ByteString -> (B.ByteString, c)
+encrypt_RSA g pubKey msg =
+    let (res, g') = K.encrypt g pubKey msg
+        res' = either (error . show) B64.encode $ res 
+    in (res', g')
+
 encryptJWE :: (K.CPRG c) => c -> K.PublicKey -> T.Text -> B.ByteString
 encryptJWE g pubKey plaintext =
     let (cek', g')        = cek g -- randomly generate a content encryption key.
@@ -73,6 +79,12 @@ decrypt_AES_128_CBC_HMAC_SHA_256 key iv' ciphertxt authTag =
           else error $ "Decrypt: Auth Tag: " ++ show authTag' ++
                   "\nMessage: " ++ show msg
 
+decrypt_RSA :: K.PrivateKey -> B.ByteString -> T.Text
+decrypt_RSA privKey ciphertxt =
+    let ciphertxt' = B64.decode ciphertxt
+        msg = K.decrypt Nothing privKey ciphertxt'
+    in either (error . show) (T.decodeUtf8) msg
+
 decryptJWE :: K.PrivateKey -> C.ByteString -> (C.ByteString, T.Text)
 decryptJWE privKey ciphertxt =
     let parts = C.split '.' ciphertxt
@@ -90,8 +102,8 @@ decryptJWE privKey ciphertxt =
                in
                    (header, msg)
 
-test :: IO ()
-test = do
+test_AES_128_CBC_HMAC_SHA_256 :: IO ()
+test_AES_128_CBC_HMAC_SHA_256 = do
     g <- cprg
     let ((pubKey, privKey), g') = K.generate g 256 0x10001
         message = "Live long and prosper."
@@ -101,3 +113,14 @@ test = do
    -- C.putStrLn $ fst origin
     T.putStrLn $ snd origin
     
+test_RSA :: IO ()
+test_RSA = do
+    g <- cprg
+    let ((pubKey, privKey), g') = K.generate g 256 0x10001
+        message = "Live long and prosper."
+        (cipher,_) = encrypt_RSA g' pubKey message
+        origin = decrypt_RSA privKey cipher
+    T.putStrLn $ origin
+
+
+

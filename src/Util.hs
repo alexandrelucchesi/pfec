@@ -4,6 +4,8 @@ module Util where
 
 import Control.Monad
 import qualified Crypto.PubKey.RSA as K
+import qualified Crypto.Types.PubKey.ECC as ECC
+import qualified Crypto.PubKey.ECC.Generate as ECC
 import qualified "crypto-random" Crypto.Random as K
 import qualified Data.ByteString as B
 import qualified Data.Text as T
@@ -34,8 +36,18 @@ genRS256Keys = do
     g <- cprg
     let ((recipientPubKey, recipientPrivKey), g') = K.generate g 256 0x10001
         ((senderPubKey, senderPrivKey), _) = K.generate g' 256 0x10001
-    writeFile "data/keys/rec_key.pub"  $ show recipientPubKey
-    writeFile "data/keys/rec_key.priv" $ show recipientPrivKey
-    writeFile "data/keys/sen_key.pub"  $ show senderPubKey
-    writeFile "data/keys/sen_key.priv" $ show senderPrivKey
+    writeFile "data/keys/rsa/rec_key.pub"  $ show recipientPubKey
+    writeFile "data/keys/rsa/rec_key.priv" $ show recipientPrivKey
+    writeFile "data/keys/rsa/sen_key.pub"  $ show senderPubKey
+    writeFile "data/keys/rsa/sen_key.priv" $ show senderPrivKey
     
+genECCKeys :: IO ()
+genECCKeys = do
+    g <- cprg
+    let ((recipientPubECCey, recipientPrivECCey), g') = ECC.generate g (ECC.getCurveByName ECC.SEC_p256r1)
+        ((senderPubECCey, senderPrivECCey), _) = ECC.generate g' (ECC.getCurveByName ECC.SEC_p256r1)
+    writeFile "data/keys/ecc/rec_key.pub"  $ show recipientPubECCey
+    writeFile "data/keys/ecc/rec_key.priv" $ show recipientPrivECCey
+    writeFile "data/keys/ecc/sen_key.pub"  $ show senderPubECCey
+    writeFile "data/keys/ecc/sen_key.priv" $ show senderPrivECCey
+

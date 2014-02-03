@@ -23,6 +23,7 @@ executable main
                        crypto-api,
                        cryptohash,
                        crypto-pubkey,
+                       crypto-pubkey-types,
                        crypto-random,
                        cipher-aes,
                        aeson,
