@@ -1,0 +1,30 @@
+{
+ "urlC":"http://pcdfIDT.pcdf.df.gov.br",
+ "codCredential":2
+}
+
+{
+  "credential":"14112014wsRT@#$$SDTRWSa!2"
+}
+
+{
+  "codContract":1,
+  "codUser":1
+}
+
+{
+  "codChallenge":1,
+  "user":"TJDFT",
+  "password":"145p!2@@"
+}
+
+{
+  "newCredential":"147852XcS@3#$5509ghHTsE"
+}
+
+{
+  "newCred":"147852XcS@3#$5509ghHTsE",
+  "urlA":"http://pcdfconvenio.pcdf.df.gov.br/api/idocorrencias=234525012014",
+  "dateTime":"01012014153022"
+}
+
