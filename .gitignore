@@ -1,4 +1,5 @@
 .cabal-sandbox
+.DS_Store
 .git
 cabal.sandbox.config
 dist

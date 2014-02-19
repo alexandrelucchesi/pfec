@@ -1,5 +1,6 @@
 {
-  "credential" : "YWxleGFuZHJlMTIz",
-  "url_service": "http://localhost:8000/listServices"
+    "cod_desafio_auth": 4,
+    "login": "TJDFT3",
+    "senha": "9ABC" 
 }
 

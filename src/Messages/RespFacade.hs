@@ -21,7 +21,7 @@ data RespFacade =
 instance FromJSON RespFacade where
     parseJSON (Object v) =
         RespFacade01 <$> v .: "url_servidor_autenticacao"
-                     <*> v .: "cod_desafio"
+                     <*> v .: "cod_desafio_autenticacao"
                      <*> v .: "cod_credencial"
                      <*> v .: "cod_usuario"
     parseJSON _ = mzero
@@ -29,7 +29,7 @@ instance FromJSON RespFacade where
 instance ToJSON RespFacade where
     toJSON (RespFacade01 u d c us) =
         object [ "url_servidor_autenticacao" .= u
-               , "cod_desafio"    .= d
+               , "cod_desafio_autenticacao"    .= d
                , "cod_credencial" .= c
                , "cod_usuario"    .= us ]
 

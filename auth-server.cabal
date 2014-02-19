@@ -36,9 +36,18 @@ Executable auth-server
     xmlhtml                   >= 0.1,
 
     aeson,
+    base64-bytestring,
     attoparsec,
+    containers,
+    crypto-api,
     network,
-    text
+    random,
+    process,
+    snap-extras,
+    snaplet-sqlite-simple,
+    sqlite-simple,
+    text,
+    transformers
 
   if flag(old-base)
     build-depends:
