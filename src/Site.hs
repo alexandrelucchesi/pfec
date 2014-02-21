@@ -11,6 +11,7 @@ module Site where
 
 ------------------------------------------------------------------------------
 import           Control.Applicative
+import qualified Control.Monad.CatchIO as EXM
 import           Control.Monad.IO.Class
 import           Control.Lens
 import           Control.Lens.TH
@@ -22,6 +23,7 @@ import qualified Data.ByteString.Lazy as BL
 import qualified Data.ByteString.Char8 as C
 import qualified Data.ByteString.Lazy.Char8 as CL
 import           Data.Time
+import           Data.Typeable
 import           Data.Maybe
 import           Data.IORef
 import           Data.List
@@ -32,6 +34,8 @@ import qualified Data.Text.Lazy.Encoding as TL
 import           Snap
 import           Snap.Core
 import           Snap.Extras.JSON
+import           Snap.Extras.CoreUtils
+import           Snap.Http.Server.Config
 import           Snap.Snaplet
 import           Snap.Snaplet.SqliteSimple
 import           Snap.Util.FileServe
@@ -39,14 +43,13 @@ import           System.Process
 import           System.Random
 ------------------------------------------------------------------------------
 import           Application
-import           Control.Exception.Base
+import qualified Control.Exception.Base as EX
 import qualified Messages.RqAuth as RQA
 import qualified Messages.RqFacade as RQF
 import qualified Messages.RespAuth as REA
 import qualified Messages.RespFacade as REF
 import           Messages.Types
 --import           MySnaplets.MyAuth
-import           Network.URI (parseURI)
 import qualified Db
 import qualified Util.Base64 as B64
 
@@ -62,7 +65,7 @@ facade = do
     let rqFacade = do
         info <- getHeader "JWT" rq
         decode . B64.decode . BL.fromStrict $ info
-    maybe notAuthorized handlerRqFacade rqFacade
+    maybe notAuthorized {-handlerRqFacade-} handlerRqFacade'' rqFacade
 
 notAuthorized :: Handler App App ()
 notAuthorized = do
@@ -72,40 +75,123 @@ notAuthorized = do
 
 
 ------------------------------------------------------------------------------ | Handler that treats requests to Facade Server.
-handlerRqFacade :: RQF.RqFacade -> Handler App App ()
-handlerRqFacade (RQF.RqFacade01 contractCode authCredential) = do
-    r <- query "SELECT cod_contrato, cod_usuario FROM tb_credencial WHERE credencial = ?" (Only authCredential)
+{-
+-}
+handlerRqFacade'' :: RQF.RqFacade -> Handler App App ()
+handlerRqFacade'' rq@(RQF.RqFacade01 _ _) =
+    (allow `EXM.catches`
+        [ EXM.Handler $ \(_ :: EX.PatternMatchFail) -> pass
+        , EXM.Handler $ \(_ :: EX.SomeException)    -> pass ]
+    ) <|> liftIO (putStrLn "You have to authenticate first, dude! :/")
+
+  where
+    allow = with db $ do
+        (Just cred)  <- Db.findCredentialByName (RQF.authCredential rq) 
+        (Just user)  <- Db.findUserByCredentialId (fromJust $ Db.credentialCode cred)
+        (Just contr) <- Db.findContractByUserId (fromJust $ Db.userCode user) 
+
+        services <- return $ Db.contrServices contr
+        service  <- rqServiceURL
+        liftIO $ print service -- DEBUG
+        if elem service services
+            then do
+                liftIO $ putStrLn "You're successfully authenticated bro!"
+                return ()
+            else pass
+
+    rqServiceURL :: Handler App b Db.Service
+    rqServiceURL = do -- monadic style
+        req    <- getRequest
+        header <- return $ getHeader "Host" req
+        url    <- return $ header >>= (parseURI . C.unpack . (`C.append` (rqURI req)))
+        if isNothing url
+            then badReq "Bad Request"
+            else return $ Db.Service Nothing (fromJust url)
+
+    rqServiceURL' :: Handler App b Db.Service
+    rqServiceURL' = do -- applicative style
+        url <- (\v1 v2 -> C.append <$> v1 <*> v2)
+                <$> (getHeader "Host" <$> getRequest)
+                <*> (pure . rqContextPath <$> getRequest)
+        if isNothing url
+            then badReq "Bad Request"
+            else return $ Db.Service Nothing (fromJust $ url >>= parseURI . C.unpack)
+
+
+handlerRqFacade' :: RQF.RqFacade -> Handler App App ()
+handlerRqFacade' rq@(RQF.RqFacade01 _ _) = with db $ do
+    r <- Db.findCredentialByName (RQF.authCredential rq) 
     case r of
-        [(contrCode, userCode) :: (Int, Int)] -> do
-            r' <- query "SELECT cod_contrato, cod_usuario, cod_credencial, credencial FROM tb_credencial WHERE cod_contrato = ? AND cod_usuario = ? ORDER BY RANDOM() LIMIT 1;" (contrCode, userCode)
-            case r' of
-                [(contrCode', userCode', credCode, cred) :: (Int, Int, Int, T.Text)] -> do
-                    t <- liftIO $ getCurrentTime
-                    execute "INSERT INTO tb_desafio VALUES (NULL, ?, ?, ?, ?)" (contrCode', userCode', cred, t)
-                    r'' <- query_ "SELECT last_insert_rowid()"
-                    case r'' of
-                        [(Only chalCode)] -> do
-                            let authServerURL  = URI $ fromJust $ parseURI "http://localhost:8000/auth"
-                                response = REF.RespFacade01 authServerURL chalCode credCode userCode'
-                                
-                            modifyResponse (setHeader "JWT" $ BL.toStrict . B64.encode . encode $ response) -- put response in header. 
---                            modifyResponse (setContentType "application/json")
---                            writeLBS $ encode response
-                            resp <- getResponse
-                            finishWith resp
-                        _ -> writeBS "FALHOU!"
-                _ -> writeBS "FALHOU!"
---        _  -> do
---            r' <- query "SELECT cod_contrato_servico FROM tb_servico_credencial WHERE credencial = ?" (Only authCredential)
---            case r of
---                [servContrCode :: [Int]] -> do
---                    let queryStr = "SELECT tb_servico.url_servico FROM tb_contrato_servico INNER JOIN tb_servico_credencial ON tb_contrato_servico.cod_contrato_servico = tb_servico_credential.cod_contrato_servico INNER JOIN tb_servico ON tb_contrato_servico.cod_servico = tb_servico.cod_servico"
---                    r'' <- query $ "SELECT url_servico FROM tb_servico s IN" ++
---                                   "SELECT cod_servico FROM tb_servico_credencial sc" ++
---                                   "WHERE sc.cod_servico_credencial = ? AND s.cod_servico = sc.cod_servico" (Only $ head servContrCode)
---                    
---                    return ()
-        _ -> writeBS "FALHOU!"
+        Just cred -> do
+            r'' <- Db.findUserByCredentialId (fromJust $ Db.credentialCode cred)
+            case r'' of
+                Just user -> do
+                    r'''<- Db.findContractByUserId (fromJust $ Db.userCode user) 
+                    case r''' of
+                        Just contr -> do
+                            req <- getRequest
+                            let services = Db.contrServices contr
+                                (Just service) = rqService req
+                            if elem service services
+                                then return ()
+                                else fail "not authorized" -- TODO: HOW THE FUCK DO I CALL notAuthorized FROM HERE?!
+                        _ -> error $ errorMsgDb'' (Db.userCode user)
+                _ -> error $ errorMsgDb' (Db.credentialCode cred)
+        _ -> error errorMsgDb 
+  where
+    rqService req = do
+        h <- getHeader "Host" req
+        url <- parseURI . C.unpack $ h `C.append` rqContextPath req
+        return $ Db.Service Nothing url
+    errorMsgDb = "handlerRqFacade: Could not find credential by name: " ++ show (RQF.authCredential rq)
+    errorMsgDb' credId = "handlerRqFacade: Could not find user by credential id: " ++ show credId
+    errorMsgDb'' contrId = "handlerRqFacade: Could not find contract by user id: " ++ show contrId
+
+--handlerRqFacade :: RQF.RqFacade -> Handler App App ()
+--handlerRqFacade (RQF.RqFacade01 contractCode authCredential) = do
+--    r <- query "SELECT cod_contrato, cod_usuario FROM tb_credencial WHERE credencial = ?" (Only authCredential)
+--    case r of
+--        [(contrCode, userCode) :: (Int, Int)] -> allow <|> genChallenge contrCode userCode 
+--        _ -> allow
+--
+--  where
+--    genChallenge :: Int -> Int -> Handler App App ()
+--    genChallenge contrCode userCode = do
+--        r' <- query "SELECT cod_contrato, cod_usuario, cod_credencial, credencial FROM tb_credencial WHERE cod_contrato = ? AND cod_usuario = ? ORDER BY RANDOM() LIMIT 1;" (contrCode, userCode)
+--        case r' of
+--            [(contrCode', userCode', credCode, cred) :: (Int, Int, Int, T.Text)] -> do
+--                t <- liftIO $ getCurrentTime
+--                execute "INSERT INTO tb_desafio VALUES (NULL, ?, ?, ?, ?)" (contrCode', userCode', cred, t)
+--                r'' <- query_ "SELECT last_insert_rowid()"
+--                case r'' of
+--                    [(Only chalCode)] -> do
+--                        let authServerURL  = fromJust $ parseURI "http://localhost:8000/auth"
+--                            response = REF.RespFacade01 authServerURL chalCode credCode userCode'
+--                            
+--                        modifyResponse (setHeader "JWT" $ BL.toStrict . B64.encode . encode $ response) -- put response in header. 
+--    --                            modifyResponse (setContentType "application/json")
+--    --                            writeLBS $ encode response
+--                        resp <- getResponse
+--                        finishWith resp
+--                    _ -> writeBS "FALHOU!"
+--            _ -> writeBS "FALHOU!"
+--
+--    allow :: Handler App App ()
+--    allow = do
+--        r' <- query "SELECT cod_contrato_servico FROM tb_servico_credencial WHERE credencial_auth = ?" (Only authCredential)
+--        case r' of
+--            [servContrCode :: [Int]] -> do
+--                let queryStr = "SELECT tb_servico.url_servico FROM tb_contrato_servico INNER JOIN tb_servico_credencial ON tb_contrato_servico.cod_contrato_servico = tb_servico_credential.cod_contrato_servico INNER JOIN tb_servico ON tb_contrato_servico.cod_servico = tb_servico.cod_servico"
+--                execute_ queryStr -- (Only $ head servContrCode)
+--                modifyResponse (addHeader "Debug" (C.pack . show $ authCredential))
+--                resp <- getResponse
+--                finishWith resp
+--                --return ()
+--            _ -> do
+--                --modifyResponse (addHeader "Debug" (C.pack . show $ authCredential))
+--                --resp <- getResponse
+--                --finishWith resp
+--                empty -- writeBS "FALHOU!"
             
 
 ------------------------------------------------------------------------------ | Handler that sends appropriate responses to the client.
@@ -192,8 +278,9 @@ handlerRqAuth (RQA.RqAuth02 chalCode login senha) = do
                                         cred' = CL.toStrict $ B64.encode' cred
                                     mapM_ (\c -> execute "INSERT INTO tb_servico_credencial VALUES (NULL, ?, ?, ?, ?)" (c, cred', datetime, datetimeExp)) (concat xs)  
                                     let response = REA.RespAuth02 True cred'
-                                    modifyResponse (setContentType "application/json")
-                                    writeLBS $ encode response
+                                    modifyResponse (setHeader "JWT" $ BL.toStrict . B64.encode . encode $ response) -- put response in header. 
+                                    --modifyResponse (setContentType "application/json")
+                                    --writeLBS $ encode response
                                     resp <- getResponse
                                     finishWith resp
                                     --writeBS $ C.pack $ "Authenticated!\n\nDiff time is: " ++ show diff
@@ -207,10 +294,12 @@ handlerRqAuth (RQA.RqAuth02 chalCode login senha) = do
 handlerRqAuth _ = writeBS "Non exhaustive!"
                     
 
---listContracts :: Handler App App ()
---listContracts = do
---    contracts <- with db Db.listContracts
---    writeBS $ C.pack $ show contracts
+test = do
+    req <- getRequest
+    let rqUrl = parseURI . C.unpack . (`C.append` rqContextPath req) <$> getHeader "Host" req
+    liftIO $ print rqUrl
+
+failService = fail "I always fail! :("
    
 ------------------------------------------------------------------------------
 -- | The application's routes.
@@ -218,6 +307,8 @@ routes :: [(C.ByteString, Handler App App ())]
 routes = [ ("/facade", facade)
          , ("/auth", auth)
          , ("/hello", liftSnap hello)
+         , ("/test", test)
+         , ("/fail", failService)
          , ("/", facade)
          ]
 
@@ -228,6 +319,7 @@ app = makeSnaplet "auth-server" "REST-based authentication server." Nothing $ do
 --    a   <- nestSnaplet "auth" myAuth myAuthInit
     d <- nestSnaplet "db" db sqliteInit
     addRoutes routes
+--    wrapSite (\service -> undirify >> service)
     wrapSite (\service -> facade >> service)
     return $ App d
 

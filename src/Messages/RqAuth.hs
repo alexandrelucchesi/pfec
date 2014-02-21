@@ -35,4 +35,8 @@ instance ToJSON RqAuth where
         object [ "credencial"   .= c
                , "cod_desafio"  .= d
                , "cod_contrato" .= co ]
+    toJSON (RqAuth02 c l p) =
+        object [ "cod_desafio_auth" .= c
+               , "login" .= l
+               , "senha" .= p ]
 

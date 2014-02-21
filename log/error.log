@@ -542,3 +542,6 @@ A web handler threw an exception. Details:
 Cannot decode byte '\x90': Data.Text.Encoding.decodeUtf8: Invalid UTF-8 stream
 [14/Feb/2014:11:31:32 -0200] Server.httpServe: SHUTDOWN
 [14/Feb/2014:11:31:32 -0200] Server.httpServe: BACKEND STOPPED
+[21/Feb/2014:00:23:31 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8000/]
+[21/Feb/2014:14:33:13 -0300] Server.httpServe: SHUTDOWN
+[21/Feb/2014:14:33:13 -0300] Server.httpServe: BACKEND STOPPED
