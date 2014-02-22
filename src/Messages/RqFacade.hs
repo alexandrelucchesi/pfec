@@ -9,21 +9,23 @@ import           Control.Monad
 
 ------------------------------------------------------------------------------ | Data type holding the message's formats a client can send to Facade Server.
 data RqFacade =
-    RqFacade01 {
-        contractCode   :: Int,
-        authCredential :: T.Text
-    }
-    deriving (Eq, Show)
+    RqFacade01
+    { contractCode     :: Int
+    , authCredential   :: T.Text
+    , authorCredential :: Maybe T.Text
+    } deriving (Eq, Show)
 
 instance FromJSON RqFacade where
     parseJSON (Object v) =
         RqFacade01 <$> v .: "cod_contrato"
-                   <*> v .: "cred_autorizacao"
+                   <*> v .: "cred_autenticacao"
+                   <*> v .:? "cred_autorizacao"
     parseJSON _ = mzero
 
 instance ToJSON RqFacade where
-    toJSON (RqFacade01 c a) =
+    toJSON (RqFacade01 c a au) =
         object [ "cod_contrato"     .= c
-               , "cred_autorizacao" .= a ]
+               , "cred_autenticacao" .= a
+               , "cred_autorizacao" .= au ]
 
 

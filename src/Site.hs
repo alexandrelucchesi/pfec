@@ -64,8 +64,8 @@ facade = do
     rq <- getRequest
     let rqFacade = do
         info <- getHeader "JWT" rq
-        decode . B64.decode . BL.fromStrict $ info
-    maybe notAuthorized {-handlerRqFacade-} handlerRqFacade'' rqFacade
+        decode . B64.decode . BL.fromStrict $ info :: Maybe RQF.RqFacade
+    maybe (badReq "Bad request") handlerRqFacade'' rqFacade
 
 notAuthorized :: Handler App App ()
 notAuthorized = do
@@ -78,13 +78,26 @@ notAuthorized = do
 {-
 -}
 handlerRqFacade'' :: RQF.RqFacade -> Handler App App ()
-handlerRqFacade'' rq@(RQF.RqFacade01 _ _) =
-    (allow `EXM.catches`
+handlerRqFacade'' rq@(RQF.RqFacade01 _ _ _) =
+    temp *> (allow `EXM.catches`
         [ EXM.Handler $ \(_ :: EX.PatternMatchFail) -> pass
         , EXM.Handler $ \(_ :: EX.SomeException)    -> pass ]
-    ) <|> liftIO (putStrLn "You have to authenticate first, dude! :/")
-
+    ) <|> redirectAuth <|> (writeBS "Tudo deu errado!" >> getResponse >>= finishWith)
   where
+    temp = with db $ do
+        case RQF.authorCredential rq of
+            Just v -> do
+                datetimeNow <- liftIO $ getCurrentTime
+                res <- query "SELECT cod_contrato_servico, datetime_exp FROM tb_servico_credencial WHERE credencial_auth LIKE ?" (Only v)
+                
+                case res of
+                    (servs@((_, datetimeExp):_) :: [(Int, UTCTime)]) -> do
+                        let diff = diffUTCTime datetimeExp datetimeNow
+                        if diff >= 0 && diff <= 10000 -- 3000 segundos, ideal 10s
+                            then return ()
+                            else pass
+                    _ -> pass
+            _ -> pass 
     allow = with db $ do
         (Just cred)  <- Db.findCredentialByName (RQF.authCredential rq) 
         (Just user)  <- Db.findUserByCredentialId (fromJust $ Db.credentialCode cred)
@@ -92,11 +105,9 @@ handlerRqFacade'' rq@(RQF.RqFacade01 _ _) =
 
         services <- return $ Db.contrServices contr
         service  <- rqServiceURL
-        liftIO $ print service -- DEBUG
+--        liftIO $ print service -- DEBUG
         if elem service services
-            then do
-                liftIO $ putStrLn "You're successfully authenticated bro!"
-                return ()
+            then return ()
             else pass
 
     rqServiceURL :: Handler App b Db.Service
@@ -117,9 +128,35 @@ handlerRqFacade'' rq@(RQF.RqFacade01 _ _) =
             then badReq "Bad Request"
             else return $ Db.Service Nothing (fromJust $ url >>= parseURI . C.unpack)
 
+    redirectAuth = do
+        let authCredential = RQF.authCredential rq
+        r <- query "SELECT cod_contrato, cod_usuario FROM tb_credencial WHERE credencial = ?" (Only authCredential)
+        case r of
+            [(contrCode, userCode) :: (Int, Int)] -> genChallenge contrCode userCode 
+            _ -> notAuthorized
+      where
+        genChallenge :: Int -> Int -> Handler App App ()
+        genChallenge contrCode userCode = do
+            r' <- query "SELECT cod_contrato, cod_usuario, cod_credencial, credencial FROM tb_credencial WHERE cod_contrato = ? AND cod_usuario = ? ORDER BY RANDOM() LIMIT 1;" (contrCode, userCode)
+            case r' of
+                [(contrCode', userCode', credCode, cred) :: (Int, Int, Int, T.Text)] -> do
+                    t <- liftIO $ getCurrentTime
+                    execute "INSERT INTO tb_desafio VALUES (NULL, ?, ?, ?, ?)" (contrCode', userCode', cred, t)
+                    r'' <- query_ "SELECT last_insert_rowid()"
+                    case r'' of
+                        [(Only chalCode)] -> do
+                            let authServerURL  = fromJust $ parseURI "http://localhost:8000/auth"
+                                response = REF.RespFacade01 authServerURL chalCode credCode userCode'
+                            modifyResponse (setHeader "JWT" $ BL.toStrict . B64.encode . encode $ response) -- put response in header. 
+        --                            modifyResponse (setContentType "application/json")
+        --                            writeLBS $ encode response
+                            resp <- getResponse
+                            finishWith resp
+                        _ -> writeBS "FALHOU!"
+                _ -> writeBS "FALHOU!"
 
 handlerRqFacade' :: RQF.RqFacade -> Handler App App ()
-handlerRqFacade' rq@(RQF.RqFacade01 _ _) = with db $ do
+handlerRqFacade' rq@(RQF.RqFacade01 _ _ _) = with db $ do
     r <- Db.findCredentialByName (RQF.authCredential rq) 
     case r of
         Just cred -> do
@@ -293,12 +330,6 @@ handlerRqAuth (RQA.RqAuth02 chalCode login senha) = do
 
 handlerRqAuth _ = writeBS "Non exhaustive!"
                     
-
-test = do
-    req <- getRequest
-    let rqUrl = parseURI . C.unpack . (`C.append` rqContextPath req) <$> getHeader "Host" req
-    liftIO $ print rqUrl
-
 failService = fail "I always fail! :("
    
 ------------------------------------------------------------------------------
@@ -307,7 +338,6 @@ routes :: [(C.ByteString, Handler App App ())]
 routes = [ ("/facade", facade)
          , ("/auth", auth)
          , ("/hello", liftSnap hello)
-         , ("/test", test)
          , ("/fail", failService)
          , ("/", facade)
          ]

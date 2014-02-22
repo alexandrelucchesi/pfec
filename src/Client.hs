@@ -53,32 +53,25 @@ parseResponse msg resp =
                 _        -> error $ (++) (if isJust msg then fromJust msg ++ "\n" else "") "Header JWT not found."
 
 ------------------------------------------------------------------------------ | Requests Facade a service.
+-- TODO: Unify rqFacade01 e rqFacade02 here!
 rqFacade01 :: IO REF.RespFacade
 rqFacade01 = do
     let rqBuilder = do
           ST.get "/hello" M.empty
           modify (\req -> setHeader "JWT" invalidToken req)
           modify (\req -> setHeader "Host" "http://localhost:8000" req)
+
+    -- DEBUG
+    liftIO $ prettyPrint "REQ FACADE 01" (B64.decode . CL.fromStrict $ invalidToken)
+
     resp <- runHandler Nothing rqBuilder facade app
     either (error . show) (return . parseResponse (return errorMsg)) resp
   where
     invalidToken = toJWT RQF.RqFacade01 { RQF.contractCode = 1
-                                        , RQF.authCredential = "xyz123" }
+                                        , RQF.authCredential = "xyz123"
+                                        , RQF.authorCredential = Nothing }
     errorMsg = "Could not parse RespFacade01."
 
--- GENERAL
--- TODO: Unify rqFacade01 e rqFacade02 here!
-rqFacade :: IO Response
-rqFacade = do
-    let rqBuilder = do
-          ST.get "/hello" M.empty
-          modify (\req -> setHeader "JWT" token req)
-          modify (\req -> setHeader "Host" "http://localhost:8000" req)
-    resp <- runHandler Nothing rqBuilder facade app
-    either (error . show) return {- (ST.getResponseBody) -} resp
-  where
-    token = toJWT RQF.RqFacade01 { RQF.contractCode = 1
-                                 , RQF.authCredential = "xyz123" }
 
 ------------------------------------------------------------------------------ | Requests Facade a service.
 rqFacade02 :: REA.RespAuth -> IO Response
@@ -89,12 +82,19 @@ rqFacade02 rq@(REA.RespAuth02 _ _) =
             let rqBuilder = do
                   ST.get "/hello" M.empty
                   modify (\req -> setHeader "JWT" token req)
+                  modify (\req -> setHeader "Host" "http://localhost:8000" req)
+
+            -- DEBUG
+            liftIO $ prettyPrint "REQ FACADE 02" (B64.decode . CL.fromStrict $ token)
+            liftIO $ putStr "JWT: " >> print token 
+
             resp <- runHandler Nothing rqBuilder facade app
             either (error . show) return {- (ST.getResponseBody) -} resp
 
   where
     token = toJWT RQF.RqFacade01 { RQF.contractCode   = 1
-                                 , RQF.authCredential = T.decodeUtf8 $ REA.credential rq }
+                                 , RQF.authCredential = "xyz123"
+                                 , RQF.authorCredential = Just $ T.decodeUtf8 $ REA.credential rq }
     errorMsg = "rqFacade02: Could not authenticate user."
 
 rqFacade02 _ = error "rqFacade02: It shouldn't happen! :-("
@@ -111,6 +111,10 @@ rqAuth01 rq@(REF.RespFacade01 _ _ _ _) = do
     let rqBuilder = do
           ST.get "/auth" M.empty
           modify (\req -> setHeader "JWT" (toJWT rqAuth) req)
+
+    -- DEBUG
+    liftIO $ prettyPrint "REQ AUTH 01" rqAuth
+
     resp <- runHandler Nothing rqBuilder auth app
     either (error . show) (return . parseResponse (return errorMsg')) resp
   where
@@ -132,6 +136,10 @@ rqAuth02 rq@(REA.RespAuth01 _ _) = do
                                           , RQA.login = Db.userLogin u
                                           , RQA.password = Db.userPassword u }
                 modify (\req -> setHeader "JWT" (toJWT rqAuth) req)
+
+                -- DEBUG
+                liftIO $ prettyPrint "REQ AUTH 02" rqAuth
+
             resp <- runHandler Nothing rqBuilder auth app
             either (error . show) (return . parseResponse (return errorMsg)) resp
         _ -> error errorMsgDb
@@ -149,13 +157,18 @@ test = do
     prettyPrint "RESP AUTH 01" respA01
     respA02 <- rqAuth02 respA01
     prettyPrint "RESP AUTH 02" respA02
-    respF02 <- rqFacade02 respA02
-    prettyPrint "RESP FACADE 02" respF02
+    respF02 <- join $ ST.getResponseBody <$> rqFacade02 respA02
+    prettyPrint' "RESP FACADE 02" respF02
 
-  where
-    prettyPrint header v = do
-        putStrLn $ (take 20 $ repeat '-') ++ header ++ (take (60 - length header) $ repeat '-')
-        print v
+prettyPrint :: (Show a, ToJSON a) => String -> a -> IO ()
+prettyPrint header v = do
+    putStrLn $ (take 20 $ repeat '-') ++ header ++ (take (60 - length header) $ repeat '-')
+    print $ encode v
+
+prettyPrint' :: (Show a) => String -> a -> IO ()
+prettyPrint' header v = do
+    putStrLn $ (take 20 $ repeat '-') ++ header ++ (take (60 - length header) $ repeat '-')
+    print v
 
 
 ------------------------------------------------------------------------------ | Test DB functions.

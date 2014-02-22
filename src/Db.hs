@@ -27,6 +27,10 @@ data Credential = Credential
                 , credentialCred :: T.Text
                 } deriving (Eq, Show)
 
+data CredentialAuthor = CredentialAuthor
+                { credAuthorExp :: UTCTime
+                } deriving (Eq, Show)
+
 data User = User
           { userCode        :: Maybe Int64
           , userLogin       :: T.Text
