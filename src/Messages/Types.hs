@@ -5,14 +5,13 @@ module Messages.Types where
 
 import           Control.Applicative
 import           Data.Aeson
-import           Data.List
 import qualified Data.Text as T
 import           GHC.Generics
 import qualified Network.URI
 
 ------------------------------------------------------------------------------ | Data type representing a URI.
 newtype URI = URI Network.URI.URI
-    deriving (Generic, Show)
+    deriving (Generic)
 
 instance Eq URI where
     (URI u1) == (URI u2) =
@@ -20,6 +19,9 @@ instance Eq URI where
             u1' = rev $ show u1
             u2' = rev $ show u2
         in u1' == u2'
+
+instance Show URI where
+    show (URI u) = show u
 
 instance FromJSON URI where
     parseJSON = withText "URI" $

@@ -149,6 +149,7 @@ rqAuth02 rq@(REA.RespAuth01 _ _) = do
 
 rqAuth02 _ = error "rqAuth02: It shouldn't happen! :-("
 
+
 test :: IO ()
 test = do
     respF01 <- rqFacade01

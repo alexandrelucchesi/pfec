@@ -36,6 +36,7 @@ Executable auth-server
     xmlhtml                   >= 0.1,
 
     aeson,
+    aeson-pretty,
     base64-bytestring,
     attoparsec,
     containers,
@@ -43,6 +44,7 @@ Executable auth-server
     network,
     random,
     process,
+    safe,
     snap-extras,
     snaplet-sqlite-simple,
     sqlite-simple,

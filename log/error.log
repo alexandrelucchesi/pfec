@@ -558,3 +558,310 @@ A web handler threw an exception. Details:
 invalid padding
 [22/Feb/2014:13:40:03 -0300] Server.httpServe: SHUTDOWN
 [22/Feb/2014:13:40:03 -0300] Server.httpServe: BACKEND STOPPED
+[22/Feb/2014:14:05:45 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8000/]
+[22/Feb/2014:14:06:07 -0300] During processing of request from 127.0.0.1:59690
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:59690\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client\n    contextpath: /\n    URI: /client\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+<no location info>:
+    Module imports form a cycle:
+             module `Site' (src/Site.hs)
+            imports `Client' (src/Client.hs)
+      which imports `Site' (src/Site.hs)
+[22/Feb/2014:14:06:07 -0300] During processing of request from 127.0.0.1:59690
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:59690\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: */*\n Host: localhost:8000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: favicon.ico\n    contextpath: /\n    URI: /favicon.ico\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+<no location info>:
+    Module imports form a cycle:
+             module `Site' (src/Site.hs)
+            imports `Client' (src/Client.hs)
+      which imports `Site' (src/Site.hs)
+[22/Feb/2014:14:16:08 -0300] Server.httpServe: SHUTDOWN
+[22/Feb/2014:14:16:08 -0300] Server.httpServe: BACKEND STOPPED
+[22/Feb/2014:14:17:08 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9999/]
+[22/Feb/2014:14:18:01 -0300] Server.httpServe: SHUTDOWN
+[22/Feb/2014:14:18:01 -0300] Server.httpServe: BACKEND STOPPED
+[23/Feb/2014:22:15:59 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8000/]
+[24/Feb/2014:00:00:47 -0300] During processing of request from 127.0.0.1:52630
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:52630\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/add/hahahhahaha\n    contextpath: /\n    URI: /client/add/hahahhahaha?x=1&y=4\n    params:\n      ========================================\n      x: [\"1\"]\n y: [\"4\"]\n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+Could not find module `Data.Aeson.Encode.Pretty'
+Use -v to see a list of the files searched for.
+[24/Feb/2014:00:00:47 -0300] During processing of request from 127.0.0.1:52630
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:52630\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: */*\n Host: localhost:8000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: favicon.ico\n    contextpath: /\n    URI: /favicon.ico\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+Could not find module `Data.Aeson.Encode.Pretty'
+Use -v to see a list of the files searched for.
+[24/Feb/2014:00:00:51 -0300] Server.httpServe: SHUTDOWN
+[24/Feb/2014:00:00:51 -0300] Server.httpServe: BACKEND STOPPED
+[24/Feb/2014:00:07:30 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8000/]
+[24/Feb/2014:00:07:33 -0300] During processing of request from 127.0.0.1:52635
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:52635\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/add/hahahhahaha\n    contextpath: /\n    URI: /client/add/hahahhahaha?x=1&y=4\n    params:\n      ========================================\n      x: [\"1\"]\n y: [\"4\"]\n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+Could not find module `Data.Aeson.Encode.Pretty'
+It is a member of the hidden package `aeson-pretty-0.7.1'.
+Use -v to see a list of the files searched for.
+[24/Feb/2014:00:07:33 -0300] During processing of request from 127.0.0.1:52635
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:52635\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: */*\n Host: localhost:8000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: favicon.ico\n    contextpath: /\n    URI: /favicon.ico\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+Could not find module `Data.Aeson.Encode.Pretty'
+It is a member of the hidden package `aeson-pretty-0.7.1'.
+Use -v to see a list of the files searched for.
+[24/Feb/2014:00:07:37 -0300] Server.httpServe: SHUTDOWN
+[24/Feb/2014:00:07:37 -0300] Server.httpServe: BACKEND STOPPED
+[24/Feb/2014:00:08:22 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8000/]
+[24/Feb/2014:00:47:07 -0300] Server.httpServe: SHUTDOWN
+[24/Feb/2014:00:47:07 -0300] Server.httpServe: BACKEND STOPPED
+[24/Feb/2014:00:47:42 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8000/]
+[24/Feb/2014:01:02:43 -0300] During processing of request from 127.0.0.1:52801
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:52801\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: \n    contextpath: /\n    URI: /\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Prelude.head: empty list
+[24/Feb/2014:01:02:48 -0300] During processing of request from 127.0.0.1:52801
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:52801\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: \n    contextpath: /\n    URI: /\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Prelude.head: empty list
+[24/Feb/2014:02:32:49 -0300] During processing of request from 127.0.0.1:52972
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:52972\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/add\n    contextpath: /\n    URI: /client/add?x=2&y=3\n    params:\n      ========================================\n      x: [\"2\"]\n y: [\"3\"]\n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+src/Site.hs:402:1:
+    parse error (possibly incorrect indentation or mismatched brackets)
+[24/Feb/2014:02:32:49 -0300] During processing of request from 127.0.0.1:52972
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:52972\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: */*\n Host: localhost:8000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: favicon.ico\n    contextpath: /\n    URI: /favicon.ico\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+src/Site.hs:402:1:
+    parse error (possibly incorrect indentation or mismatched brackets)
+[24/Feb/2014:02:33:44 -0300] During processing of request from 127.0.0.1:52972
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:52972\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/add\n    contextpath: /\n    URI: /client/add?x=2&y=3\n    params:\n      ========================================\n      x: [\"2\"]\n y: [\"3\"]\n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+src/Site.hs:400:1:
+    parse error (possibly incorrect indentation or mismatched brackets)
+[24/Feb/2014:02:33:44 -0300] During processing of request from 127.0.0.1:52972
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:52972\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: */*\n Host: localhost:8000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: favicon.ico\n    contextpath: /\n    URI: /favicon.ico\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+src/Site.hs:400:1:
+    parse error (possibly incorrect indentation or mismatched brackets)
+[24/Feb/2014:03:25:54 -0300] httpSession caught an exception during sending response phase:
+During processing of request from 127.0.0.1:53106
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53106\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:25:56 -0300] httpSession caught an exception during sending response phase:
+During processing of request from 127.0.0.1:53107
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53107\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:26:05 -0300] httpSession caught an exception during sending response phase:
+During processing of request from 127.0.0.1:53109
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53109\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:26:25 -0300] httpSession caught an exception during sending response phase:
+During processing of request from 127.0.0.1:53115
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53115\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:26:49 -0300] httpSession caught an exception during sending response phase:
+During processing of request from 127.0.0.1:53119
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53119\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:26:49 -0300] httpSession caught an exception during sending response phase:
+During processing of request from 127.0.0.1:53120
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53120\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:27:39 -0300] httpSession caught an exception during sending response phase:
+During processing of request from 127.0.0.1:53123
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53123\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:27:40 -0300] httpSession caught an exception during sending response phase:
+During processing of request from 127.0.0.1:53124
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53124\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:27:41 -0300] httpSession caught an exception during sending response phase:
+During processing of request from 127.0.0.1:53126
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53126\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:27:44 -0300] httpSession caught an exception during sending response phase:
+During processing of request from 127.0.0.1:53128
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53128\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:29:12 -0300] httpSession caught an exception during sending response phase:
+During processing of request from 127.0.0.1:53136
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53136\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:29:13 -0300] httpSession caught an exception during sending response phase:
+During processing of request from 127.0.0.1:53137
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53137\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:29:19 -0300] httpSession caught an exception during sending response phase:
+During processing of request from 127.0.0.1:53139
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53139\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:29:26 -0300] httpSession caught an exception during sending response phase:
+During processing of request from 127.0.0.1:53141
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53141\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:29:50 -0300] httpSession caught an exception during sending response phase:
+During processing of request from 127.0.0.1:53145
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53145\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:29:52 -0300] Server.httpServe: SHUTDOWN
+[24/Feb/2014:03:29:52 -0300] Server.httpServe: BACKEND STOPPED
+[24/Feb/2014:03:29:56 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8000/]
+[24/Feb/2014:03:29:59 -0300] httpSession caught an exception during sending response phase:
+During processing of request from 127.0.0.1:53149
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53149\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:32:36 -0300] During processing of request from 127.0.0.1:53154
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53154\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:32:53 -0300] During processing of request from 127.0.0.1:53154
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53154\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:34:21 -0300] During processing of request from 127.0.0.1:53160
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53160\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:03:36:08 -0300] During processing of request from 127.0.0.1:53163
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53163\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:04:38:16 -0300] During processing of request from 127.0.0.1:53283
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53283\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:04:39:01 -0300] During processing of request from 127.0.0.1:53283
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53283\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/hello\n    contextpath: /\n    URI: /client/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqFacade02: Could not authenticate user.
+key "url_servidor_autenticacao" not present
+[24/Feb/2014:04:53:10 -0300] During processing of request from 127.0.0.1:53310
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53310\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/forbidden\n    contextpath: /\n    URI: /client/forbidden\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+src/Site.hs:111:26:
+    Ambiguous occurrence `notFound'
+    It could refer to either `Site.notFound',
+                             defined at src/Site.hs:68:1
+                          or `Snap.Extras.CoreUtils.notFound',
+                             imported from `Snap.Extras.CoreUtils' at src/Site.hs:39:1-38
+[24/Feb/2014:04:53:10 -0300] During processing of request from 127.0.0.1:53310
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53310\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: */*\n Host: localhost:8000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: favicon.ico\n    contextpath: /\n    URI: /favicon.ico\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+src/Site.hs:111:26:
+    Ambiguous occurrence `notFound'
+    It could refer to either `Site.notFound',
+                             defined at src/Site.hs:68:1
+                          or `Snap.Extras.CoreUtils.notFound',
+                             imported from `Snap.Extras.CoreUtils' at src/Site.hs:39:1-38
+[24/Feb/2014:04:53:26 -0300] During processing of request from 127.0.0.1:53310
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53310\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/forbidden\n    contextpath: /\n    URI: /client/forbidden\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+src/Site.hs:86:12: Not in scope: `badReq'
+src/Site.hs:98:27: Not in scope: `badReq'
+[24/Feb/2014:04:53:26 -0300] During processing of request from 127.0.0.1:53310
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53310\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: */*\n Host: localhost:8000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: favicon.ico\n    contextpath: /\n    URI: /favicon.ico\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+src/Site.hs:86:12: Not in scope: `badReq'
+src/Site.hs:98:27: Not in scope: `badReq'
+[24/Feb/2014:05:18:31 -0300] Server.httpServe: SHUTDOWN
+[24/Feb/2014:05:18:31 -0300] Server.httpServe: BACKEND STOPPED
