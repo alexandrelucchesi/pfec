@@ -83,10 +83,14 @@ ok = modifyResponse (setResponseCode 200)
 facade :: Handler App App ()
 facade = do
     rq <- getRequest
-    let rqFacade = do
-        info <- getHeader "JWT" rq
-        decode . B64.decode . BL.fromStrict $ info :: Maybe RQF.RqFacade
-    maybe badRequest handlerRqFacade rqFacade
+    let pathInfo = rqPathInfo rq
+    if C.isPrefixOf "auth" pathInfo -- TEMPORARY WORKAROUND: LET AUTH'S REQUESTS PASS.
+        then auth
+        else do
+            let rqFacade = do
+                info <- getHeader "JWT" rq
+                decode . B64.decode . BL.fromStrict $ info :: Maybe RQF.RqFacade
+            maybe badRequest handlerRqFacade rqFacade
 
 
 ------------------------------------------------------------------------------ | Handler that treats requests to Facade Server.
@@ -100,6 +104,7 @@ handlerRqFacade rq@(RQF.RqFacade01 contrCode authenCred authorCred) =
         url    <- return $ header >>= (parseURI . C.unpack . (`C.append` (rqURI req)))
         service <- maybe badRequest return url
 
+        liftIO $ putStrLn $ "Service requested: " ++ show service
         serviceExists <- Db.serviceExists service
         canAccess <- maybe pass (\cred -> Db.canAccessService (fromIntegral contrCode)
                                     (T.encodeUtf8 cred) service
@@ -390,7 +395,7 @@ routes :: [(C.ByteString, Handler App App ())]
 routes = [ ("/facade", facade)
          , ("/add", add)
          , ("/auth", auth)
-         , ("/client", client)
+--         , ("/client", client)
          , ("/hello", liftSnap hello)
          , ("/", facade)
          ]
@@ -401,11 +406,15 @@ app :: SnapletInit App App
 app = makeSnaplet "auth-server" "REST-based authentication server." Nothing $ do
     d <- nestSnaplet "db" db sqliteInit
     addRoutes routes
-    wrapSite ((bypass <|> facade) *>)
+    --wrapSite ((bypass <|> facade) *>)
+    wrapSite (facade *> isOk *>)
     return $ App d
   where
-    bypass = do
-        pathArg (\(str :: C.ByteString) -> if str == "client" then return () else pass)
+    isOk = do
+        resp <- getResponse
+        if rspStatus resp == 200 then return () else finishWith resp
+--    bypass = do
+--        pathArg (\(str :: C.ByteString) -> if str == "client" then return () else pass)
         --req <- getRequest
         --let status = ((==) "client" <$>) . Safe.headMay
         --             . C.split '/' . rqPathInfo $ req

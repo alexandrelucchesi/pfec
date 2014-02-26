@@ -865,3 +865,4 @@ src/Site.hs:86:12: Not in scope: `badReq'
 src/Site.hs:98:27: Not in scope: `badReq'
 [24/Feb/2014:05:18:31 -0300] Server.httpServe: SHUTDOWN
 [24/Feb/2014:05:18:31 -0300] Server.httpServe: BACKEND STOPPED
+[26/Feb/2014:00:05:04 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8000/]
