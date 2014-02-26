@@ -132,3 +132,75 @@ Perhaps you meant
 Use -v to see a list of the files searched for.
 [25/Feb/2014:13:26:58 -0300] Server.httpServe: SHUTDOWN
 [25/Feb/2014:13:26:58 -0300] Server.httpServe: BACKEND STOPPED
+[25/Feb/2014:22:18:21 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8000/]
+[25/Feb/2014:22:19:57 -0300] During processing of request from 127.0.0.1:55418
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:55418\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/usage\n    contextpath: /\n    URI: /client/usage\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+Could not find module `Network.HTTP.Conduit'
+It is a member of the hidden package `http-conduit-2.0.0.5'.
+Use -v to see a list of the files searched for.
+[25/Feb/2014:22:20:03 -0300] Server.httpServe: SHUTDOWN
+[25/Feb/2014:22:20:03 -0300] Server.httpServe: BACKEND STOPPED
+[25/Feb/2014:22:20:34 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8000/]
+[25/Feb/2014:22:20:39 -0300] During processing of request from 127.0.0.1:55422
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:55422\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/usage\n    contextpath: /\n    URI: /client/usage\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+InvalidUrlException "localhost:8000/" "Invalid scheme"
+[26/Feb/2014:00:02:56 -0300] Server.httpServe: SHUTDOWN
+[26/Feb/2014:00:02:56 -0300] Server.httpServe: BACKEND STOPPED
+[26/Feb/2014:00:06:26 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8000/]
+[26/Feb/2014:00:06:26 -0300] Error on startup: 
+bind: resource busy (Address already in use)
+[26/Feb/2014:00:06:34 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8001/]
+[26/Feb/2014:00:06:48 -0300] During processing of request from 127.0.0.1:55664
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:55664\n    local: 127.0.0.1:8001\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8001\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/hello\n    contextpath: /\n    URI: /client/get/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqAuth01: Could not find credential: 1
+Header JWT not found.
+[26/Feb/2014:00:09:32 -0300] During processing of request from 127.0.0.1:55671
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:55671\n    local: 127.0.0.1:8001\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8001\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/hello\n    contextpath: /\n    URI: /client/get/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqAuth01: Could not find credential: 1
+Header JWT not found.
+[26/Feb/2014:00:11:53 -0300] During processing of request from 127.0.0.1:55688
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:55688\n    local: 127.0.0.1:8001\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8001\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/hello\n    contextpath: /\n    URI: /client/get/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqAuth01: Could not find credential: 2
+Header JWT not found.
+[26/Feb/2014:00:14:27 -0300] During processing of request from 127.0.0.1:55694
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:55694\n    local: 127.0.0.1:8001\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8001\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/hello\n    contextpath: /\n    URI: /client/get/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqAuth01: Could not find credential: 2
+Header JWT not found.
+[26/Feb/2014:00:24:54 -0300] During processing of request from 127.0.0.1:55707
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:55707\n    local: 127.0.0.1:8001\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8001\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/hello\n    contextpath: /\n    URI: /client/get/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqAuth01: Could not find credential: 1
+Header JWT not found.
+[26/Feb/2014:00:36:25 -0300] During processing of request from 127.0.0.1:55763
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:55763\n    local: 127.0.0.1:8001\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8001\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/hello\n    contextpath: /\n    URI: /client/get/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqAuth01: Could not find credential: 3
+Header JWT not found.
+[26/Feb/2014:00:40:54 -0300] During processing of request from 127.0.0.1:55770
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:55770\n    local: 127.0.0.1:8001\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8001\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/hello\n    contextpath: /\n    URI: /client/get/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqAuth01: Could not find credential: 2
+Header JWT not found.
+[26/Feb/2014:00:42:06 -0300] During processing of request from 127.0.0.1:55778
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:55778\n    local: 127.0.0.1:8001\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:8001\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/hello\n    contextpath: /\n    URI: /client/get/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+rqAuth01: Could not find credential: 2
+Header JWT not found.

@@ -48,6 +48,7 @@ Executable client-proxy
     containers,
     crypto-api,
     http-conduit,
+    http-types,
     network,
     random,
     process,
