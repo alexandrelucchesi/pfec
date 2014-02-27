@@ -25,7 +25,7 @@ Executable rest-client
   hs-source-dirs: src
   main-is: Main.hs
 
-  other-modules: Paths_client_proxy
+  other-modules:
 
   Build-depends:
     bytestring                >= 0.9.1   && < 0.11,
@@ -42,19 +42,17 @@ Executable rest-client
 
     aeson,
     aeson-pretty,
+    auth-server,
     base64-bytestring,
-    attoparsec,
     configurator,
     containers,
     crypto-api,
+    facade-server,
     http-conduit,
     http-types,
     network,
-    random,
-    process,
-    safe,
-    snap-extras,
     snaplet-sqlite-simple,
+    server-common,
     sqlite-simple,
     text,
     transformers

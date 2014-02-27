@@ -7,6 +7,8 @@ import Data.Aeson
 import Data.ByteString (ByteString)
 import Control.Monad
 
+import Messages.Types
+
 ------------------------------------------------------------------------------ | Data type holding the message's formats Auth Server can send to the client.
 data RespAuth =
     RespAuth01 {
@@ -33,3 +35,5 @@ instance ToJSON RespAuth where
     toJSON (RespAuth02 a c) =
         object [ "autenticado"     .= a
                , "nova_credencial" .= c ]
+
+

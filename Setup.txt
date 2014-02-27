@@ -1,0 +1,37 @@
+# TODO: Script to automate this!
+# 
+# Basic idea is:
+#   * Create a main sandbox at "pfec" directory.
+#   * Create a sandbox for each sub-project referencing the main sandbox.
+#   * IMPORTANT: Install in order to avoid dependencies conflicts.
+#       Maybe using "cabal sandbox add-source" be helpful.
+
+cd .../pfec
+cabal sandbox init
+
+cd server-common
+cabal sandbox init --sandbox=../.cabal-sandbox
+cabal install --dependencies-only
+cabal install
+
+cd ../jwt-min
+cabal sandbox init --sandbox=../.cabal-sandbox
+cabal install --dependencies-only
+cabal install
+
+cd ../auth-server
+cabal sandbox init --sandbox=../.cabal-sandbox
+cabal install --dependencies-only
+cabal install
+
+cd ../facade-server
+cabal sandbox init --sandbox=../.cabal-sandbox
+cabal install --dependencies-only
+cabal install
+
+cd ../rest-client
+cabal sandbox init --sandbox=../.cabal-sandbox
+cabal install --dependencies-only
+cabal install
+
+

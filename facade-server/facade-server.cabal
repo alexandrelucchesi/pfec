@@ -1,4 +1,4 @@
-Name:                auth-server
+Name:                facade-server
 Version:             0.1
 Synopsis:            Project Synopsis Here
 Description:         Project Description Here
@@ -18,7 +18,7 @@ Flag old-base
   default: False
   manual: False
 
-Executable auth-server
+Executable facade-server
   hs-source-dirs: src
   main-is: Main.hs
 
@@ -78,11 +78,11 @@ Executable auth-server
     else
       ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
                    -fno-warn-orphans
-                   
+
 Library
   exposed-modules:
-    Messages.RqAuth,
-    Messages.RespAuth
+    Messages.RqFacade,
+    Messages.RespFacade
   -- other-modules:       
   other-extensions:    OverloadedStrings
   build-depends:       

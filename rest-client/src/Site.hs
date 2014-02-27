@@ -10,35 +10,26 @@ module Site
   ) where
 
 ------------------------------------------------------------------------------
-import           Control.Applicative
 import           Control.Concurrent.MVar
 import           Control.Monad.IO.Class
 import           Data.Aeson
 import           Data.Aeson.Encode.Pretty
 import           Data.ByteString (ByteString)
-import qualified Data.ByteString as B
-import qualified Data.ByteString.Lazy as BL
 import qualified Data.ByteString.Char8 as C
 import qualified Data.ByteString.Lazy.Char8 as CL
 import qualified Data.Configurator as Config
-import qualified Data.Configurator.Types as Config
 import qualified Data.List as L
-import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import           Data.Word
-import           Data.IORef
 import           Data.Maybe
-import qualified Data.Text as T
 import qualified Network as HC (withSocketsDo)
 import qualified Network.HTTP.Conduit as HC
 import qualified Network.HTTP.Types.Status as HC
 import           Snap
-import           Snap.Core
-import           Snap.Snaplet
 import           Snap.Snaplet.SqliteSimple
 ------------------------------------------------------------------------------
 import           Application
-import qualified Db
+import qualified BusinessLogic as Db
 import qualified Util.Base64 as B64
 import qualified Messages.RqAuth as RQA
 import qualified Messages.RqFacade as RQF
@@ -48,7 +39,7 @@ import           Messages.Types
 
 
 ------------------------------------------------------------------------------
--- | Client handler.
+-- | Print the facade URL set.
 status :: Handler App App ()
 status = do
     urlFacade <- gets _facadeURL
@@ -56,23 +47,13 @@ status = do
     writeBS $ C.pack url
 
 ------------------------------------------------------------------------------
--- | Client usage information.
+-- | Show usage information.
 usage :: Snap ()
 usage = writeBS "GET /client/<HTTP Method>/<Service + ServiceParams>"
-
-showMethod :: Snap ()
-showMethod = do
-   req <- getRequest
-   let m = rqMethod req
-   writeBS . C.pack $ show m
-
 
 class FromJSON a => Resp a
 instance Resp REF.RespFacade
 instance Resp REA.RespAuth
------------------------------------------------------------------------------- | Converts value to JWT encoded.
-toJWT :: (ToJSON a) => a -> C.ByteString
-toJWT = CL.toStrict . B64.encode . encode
 
 ------------------------------------------------------------------------------ | Parses response.
 parseResponse :: (Resp a) => Maybe String -> HC.Response b -> a
@@ -246,7 +227,6 @@ prettyWrite v = do
 routes :: [(ByteString, Handler App App ())]
 routes = [ ("/status", status)
          , ("/client/:httpMethod", method GET client)
-         , ("/showMethod", liftSnap showMethod)
          , ("/", liftSnap usage)
          ]
 
