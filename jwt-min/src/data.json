@@ -1,0 +1,8 @@
+{"alg":"RSA1_5","enc":"A128CBC-HS256","cty":"JWT"}
+
+{"alg":"RS256"}
+
+{"iss":"joe",
+ "exp":1300819380,
+ "http://example.com":true}
+
