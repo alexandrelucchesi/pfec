@@ -866,3 +866,113 @@ src/Site.hs:98:27: Not in scope: `badReq'
 [24/Feb/2014:05:18:31 -0300] Server.httpServe: SHUTDOWN
 [24/Feb/2014:05:18:31 -0300] Server.httpServe: BACKEND STOPPED
 [26/Feb/2014:00:05:04 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8000/]
+[26/Feb/2014:22:05:03 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8000/]
+[26/Feb/2014:22:29:16 -0300] Server.httpServe: SHUTDOWN
+[26/Feb/2014:22:29:16 -0300] Server.httpServe: BACKEND STOPPED
+[26/Feb/2014:22:46:39 -0300] Server.httpServe: START, binding to [https://0.0.0.0:443/]
+[26/Feb/2014:22:46:39 -0300] This version of snap-server was not built with SSL support.
+Please compile snap-server with -fopenssl to enable it.
+[26/Feb/2014:22:47:31 -0300] Server.httpServe: START, binding to [https://0.0.0.0:443/]
+[26/Feb/2014:22:47:31 -0300] Error on startup: 
+bind: permission denied (Permission denied)
+[26/Feb/2014:22:50:18 -0300] Server.httpServe: START, binding to [https://0.0.0.0:9000/]
+[26/Feb/2014:22:50:32 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[26/Feb/2014:22:50:36 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[26/Feb/2014:22:50:43 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:22:50:43 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:22:50:43 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:22:50:48 -0300] SimpleBackend.acceptThread: ConnectionAbruptlyTerminated
+[26/Feb/2014:22:51:50 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:22:52:13 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:22:58:51 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:22:58:51 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:01:40 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:01:40 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:01:49 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:02:05 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:02:05 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:02:05 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:05:14 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:05:14 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:05:14 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:05:27 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:06:01 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:06:01 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:06:02 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:06:54 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ProtocolError "error:14094418:SSL routines:SSL3_READ_BYTES:tlsv1 alert unknown ca"
+[26/Feb/2014:23:06:54 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ProtocolError "error:14094418:SSL routines:SSL3_READ_BYTES:tlsv1 alert unknown ca"
+[26/Feb/2014:23:07:19 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:08:39 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:08:39 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:08:39 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:09:00 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:09:08 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:10:14 -0300] Server.httpServe: SHUTDOWN
+[26/Feb/2014:23:10:14 -0300] Server.httpServe: BACKEND STOPPED
+[26/Feb/2014:23:15:18 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8000/]
+[26/Feb/2014:23:19:41 -0300] Server.httpServe: SHUTDOWN
+[26/Feb/2014:23:19:41 -0300] Server.httpServe: BACKEND STOPPED
+[26/Feb/2014:23:19:49 -0300] Server.httpServe: START, binding to [https://0.0.0.0:9000/]
+[26/Feb/2014:23:19:56 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[26/Feb/2014:23:19:59 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[26/Feb/2014:23:20:05 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:20:05 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:20:05 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:20:14 -0300] SimpleBackend.acceptThread: ConnectionAbruptlyTerminated
+[26/Feb/2014:23:20:56 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:20:56 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:20:56 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:27:31 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[26/Feb/2014:23:27:34 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[26/Feb/2014:23:27:50 -0300] SimpleBackend.acceptThread: ConnectionAbruptlyTerminated
+[26/Feb/2014:23:27:57 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[26/Feb/2014:23:28:07 -0300] SimpleBackend.acceptThread: ConnectionAbruptlyTerminated
+[26/Feb/2014:23:53:58 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:53:58 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:55:37 -0300] Server.httpServe: SHUTDOWN
+[26/Feb/2014:23:55:37 -0300] Server.httpServe: BACKEND STOPPED
+[26/Feb/2014:23:55:49 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8000/,https://0.0.0.0:9000/]
+[26/Feb/2014:23:56:07 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:56:07 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:56:07 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[26/Feb/2014:23:56:22 -0300] Server.httpServe: SHUTDOWN
+[26/Feb/2014:23:56:22 -0300] Server.httpServe: BACKEND STOPPED

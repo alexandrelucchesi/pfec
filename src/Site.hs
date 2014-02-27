@@ -407,17 +407,11 @@ app = makeSnaplet "auth-server" "REST-based authentication server." Nothing $ do
     d <- nestSnaplet "db" db sqliteInit
     addRoutes routes
     --wrapSite ((bypass <|> facade) *>)
-    wrapSite (facade *> isOk *>)
+--    wrapSite (facade *> isOk *>)
     return $ App d
   where
-    isOk = do
-        resp <- getResponse
-        if rspStatus resp == 200 then return () else finishWith resp
---    bypass = do
---        pathArg (\(str :: C.ByteString) -> if str == "client" then return () else pass)
-        --req <- getRequest
-        --let status = ((==) "client" <$>) . Safe.headMay
-        --             . C.split '/' . rqPathInfo $ req
-        --maybe pass (\s -> if s then return () else pass) status
+--    isOk = do
+--        resp <- getResponse
+--        if rspStatus resp == 200 then return () else finishWith resp
 
 
