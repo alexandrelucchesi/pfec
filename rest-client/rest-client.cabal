@@ -1,4 +1,4 @@
-Name:                client-proxy
+Name:                rest-client
 Version:             0.1
 Synopsis:            Project Synopsis Here
 Description:         Project Description Here
@@ -21,7 +21,7 @@ Flag old-base
   default: False
   manual: False
 
-Executable client-proxy
+Executable rest-client
   hs-source-dirs: src
   main-is: Main.hs
 
