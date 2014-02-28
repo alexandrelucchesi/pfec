@@ -15,10 +15,12 @@ import           Control.Monad.IO.Class
 import           Data.Aeson
 import qualified Data.ByteString.Lazy as BL
 import qualified Data.ByteString.Char8 as C
+import qualified Data.Configurator as Config
 import           Data.Time
 import           Data.Maybe
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
+import           Data.Word
 import           Snap
 import           Snap.Extras.CoreUtils
 import           Snap.Snaplet.SqliteSimple
@@ -37,8 +39,8 @@ facade :: Handler App App ()
 facade = do
     rq <- getRequest
     let rqFacade = do
-        info <- getHeader "JWT" rq
-        decode . B64.decode . BL.fromStrict $ info :: Maybe RQF.RqFacade
+            jwt <- getHeader "JWT" rq
+            decode . B64.decode . BL.fromStrict $ jwt :: Maybe RQF.RqFacade
     maybe badRequest handlerRqFacade rqFacade
 
 ------------------------------------------------------------------------------ | Handler that treats requests to Facade Server.
@@ -47,16 +49,21 @@ handlerRqFacade rq@(RQF.RqFacade01 contrCode authenCred authorCred) =
     allow <|> redirectAuth
   where
     allow = with db $ do
-        req    <- getRequest
-        header <- return $ getHeader "Host" req
-        url    <- return $ header >>= (parseURI . C.unpack . (`C.append` (rqURI req)))
-        service <- maybe badRequest return url
+        req  <- getRequest
+--        host <- return $ getHeader "Host" req
+--        url  <- return $ host >>= (parseURI . C.unpack . (`C.append` (rqURI req)))
+--        service <- maybe badRequest return url
+        let stripTrailingSlash = C.reverse . C.tail . C.reverse
+            service = rqPathInfo req -- Service identifier
 
         liftIO $ putStrLn $ "Service requested: " ++ show service
         serviceExists <- Db.serviceExists service
         canAccess <- maybe pass (\cred -> Db.canAccessService (fromIntegral contrCode)
                                     (T.encodeUtf8 cred) service
                                 ) authorCred
+
+        liftIO $ putStrLn $ ">> Service exists: " ++ show serviceExists
+        liftIO $ putStrLn $ ">> Can access    : " ++ show canAccess
 
         if isJust authorCred -- An authorization credential was passed.
             then if serviceExists
@@ -83,8 +90,9 @@ handlerRqFacade rq@(RQF.RqFacade01 contrCode authenCred authorCred) =
                     r'' <- query_ "SELECT last_insert_rowid()"
                     case r'' of
                         [(Only chalCode)] -> do
-                            let authServerURL  = fromJust $ parseURI "http://localhost:8000/auth"
-                                response = REF.RespFacade01 authServerURL chalCode credCode userCode'
+                            url <- gets _authServerURL
+                            let authURL  = fromJust $ parseURI ("http://" ++ url ++ "/auth")
+                                response = REF.RespFacade01 authURL chalCode credCode userCode'
                             modifyResponse (setHeader "JWT" $ BL.toStrict . B64.encode . encode $ response) -- put response in header. 
                             --modifyResponse (setResponseCode 301)
                             unauthorized
@@ -122,12 +130,18 @@ routes = [ ("/facade", facade)
 -- | The application initializer.
 app :: SnapletInit App App
 app = makeSnaplet "facade-server" "Facade to RESTful web-services." Nothing $ do
+    config <- liftIO $ Config.load [Config.Required "resources/devel.cfg"]
+    url <- getAuthServerURL config
     d <- nestSnaplet "db" db sqliteInit
     addRoutes routes
     wrapSite (facade *> isOk *>)
-    return $ App d
+    return $ App url d
   where
     isOk = do
         resp <- getResponse
         if rspStatus resp == 200 then return () else finishWith resp
+    getAuthServerURL config = do
+        host <- liftIO $ Config.lookupDefault "localhost" config "host" 
+        port :: Word16 <- liftIO $ Config.lookupDefault 8000 config "port"
+        return $ host ++ ":" ++ show port
 

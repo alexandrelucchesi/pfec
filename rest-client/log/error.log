@@ -204,3 +204,9 @@ request:
 A web handler threw an exception. Details:
 rqAuth01: Could not find credential: 2
 Header JWT not found.
+[28/Feb/2014:02:08:51 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[28/Feb/2014:02:09:48 -0300] During processing of request from 127.0.0.1:61407
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:61407\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.117 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/hello\n    contextpath: /\n    URI: /client/get/hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+TlsException (HandshakeFailed (Error_Misc "<<timeout>>"))

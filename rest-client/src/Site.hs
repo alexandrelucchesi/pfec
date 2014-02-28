@@ -168,7 +168,7 @@ rqAuth01 rq@(REF.RespFacade01 _ _ _ _) = do
 
 ------------------------------------------------------------------------------ | Sends to Auth server the requested user credentials (login || password).
 rqAuth02 :: REA.RespAuth -> Handler App App REA.RespAuth
-rqAuth02 rq@(REA.RespAuth01 _ _) = do
+rqAuth02 rq@(REA.RespAuth01 _ _ _) = do
     r <- with db $ Db.findUserById (fromIntegral $ REA.userCode rq)
     case r of
         Just u -> do
@@ -179,7 +179,7 @@ rqAuth02 rq@(REA.RespAuth01 _ _) = do
             -- DEBUG
             prettyWriteJSON "REQ AUTH 02" rqAuth
 
-            execRequest (Just errorMsg) rqAuth (parseURI "http://localhost:8000/auth")
+            execRequest (Just errorMsg) rqAuth (Just $ REA.authServerURL rq)
         _ -> error errorMsgDb
   where
     errorMsgDb = "rqAuth02: Could not find user with id: " ++ show (REA.userCode rq)

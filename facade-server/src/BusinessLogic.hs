@@ -4,7 +4,7 @@
 module BusinessLogic where
 
 import           Control.Monad.IO.Class
-import           Data.ByteString (ByteString)
+import           Data.ByteString.Char8 (ByteString, unpack)
 import           Data.Int
 import qualified Data.List as L
 import qualified Data.Text as T
@@ -18,14 +18,14 @@ import           Messages.Types
 
 type ContractCode = Int64
 type Credential   = ByteString
-type Service      = URI
+type Service      = ByteString -- TODO: Include more info (HTTP method, etc)
 
 serviceExists :: Service -> Handler App Sqlite Bool
 serviceExists service = do
     let queryStr = T.concat . L.intersperse " " $
                             [ "SELECT cod_servico FROM tb_servico"
                             , "WHERE url_servico = ?" ]
-    (res :: [Only Int64])  <- query (S.Query queryStr) (Only $ show service)
+    (res :: [Only Int64])  <- query (S.Query queryStr) (Only $ unpack service)
     return $ not (null res)
 
 
@@ -38,6 +38,6 @@ canAccessService contract credential service = do
                             , "ON s.cod_servico = cs.cod_servico AND sc.cod_contrato_servico = cs.cod_contrato_servico"
                             , "AND cs.cod_contrato = ? AND sc.credencial_auth LIKE ?" 
                             , "AND s.url_servico = ? AND sc.datetime_exp > datetime('now')" ]
-    [Only status :: Only Int64] <- query (S.Query queryStr) (contract, credential, show service)
+    [Only status :: Only Int64] <- query (S.Query queryStr) (contract, credential, unpack service)
     return $ status > 0
 

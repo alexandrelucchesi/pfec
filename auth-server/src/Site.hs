@@ -16,6 +16,7 @@ import           Data.Aeson
 import qualified Data.ByteString.Lazy as BL
 import qualified Data.ByteString.Char8 as C
 import qualified Data.ByteString.Lazy.Char8 as CL
+import           Data.Maybe
 import           Data.Time
 import qualified Data.Text as T
 import           Snap
@@ -25,6 +26,7 @@ import           Application
 import qualified Messages.RqAuth as RQA
 import qualified Messages.RespAuth as REA
 import           Messages.HttpResponse
+import           Messages.Types
 import qualified BusinessLogic as Db
 import qualified Util.Base64 as B64
 
@@ -34,8 +36,8 @@ auth :: Handler App App ()
 auth = do
     rq <- getRequest
     let rqAuth = do
-        info <- getHeader "JWT" rq
-        decode . B64.decode . BL.fromStrict $ info
+            info <- getHeader "JWT" rq
+            decode . B64.decode . BL.fromStrict $ info
     maybe unauthorized handlerRqAuth rqAuth
     
 handlerRqAuth :: RQA.RqAuth -> Handler App App ()
@@ -51,7 +53,11 @@ handlerRqAuth (RQA.RqAuth01 cred chalCode contrCode) = do
                     r'' <- query_ "SELECT last_insert_rowid()"
                     case r'' of
                         [(Only chalCode' :: Only Int)] -> do
-                            let response = REA.RespAuth01 chalCode' userCode'
+                            req <- getRequest
+                            let url = "http://" ++ (C.unpack $ rqServerName req)
+                                      ++ ':' : (show $ rqServerPort req)
+                                      ++ "/auth"
+                                response = REA.RespAuth01 chalCode' userCode' (fromJust $ parseURI url)
                             modifyResponse (setHeader "JWT" $ BL.toStrict . B64.encode . encode $ response) -- put response in header. 
                             --resp <- getResponse
                             --finishWith resp

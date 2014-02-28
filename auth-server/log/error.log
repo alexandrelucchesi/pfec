@@ -976,3 +976,4 @@ ConnectionAbruptlyTerminated
 ConnectionAbruptlyTerminated
 [26/Feb/2014:23:56:22 -0300] Server.httpServe: SHUTDOWN
 [26/Feb/2014:23:56:22 -0300] Server.httpServe: BACKEND STOPPED
+[28/Feb/2014:02:04:58 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9000/]

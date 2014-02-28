@@ -15,7 +15,8 @@ import Snap.Snaplet.SqliteSimple
 ------------------------------------------------------------------------------
 
 data App = App
-    { _db  :: Snaplet Sqlite
+    { _authServerURL :: String
+    , _db            :: Snaplet Sqlite
     }
 
 makeLenses ''App

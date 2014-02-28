@@ -38,6 +38,7 @@ Executable facade-server
     aeson,
     aeson-pretty,
     base64-bytestring,
+    configurator,
     attoparsec,
     containers,
     crypto-api,
