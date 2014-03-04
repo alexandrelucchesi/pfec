@@ -10,7 +10,6 @@ module Site
   ) where
 
 ------------------------------------------------------------------------------
-import           Control.Concurrent.MVar
 import           Control.Monad.IO.Class
 import           Data.Aeson
 import           Data.Aeson.Encode.Pretty
@@ -23,6 +22,7 @@ import qualified Data.Text.Encoding as T
 import           Data.Word
 import           Data.Maybe
 import qualified Network as HC (withSocketsDo)
+import qualified Network.Connection as HC
 import qualified Network.HTTP.Conduit as HC
 import qualified Network.HTTP.Types.Status as HC
 import           Snap
@@ -42,8 +42,7 @@ import           Messages.Types
 -- | Print the facade URL set.
 status :: Handler App App ()
 status = do
-    urlFacade <- gets _facadeURL
-    url <- liftIO $ readMVar urlFacade
+    url <- gets _facadeURL
     writeBS $ C.pack url
 
 ------------------------------------------------------------------------------
@@ -67,6 +66,9 @@ parseResponse msg resp =
                 (Just (_, contents)) -> CL.fromStrict contents
                 _        -> error $ (++) (if isJust msg then fromJust msg ++ "\n" else "") "Header JWT not found."
 
+
+
+------------------------------------------------------------------------------ | Executes a request using http-conduit.
 execRequest :: (ToJSON a, Resp b) => Maybe String -> a -> Maybe URI -> Handler App App b
 execRequest errorMsg jwt uri = do
     m <- getParam "httpMethod"
@@ -84,17 +86,18 @@ execRequest errorMsg jwt uri = do
 
     liftIO $ putStrLn $ "URL is: " ++ show url
 
+    manager <- gets _httpMngr
     resp <- liftIO $ HC.withSocketsDo $ do
         initReq <- HC.parseUrl url
         let hdrs = ("JWT", toJWT jwt) : (HC.requestHeaders initReq)
             req = initReq { HC.checkStatus = \_ _ _ -> Nothing
                           , HC.method = fromMaybe "GET" m
                           , HC.requestHeaders = hdrs }
---        liftIO $ putStrLn "============ REQUEST ==================="
---        liftIO $ print req
-        HC.withManager $ HC.httpLbs req
---    liftIO $ putStrLn "============ RESPONSE =================="
---    liftIO $ print resp
+        liftIO $ putStrLn "============ REQUEST ==================="
+        liftIO $ print req
+        HC.httpLbs req manager
+    liftIO $ putStrLn "============ RESPONSE =================="
+    liftIO $ print resp
     return $ parseResponse errorMsg resp
 
 ------------------------------------------------------------------------------ | Requests Facade a service.
@@ -129,13 +132,14 @@ rqFacade02 rq@(REA.RespAuth02 _ _) =
                                     else C.append "?" q ]
             url <- liftM (++ (C.unpack i)) getUrlPrefix
             liftIO $ putStrLn $ "URL is: " ++ show url
+            manager <- gets _httpMngr  
             resp <- liftIO $ HC.withSocketsDo $ do
                 initReq <- HC.parseUrl url
                 let hdrs = ("JWT", toJWT request) : (HC.requestHeaders initReq)
                     req = initReq { HC.checkStatus = \_ _ _ -> Nothing
                                   , HC.method = fromMaybe "GET" m
                                   , HC.requestHeaders = hdrs }
-                HC.withManager $ HC.httpLbs req
+                HC.httpLbs req manager 
 
             return $ if HC.statusCode (HC.responseStatus resp) == 302 -- redirect
                 then Left $ parseResponse (return errorMsg) resp
@@ -186,6 +190,8 @@ rqAuth02 rq@(REA.RespAuth01 _ _ _) = do
     errorMsg = "rqAuth02: Could not parse RespAuth02."
 
 rqAuth02 _ = error "rqAuth02: It shouldn't happen! :-("
+
+
 ------------------------------------------------------------------------------
 -- | Client main handler.
 client :: Handler App App ()
@@ -204,11 +210,13 @@ client = do
     writeBS "\n"
     prettyWrite ("END OF CLIENT" :: String)
 
+
+------------------------------------------------------------------------------
+-- | Util.
 getUrlPrefix :: Handler App App String
 getUrlPrefix = do
-    urlFacade <- gets _facadeURL
-    url <- liftIO $ readMVar urlFacade
-    return $ "http://" ++ url ++ "/"
+    url <- gets _facadeURL
+    return $ "https://" ++ url ++ "/"
         
 prettyWriteJSON :: (ToJSON a) => String -> a -> Handler App App ()
 prettyWriteJSON header v = do
@@ -234,17 +242,26 @@ routes = [ ("/status", status)
 -- | The application initializer.
 app :: SnapletInit App App
 app = makeSnaplet "client-proxy" "REST-based client." Nothing $ do
-    -- config <- getSnapletUserConfig -- For some reason, it does not work with
-    -- cabal sandbox.
+    -- config <- getSnapletUserConfig -- For some reason, it does not work
+    -- properly with cabal sandboxes.
     config <- liftIO $ Config.load [Config.Required "resources/devel.cfg"]
-    url <- getFacadeURL config
-    urlRef <- liftIO $ newMVar url
+    url    <- getFacadeURL config
     sqlite <- nestSnaplet "db" db sqliteInit
+    -- According to the documentation at: 
+    -- (http://hackage.haskell.org/package/http-conduit-2.0.0.7/docs/Network-HTTP-Conduit.html#t:Request), creating a new manager is an expensive operation. So, we create it only once on application start and share it accross all the requests.
+    mngr   <- liftIO $ noSSLVerifyManager
     addRoutes routes
-    return $ App urlRef sqlite
+    return $ App url sqlite mngr
   where
     getFacadeURL config = do
         host <- liftIO $ Config.lookupDefault "localhost" config "host" 
         port :: Word16 <- liftIO $ Config.lookupDefault 8000 config "port"
         return $ host ++ ":" ++ show port
+
+    noSSLVerifyManager = let tlsSettings = HC.TLSSettingsSimple {
+                                -- This is where we disable certificate verification
+                                HC.settingDisableCertificateValidation = True,
+                                HC.settingDisableSession = False,
+                                HC.settingUseServerName  = True }
+                         in HC.newManager $ HC.mkManagerSettings tlsSettings Nothing
 

@@ -980,3 +980,53 @@ ConnectionAbruptlyTerminated
 [28/Feb/2014:02:11:02 -0300] Server.httpServe: SHUTDOWN
 [28/Feb/2014:02:11:02 -0300] Server.httpServe: BACKEND STOPPED
 [28/Feb/2014:02:11:31 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8000/]
+[03/Mar/2014:16:40:23 -0300] Server.httpServe: SHUTDOWN
+[03/Mar/2014:16:40:23 -0300] Server.httpServe: BACKEND STOPPED
+[03/Mar/2014:16:41:45 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8000/]
+[03/Mar/2014:16:58:27 -0300] Server.httpServe: SHUTDOWN
+[03/Mar/2014:16:58:27 -0300] Server.httpServe: BACKEND STOPPED
+[03/Mar/2014:17:02:12 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8001/,https://0.0.0.0:8000/]
+[03/Mar/2014:17:02:12 -0300] Error on startup: 
+user error (error:02001002:system library:fopen:No such file or directory)
+[03/Mar/2014:17:08:58 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8001/,https://0.0.0.0:8000/]
+[03/Mar/2014:17:09:07 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[03/Mar/2014:17:09:08 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[03/Mar/2014:17:09:27 -0300] SimpleBackend.acceptThread: ConnectionAbruptlyTerminated
+[03/Mar/2014:17:09:36 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[03/Mar/2014:17:09:36 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[03/Mar/2014:17:09:36 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[03/Mar/2014:17:14:08 -0300] SimpleBackend.acceptThread: ProtocolError "error:140760FC:SSL routines:SSL23_GET_CLIENT_HELLO:unknown protocol"
+[03/Mar/2014:17:14:45 -0300] SimpleBackend.acceptThread: ProtocolError "error:14094416:SSL routines:SSL3_READ_BYTES:sslv3 alert certificate unknown"
+[03/Mar/2014:17:45:53 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[03/Mar/2014:17:45:53 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[03/Mar/2014:17:46:36 -0300] SimpleBackend.acceptThread: ProtocolError "error:14094416:SSL routines:SSL3_READ_BYTES:sslv3 alert certificate unknown"
+[03/Mar/2014:17:50:15 -0300] During processing of request from 127.0.0.1:50679
+request:
+"Request <\n    server-name: 127.0.0.1\n    remote: 127.0.0.1:50679\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          Host: 127.0.0.1:8000\n Content-Length: 0\n Accept-Encoding: gzip\n JWT: eyJjb2RfY29udHJhdG8iOjEsImNyZWRfYXV0ZW50aWNhY2FvIjoieHl6MTIzIiwiY3JlZF9hdXRvcml6YWNhbyI6Im82Tm9YY2ppREFvWkM2VjRmakszbklKNDJPQTJxajVyelZmUlZ2ZkVQUXZjZnpPOHdxODBQbTlDd2w3TkpkNENONF91VTU5aHgzY0VOLW9KdW92SFB3PT0ifQ==\n      ========================================\n    content-length: Just 0\n    method: Method \"get\"\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: hello\n    contextpath: /\n    URI: /hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+TlsException (HandshakeFailed (Error_Protocol ("certificate rejected: [NameMismatch \"127.0.0.1\"]",True,CertificateUnknown)))
+[03/Mar/2014:17:50:15 -0300] SimpleBackend.acceptThread: ProtocolError "error:14094416:SSL routines:SSL3_READ_BYTES:sslv3 alert certificate unknown"
+[03/Mar/2014:17:52:21 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[03/Mar/2014:17:52:21 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[03/Mar/2014:17:52:23 -0300] SimpleBackend.acceptThread: ProtocolError "error:140760FC:SSL routines:SSL23_GET_CLIENT_HELLO:unknown protocol"
+[03/Mar/2014:17:52:23 -0300] During processing of request from 127.0.0.1:50694
+request:
+"Request <\n    server-name: 127.0.0.1\n    remote: 127.0.0.1:50694\n    local: 127.0.0.1:8000\n    Headers:\n      ========================================\n          Host: 127.0.0.1:8000\n Content-Length: 0\n Accept-Encoding: gzip\n JWT: eyJjb2RfY29udHJhdG8iOjEsImNyZWRfYXV0ZW50aWNhY2FvIjoieHl6MTIzIiwiY3JlZF9hdXRvcml6YWNhbyI6Il9zcnhSOG91dGJCMmpYWWxXZldVQWE0S1ZnSHpxRk51LTlFeFpyTFBIa09WUXJkVHVCdGpSVEFfT3pERG5yQVl6bWxVWEdod1VuZFljdDlHN2t4aUl3PT0ifQ==\n      ========================================\n    content-length: Just 0\n    method: Method \"get\"\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: hello\n    contextpath: /\n    URI: /hello\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+NoResponseDataReceived
+[03/Mar/2014:20:54:12 -0300] Server.httpServe: SHUTDOWN
+[03/Mar/2014:20:54:12 -0300] Server.httpServe: BACKEND STOPPED
+[04/Mar/2014:02:49:14 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8001/,https://0.0.0.0:8000/]
+[04/Mar/2014:02:54:23 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[04/Mar/2014:02:54:23 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[04/Mar/2014:02:54:23 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated

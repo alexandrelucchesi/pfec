@@ -6,7 +6,7 @@
 #   * IMPORTANT: Install in order to avoid dependencies conflicts.
 #       Maybe using "cabal sandbox add-source" be helpful.
 
-cd .../pfec
+cd .../pfec  # go to 'pfec' directory
 cabal sandbox init
 
 cd server-common
@@ -21,16 +21,21 @@ cabal install
 
 cd ../auth-server
 cabal sandbox init --sandbox=../.cabal-sandbox
+cabal sandbox add-source server-common
 cabal install --dependencies-only
 cabal install
 
 cd ../facade-server
 cabal sandbox init --sandbox=../.cabal-sandbox
+cabal sandbox add-source server-common
 cabal install --dependencies-only
 cabal install
 
 cd ../rest-client
 cabal sandbox init --sandbox=../.cabal-sandbox
+cabal sandbox add-source server-common
+cabal sandbox add-source auth-server
+cabal sandbox add-source facade-server
 cabal install --dependencies-only
 cabal install
 

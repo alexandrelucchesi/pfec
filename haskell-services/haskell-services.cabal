@@ -1,4 +1,4 @@
-Name:                rest-client
+Name:                haskell-services
 Version:             0.1
 Synopsis:            Project Synopsis Here
 Description:         Project Description Here
@@ -10,9 +10,6 @@ Category:            Web
 Build-type:          Simple
 Cabal-version:       >=1.2
 
-data-files:
-  resources/devel.cfg
-
 Flag development
   Description: Whether to build the server in development (interpreted) mode
   Default: False
@@ -21,11 +18,9 @@ Flag old-base
   default: False
   manual: False
 
-Executable rest-client
+Executable haskell-services
   hs-source-dirs: src
   main-is: Main.hs
-
-  other-modules:
 
   Build-depends:
     bytestring                >= 0.9.1   && < 0.11,
@@ -36,26 +31,10 @@ Executable rest-client
     snap-core                 >= 0.9     && < 0.11,
     snap-server               >= 0.9     && < 0.11,
     snap-loader-static        >= 0.9     && < 0.10,
-    text                      >= 0.11    && < 0.12,
+    text                      >= 0.11    && < 1.2,
     time                      >= 1.1     && < 1.5,
     xmlhtml                   >= 0.1,
 
-    aeson,
-    aeson-pretty,
-    auth-server,
-    base64-bytestring,
-    configurator,
-    connection,
-    containers,
-    crypto-api,
-    facade-server,
-    http-conduit,
-    http-types,
-    network,
-    snaplet-sqlite-simple,
-    server-common,
-    sqlite-simple,
-    text,
     transformers
 
   if flag(old-base)
@@ -65,7 +44,7 @@ Executable rest-client
   else
     build-depends:
       base                      >= 4.4      && < 5,
-      lens                      >= 3.7.6    && < 3.11
+      lens                      >= 3.7.6    && < 4.1
 
   if flag(development)
     build-depends:
@@ -84,5 +63,3 @@ Executable rest-client
     else
       ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
                    -fno-warn-orphans
-
-

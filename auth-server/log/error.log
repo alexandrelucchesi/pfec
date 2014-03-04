@@ -977,3 +977,43 @@ ConnectionAbruptlyTerminated
 [26/Feb/2014:23:56:22 -0300] Server.httpServe: SHUTDOWN
 [26/Feb/2014:23:56:22 -0300] Server.httpServe: BACKEND STOPPED
 [28/Feb/2014:02:04:58 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9000/]
+[03/Mar/2014:16:58:13 -0300] Server.httpServe: SHUTDOWN
+[03/Mar/2014:16:58:13 -0300] Server.httpServe: BACKEND STOPPED
+[03/Mar/2014:17:13:32 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9001/,https://0.0.0.0:9000/]
+[03/Mar/2014:17:37:03 -0300] SimpleBackend.acceptThread: ProtocolError "error:140760FC:SSL routines:SSL23_GET_CLIENT_HELLO:unknown protocol"
+[03/Mar/2014:17:38:45 -0300] Server.httpServe: SHUTDOWN
+[03/Mar/2014:17:38:45 -0300] Server.httpServe: BACKEND STOPPED
+[03/Mar/2014:17:39:58 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9001/,https://0.0.0.0:9000/]
+[03/Mar/2014:17:40:21 -0300] SimpleBackend.acceptThread: ProtocolError "error:140760FC:SSL routines:SSL23_GET_CLIENT_HELLO:unknown protocol"
+[03/Mar/2014:17:40:44 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[03/Mar/2014:17:40:50 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[03/Mar/2014:17:40:50 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[03/Mar/2014:17:40:50 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[03/Mar/2014:17:41:00 -0300] SimpleBackend.acceptThread: ConnectionAbruptlyTerminated
+[03/Mar/2014:17:41:10 -0300] SimpleBackend.acceptThread: ProtocolError "error:140760FC:SSL routines:SSL23_GET_CLIENT_HELLO:unknown protocol"
+[03/Mar/2014:17:43:28 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[03/Mar/2014:17:43:28 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[03/Mar/2014:17:43:31 -0300] SimpleBackend.acceptThread: ProtocolError "error:140760FC:SSL routines:SSL23_GET_CLIENT_HELLO:unknown protocol"
+[03/Mar/2014:17:45:59 -0300] SimpleBackend.acceptThread: ProtocolError "error:140760FC:SSL routines:SSL23_GET_CLIENT_HELLO:unknown protocol"
+[03/Mar/2014:17:46:33 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[03/Mar/2014:17:46:33 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[03/Mar/2014:20:54:10 -0300] Server.httpServe: SHUTDOWN
+[03/Mar/2014:20:54:10 -0300] Server.httpServe: BACKEND STOPPED
+[04/Mar/2014:02:48:41 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9001/,https://0.0.0.0:9000/]
+[04/Mar/2014:02:53:47 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[04/Mar/2014:02:53:47 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[04/Mar/2014:02:53:53 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[04/Mar/2014:02:53:53 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[04/Mar/2014:02:53:53 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated

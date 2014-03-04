@@ -42,6 +42,8 @@ Executable facade-server
     attoparsec,
     containers,
     crypto-api,
+    http-conduit,
+    http-types,
     network,
     random,
     process,

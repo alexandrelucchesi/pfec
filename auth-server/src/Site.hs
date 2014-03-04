@@ -27,7 +27,7 @@ import qualified Messages.RqAuth as RQA
 import qualified Messages.RespAuth as REA
 import           Messages.HttpResponse
 import           Messages.Types
-import qualified BusinessLogic as Db
+import qualified BusinessLogic as Db -- TODO: Move all the business' logic code into this module.
 import qualified Util.Base64 as B64
 
 
@@ -41,7 +41,11 @@ auth = do
     maybe unauthorized handlerRqAuth rqAuth
     
 handlerRqAuth :: RQA.RqAuth -> Handler App App ()
-handlerRqAuth (RQA.RqAuth01 cred chalCode contrCode) = do
+handlerRqAuth rq@(RQA.RqAuth01 cred chalCode contrCode) = do
+    liftIO $ do
+        putStrLn "Processing auth request..."
+        print rq
+        putStrLn "======================================================"
     r <- query "SELECT cod_usuario FROM tb_desafio WHERE cod_desafio = ? AND resposta_desafio = ?" (chalCode, cred)
     case r of
         [(Only _ :: Only Int)] -> do
@@ -54,13 +58,11 @@ handlerRqAuth (RQA.RqAuth01 cred chalCode contrCode) = do
                     case r'' of
                         [(Only chalCode' :: Only Int)] -> do
                             req <- getRequest
-                            let url = "http://" ++ (C.unpack $ rqServerName req)
+                            let url = "https://" ++ (C.unpack $ rqServerName req)
                                       ++ ':' : (show $ rqServerPort req)
                                       ++ "/auth"
                                 response = REA.RespAuth01 chalCode' userCode' (fromJust $ parseURI url)
                             modifyResponse (setHeader "JWT" $ BL.toStrict . B64.encode . encode $ response) -- put response in header. 
-                            --resp <- getResponse
-                            --finishWith resp
                         _ -> writeBS "FALHOU!"
                 _ -> writeBS "FALHOU!"
         _  -> writeBS "FALHOU!"
@@ -87,8 +89,6 @@ handlerRqAuth (RQA.RqAuth02 chalCode login senha) = do
                                     mapM_ (\c -> execute "INSERT INTO tb_servico_credencial VALUES (NULL, ?, ?, ?, ?)" (c, cred', datetime, datetimeExp)) (concat xs)  
                                     let response = REA.RespAuth02 True cred'
                                     modifyResponse (setHeader "JWT" $ BL.toStrict . B64.encode . encode $ response) -- put response in header. 
-                                    --resp <- getResponse
-                                    --finishWith resp
                                 _ -> writeBS "CAIU AQUI!!!" >> unauthorized
                 else do
                     writeBS $ C.pack $ "Not Authenticated!\n\nDiff time is: " ++ show diff

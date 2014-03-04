@@ -3,7 +3,6 @@
 
 module BusinessLogic where
 
-import           Control.Monad.IO.Class
 import           Data.ByteString.Char8 (ByteString, unpack)
 import           Data.Int
 import qualified Data.List as L
@@ -20,13 +19,17 @@ type ContractCode = Int64
 type Credential   = ByteString
 type Service      = ByteString -- TODO: Include more info (HTTP method, etc)
 
-serviceExists :: Service -> Handler App Sqlite Bool
+serviceExists :: Service -> Handler App Sqlite (Maybe URI)
 serviceExists service = do
     let queryStr = T.concat . L.intersperse " " $
-                            [ "SELECT cod_servico FROM tb_servico"
+                            [ "SELECT host, port, servico FROM tb_servico"
                             , "WHERE url_servico = ?" ]
-    (res :: [Only Int64])  <- query (S.Query queryStr) (Only $ unpack service)
-    return $ not (null res)
+    res <- query (S.Query queryStr) (Only $ unpack service)
+    case res of
+        [(host, port, service') :: (String, Int64, String)] ->
+            let url = concat ["http://", host, ":", show port, "/", service']
+            in return $ parseURI url
+        _ -> return Nothing
 
 
 canAccessService :: ContractCode -> Credential -> Service -> Handler App Sqlite Bool

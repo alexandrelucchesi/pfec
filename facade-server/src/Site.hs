@@ -15,7 +15,11 @@ import           Control.Monad.IO.Class
 import           Data.Aeson
 import qualified Data.ByteString.Lazy as BL
 import qualified Data.ByteString.Char8 as C
+import           Data.Char (toUpper)
 import qualified Data.Configurator as Config
+import qualified Network as HC (withSocketsDo)
+import qualified Network.HTTP.Conduit as HC
+import qualified Network.HTTP.Types.Status as HC
 import           Data.Time
 import           Data.Maybe
 import qualified Data.Text as T
@@ -23,7 +27,9 @@ import qualified Data.Text.Encoding as T
 import           Data.Word
 import           Snap
 import           Snap.Extras.CoreUtils
+import           Snap.Internal.Http.Types
 import           Snap.Snaplet.SqliteSimple
+import           Snap.Types.Headers
 ------------------------------------------------------------------------------
 import           Application
 import qualified Messages.RqFacade as RQF
@@ -43,6 +49,29 @@ facade = do
             decode . B64.decode . BL.fromStrict $ jwt :: Maybe RQF.RqFacade
     maybe badRequest handlerRqFacade rqFacade
 
+forward :: Method -> URI -> Handler App b ()
+forward meth url = do
+    respService <- liftIO $ HC.withSocketsDo $ do 
+        initReq <- HC.parseUrl $ show url
+        let req = initReq { HC.checkStatus = \_ _ _ -> Nothing
+                          , HC.method = methodToStr meth }
+        liftIO $ C.putStrLn "Forwarding request..."
+        liftIO $ print req
+        liftIO $ C.putStrLn "==================================================="
+        HC.withManager $ HC.httpLbs req
+    let resp = emptyResponse { rspHeaders = fromList $ HC.responseHeaders respService
+                             , rspStatus  = HC.statusCode $ HC.responseStatus respService
+                             , rspStatusReason  = HC.statusMessage $ HC.responseStatus respService }
+    putResponse resp
+    writeLBS $ HC.responseBody respService
+  where
+    methodToStr GET        = "GET"
+    methodToStr POST       = "POST"
+    methodToStr PUT        = "PUT"
+    methodToStr DELETE     = "DELETE"
+    methodToStr (Method m) = C.pack . map toUpper . C.unpack $ m
+    methodToStr _          = error "Not acceptable method."
+                                
 ------------------------------------------------------------------------------ | Handler that treats requests to Facade Server.
 handlerRqFacade :: RQF.RqFacade -> Handler App App ()
 handlerRqFacade rq@(RQF.RqFacade01 contrCode authenCred authorCred) =
@@ -50,11 +79,7 @@ handlerRqFacade rq@(RQF.RqFacade01 contrCode authenCred authorCred) =
   where
     allow = with db $ do
         req  <- getRequest
---        host <- return $ getHeader "Host" req
---        url  <- return $ host >>= (parseURI . C.unpack . (`C.append` (rqURI req)))
---        service <- maybe badRequest return url
-        let stripTrailingSlash = C.reverse . C.tail . C.reverse
-            service = rqPathInfo req -- Service identifier
+        let service = rqPathInfo req -- Service identifier
 
         liftIO $ putStrLn $ "Service requested: " ++ show service
         serviceExists <- Db.serviceExists service
@@ -66,9 +91,15 @@ handlerRqFacade rq@(RQF.RqFacade01 contrCode authenCred authorCred) =
         liftIO $ putStrLn $ ">> Can access    : " ++ show canAccess
 
         if isJust authorCred -- An authorization credential was passed.
-            then if serviceExists
+            then if isJust serviceExists
                     then if canAccess
-                            then ok -- OK!
+                            then forward (rqMethod req) $ fromJust $
+                                serviceExists >>= \url ->
+                                parseURI $ show url ++ 
+                                    let q = C.unpack . rqQueryString $ req
+                                    in if Prelude.null q
+                                            then ""
+                                            else '?' : q
                             else forbidden -- Can't access! :-(
                     else notFound "Not found" -- Requested service does not exist!
             else pass
@@ -91,40 +122,17 @@ handlerRqFacade rq@(RQF.RqFacade01 contrCode authenCred authorCred) =
                     case r'' of
                         [(Only chalCode)] -> do
                             url <- gets _authServerURL
-                            let authURL  = fromJust $ parseURI ("http://" ++ url ++ "/auth")
+                            let authURL  = fromJust $ parseURI ("https://" ++ url ++ "/auth")
                                 response = REF.RespFacade01 authURL chalCode credCode userCode'
                             modifyResponse (setHeader "JWT" $ BL.toStrict . B64.encode . encode $ response) -- put response in header. 
-                            --modifyResponse (setResponseCode 301)
                             unauthorized
                         _ -> writeBS "FALHOU!"
-                _ -> writeBS "FALHOU!"
-
-
------------------------------------------------------------------------------- | Service that says hello every time it's called. 
-hello :: Snap ()
-hello = writeBS "Hello!"
-
-
------------------------------------------------------------------------------- | Service that adds to numbers.
-add :: Handler App App ()
-add = do
-    x <- getParam "x"
-    y <- getParam "y"
-    res <- return $ do
-        x' <- x >>= (fst <$>) . C.readInt
-        y' <- y >>= (fst <$>) . C.readInt
-        return $ x' + y'
-    writeBS . C.pack $ "\n\nSum is: " ++ show res
-    
+                _ -> writeBS "FALHOU!" 
 
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(C.ByteString, Handler App App ())]
-routes = [ ("/facade", facade)
-         , ("/add", add)
-         , ("/hello", liftSnap hello)
-         , ("/", facade)
-         ]
+routes = [ ("/", facade) ]
 
 ------------------------------------------------------------------------------
 -- | The application initializer.
@@ -134,12 +142,8 @@ app = makeSnaplet "facade-server" "Facade to RESTful web-services." Nothing $ do
     url <- getAuthServerURL config
     d <- nestSnaplet "db" db sqliteInit
     addRoutes routes
-    wrapSite (facade *> isOk *>)
     return $ App url d
   where
-    isOk = do
-        resp <- getResponse
-        if rspStatus resp == 200 then return () else finishWith resp
     getAuthServerURL config = do
         host <- liftIO $ Config.lookupDefault "localhost" config "host" 
         port :: Word16 <- liftIO $ Config.lookupDefault 8000 config "port"
