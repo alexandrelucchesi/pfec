@@ -2,8 +2,10 @@
 
 module JWT where
 
+import Data.Aeson
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as C
+import qualified Data.ByteString.Lazy.Char8 as CL
 import Control.Monad
 import qualified Crypto.Padding as K
 import qualified Crypto.PubKey.RSA as K
@@ -18,8 +20,8 @@ import Util
 
 -- NOTE: This function is identical to "encryptJWE". The only difference is that it uses "jwtHeader" instead of "jweHeader".
 -- TODO: Improve the design.
-encryptJWT :: (K.CPRG c) => c -> K.PublicKey -> T.Text -> B.ByteString
-encryptJWT g pubKey plaintext =
+encrypt :: (K.CPRG c) => c -> K.PublicKey -> T.Text -> B.ByteString
+encrypt g pubKey plaintext =
     let (cek', g')        = cek g -- randomly generate a content encryption key.
         (key, g'')        = E.jweEncryptedKey g' pubKey cek' -- encrypt CEK using the recipient's public key.
         (iv', _)          = iv g'' -- randomly generate an Initialization Vector.
@@ -27,6 +29,25 @@ encryptJWT g pubKey plaintext =
         res = [jwtHeader, key, iv', cipher, authTag] 
     in
         B.intercalate "." res
+
+toCompact :: ToJSON a => K.PrivateKey -> K.PublicKey -> a -> IO C.ByteString
+toCompact myPrivKey theirPubKey jwtContents = do
+    g <- cprg
+    let msg = T.decodeUtf8 . CL.toStrict . encode $ jwtContents
+        jwe = S.signJWS myPrivKey msg
+    return $ encrypt g theirPubKey (T.decodeUtf8 jwe) 
+
+fromCompact :: FromJSON a => K.PrivateKey -> K.PublicKey -> C.ByteString -> IO (Maybe a)
+fromCompact myPrivKey theirPubKey jwtCompact = do
+    let (header, jwe') = E.decryptJWE myPrivKey jwtCompact
+        (Right msg')   = S.verifyJWS theirPubKey (T.encodeUtf8 jwe')
+    return . decode' . CL.fromStrict . T.encodeUtf8 $ msg'
+
+fromCompact' :: K.PrivateKey -> K.PublicKey -> C.ByteString -> IO C.ByteString
+fromCompact' myPrivKey theirPubKey jwtCompact = do
+    let (header, jwe') = E.decryptJWE myPrivKey jwtCompact
+        (Right msg')   = S.verifyJWS theirPubKey (T.encodeUtf8 jwe')
+    return . T.encodeUtf8 $ msg'
 
 test :: IO ()
 test = do
@@ -37,7 +58,7 @@ test = do
 
     let msg = "Haskell rulez!"
         jwe = S.signJWS myPrivKey msg
-        jwt = encryptJWT g theirPubKey (T.decodeUtf8 jwe) 
+        jwt = encrypt g theirPubKey (T.decodeUtf8 jwe) 
 
     C.putStrLn jwt
 

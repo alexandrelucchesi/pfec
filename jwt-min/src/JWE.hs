@@ -2,12 +2,6 @@
 
 module JWE where
 
-import qualified Data.ByteString as B
-import qualified Data.ByteString.Char8 as C
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as T
-import qualified Data.Text.IO as T
-
 import qualified Crypto.Cipher.AES as K
 import qualified Crypto.MAC.HMAC as K
 import qualified Crypto.Hash.SHA256 as K
@@ -15,6 +9,11 @@ import qualified Crypto.Padding as K
 import qualified Crypto.PubKey.RSA as K
 import qualified Crypto.PubKey.RSA.PKCS15 as K
 import qualified "crypto-random" Crypto.Random as K
+import qualified Data.ByteString as B
+import qualified Data.ByteString.Char8 as C
+import qualified Data.Text as T
+import qualified Data.Text.Encoding as T
+import qualified Data.Text.IO as T
 
 import qualified Base64 as B64
 import Util

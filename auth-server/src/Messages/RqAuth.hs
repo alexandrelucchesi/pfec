@@ -4,39 +4,40 @@ module Messages.RqAuth where
 
 import           Control.Applicative
 import           Data.Aeson
-import qualified Data.Text as T
+import           Data.ByteString (ByteString)
 import           Control.Monad
+
+import           Model.UUID
 
 ------------------------------------------------------------------------------ | Data type holding the message's formats a client can send to Auth Server.
 data RqAuth =
     RqAuth01 {
-        credential              :: T.Text,
-        challengeCredentialCode :: Int,
-        contractCode            :: Int
+        challengeCredentialUUID :: UUID,
+        credential              :: ByteString
     } | RqAuth02 {
-        challengeAuthCode :: Int,
-        login             :: T.Text,
-        password          :: T.Text
+        challengeAuthUUID :: UUID,
+        login             :: ByteString,
+        password          :: ByteString
     }
     deriving (Eq, Show)
 
 instance FromJSON RqAuth where
     parseJSON (Object v) =
-            RqAuth01 <$> v .: "credencial"
-                     <*> v .: "cod_desafio"
-                     <*> v .: "cod_contrato"
-        <|> RqAuth02 <$> v .: "cod_desafio_auth"
+            RqAuth01 <$> v .: "challengeUUID"
+                     <*> v .: "credential"
+        <|> RqAuth02 <$> v .: "challengeUUID"
                      <*> v .: "login"
-                     <*> v .: "senha"
+                     <*> v .: "password"
+      where
+        errorMsg = "Messages.RqAuth: Could not parse UUID."
     parseJSON _ = mzero
 
 instance ToJSON RqAuth where
-    toJSON (RqAuth01 c d co) =
-        object [ "credencial"   .= c
-               , "cod_desafio"  .= d
-               , "cod_contrato" .= co ]
+    toJSON (RqAuth01 c cr) =
+        object [ "challengeUUID" .= c  
+               , "credential"    .= cr ]
     toJSON (RqAuth02 c l p) =
-        object [ "cod_desafio_auth" .= c
-               , "login" .= l
-               , "senha" .= p ]
+        object [ "challengeUUID" .= c
+               , "login"         .= l
+               , "password"      .= p ]
 

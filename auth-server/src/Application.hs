@@ -10,19 +10,17 @@ module Application where
 ------------------------------------------------------------------------------
 import Control.Lens
 import Snap
-import Snap.Snaplet.SqliteSimple
+import Model.Contract
 
 ------------------------------------------------------------------------------
 
 data App = App
-    { _db  :: Snaplet Sqlite
+    { _contracts     :: [Contract]
     }
 
 makeLenses ''App
 
 ------------------------------------------------------------------------------
-instance HasSqlite (Handler b App) where
-    getSqliteState = with db get
 
 type AppHandler = Handler App App
 

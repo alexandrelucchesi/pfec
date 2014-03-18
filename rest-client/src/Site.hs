@@ -31,11 +31,12 @@ import           Snap.Snaplet.SqliteSimple
 import           Application
 import qualified BusinessLogic as Db
 import qualified Util.Base64 as B64
+import qualified JWT
 import qualified Messages.RqAuth as RQA
 import qualified Messages.RqFacade as RQF
 import qualified Messages.RespAuth as REA
 import qualified Messages.RespFacade as REF
-import           Messages.Types
+import           Messages.Types hiding (fromCompactJWT, toCompactJWT)
 
 
 ------------------------------------------------------------------------------
@@ -55,18 +56,27 @@ instance Resp REF.RespFacade
 instance Resp REA.RespAuth
 
 ------------------------------------------------------------------------------ | Parses response.
-parseResponse :: (Resp a) => Maybe String -> HC.Response b -> a
-parseResponse msg resp =
-    let res = eitherDecode . B64.decode $ jwtHeaderContents 
-    in either (error . (++) (if isJust msg then fromJust msg ++ "\n" else "")) id res
+--parseResponse :: (Resp a) => Maybe String -> HC.Response b -> a
+--parseResponse msg resp =
+--    let res = eitherDecode . B64.decode $ jwtHeaderContents 
+--    in either (error . (++) (if isJust msg then fromJust msg ++ "\n" else "")) id res
+--  where
+--    jwtHeaderContents =
+--        let header = L.find (\(h,_) -> h == "JWT") $ HC.responseHeaders resp
+--        in case header of
+--                (Just (_, contents)) -> CL.fromStrict contents
+--                _        -> error $ (++) (if isJust msg then fromJust msg ++ "\n" else "") "Header JWT not found."
+
+parseResponse :: (Resp a) => Maybe String -> HC.Response b -> IO a
+parseResponse msg resp = do
+    res <- liftIO $ {- (fromCompactJWT . CL.toStrict . B64.decode) -} fromCompactJWT jwtHeaderContents 
+    maybe (error $ if isJust msg then fromJust msg ++ "\n" else "") return res
   where
     jwtHeaderContents =
         let header = L.find (\(h,_) -> h == "JWT") $ HC.responseHeaders resp
         in case header of
-                (Just (_, contents)) -> CL.fromStrict contents
+                (Just (_, contents)) -> contents
                 _        -> error $ (++) (if isJust msg then fromJust msg ++ "\n" else "") "Header JWT not found."
-
-
 
 ------------------------------------------------------------------------------ | Executes a request using http-conduit.
 execRequest :: (ToJSON a, Resp b) => Maybe String -> a -> Maybe URI -> Handler App App b
@@ -89,7 +99,8 @@ execRequest errorMsg jwt uri = do
     manager <- gets _httpMngr
     resp <- liftIO $ HC.withSocketsDo $ do
         initReq <- HC.parseUrl url
-        let hdrs = ("JWT", toJWT jwt) : (HC.requestHeaders initReq)
+        jwtCompact <- toCompactJWT jwt
+        let hdrs = ("JWT", jwtCompact) : (HC.requestHeaders initReq)
             req = initReq { HC.checkStatus = \_ _ _ -> Nothing
                           , HC.method = fromMaybe "GET" m
                           , HC.requestHeaders = hdrs }
@@ -98,11 +109,23 @@ execRequest errorMsg jwt uri = do
         HC.httpLbs req manager
     liftIO $ putStrLn "============ RESPONSE =================="
     liftIO $ print resp
-    return $ parseResponse errorMsg resp
+    liftIO $ parseResponse errorMsg resp
 
+toCompactJWT :: ToJSON a => a -> IO C.ByteString
+toCompactJWT jwtContents = do
+    serverPubKey <- liftM read $ readFile "resources/rsa-server-key.pub"
+    myPrivKey    <- liftM read $ readFile "resources/rsa-key.priv"
+    JWT.toCompact myPrivKey serverPubKey jwtContents
+
+fromCompactJWT :: FromJSON a => C.ByteString -> IO (Maybe a)
+fromCompactJWT jwtContents = do
+    myPrivKey    <- liftM read $ readFile "resources/rsa-key.priv"
+    serverPubKey <- liftM read $ readFile "resources/rsa-server-key.pub"
+    JWT.fromCompact myPrivKey serverPubKey jwtContents
 ------------------------------------------------------------------------------ | Requests Facade a service.
 -- TODO: Unify rqFacade01 e rqFacade02 here!
 rqFacade01 :: Handler App App REF.RespFacade
+
 rqFacade01 = do
     let request = RQF.RqFacade01 { RQF.contractCode = 1
                                  , RQF.authCredential = "xyz123"
@@ -113,9 +136,8 @@ rqFacade01 = do
 
     execRequest (Just "Could not parse RespFacade01.") request Nothing
 
-
 ------------------------------------------------------------------------------ | Requests Facade a service.
-rqFacade02 :: REA.RespAuth -> Handler App App (Either REF.RespFacade CL.ByteString)
+rqFacade02 :: REA.RespAuth -> Handler App App (Either (IO REF.RespFacade) CL.ByteString)
 rqFacade02 rq@(REA.RespAuth02 _ _) =
     if not (REA.isAuthenticated rq)
         then error errorMsg
@@ -135,7 +157,8 @@ rqFacade02 rq@(REA.RespAuth02 _ _) =
             manager <- gets _httpMngr  
             resp <- liftIO $ HC.withSocketsDo $ do
                 initReq <- HC.parseUrl url
-                let hdrs = ("JWT", toJWT request) : (HC.requestHeaders initReq)
+                jwtCompact <- toCompactJWT request
+                let hdrs = ("JWT", jwtCompact) : (HC.requestHeaders initReq)
                     req = initReq { HC.checkStatus = \_ _ _ -> Nothing
                                   , HC.method = fromMaybe "GET" m
                                   , HC.requestHeaders = hdrs }
@@ -205,7 +228,7 @@ client = do
     prettyWriteJSON "RESP AUTH 02" respA02
     respF02 <- rqFacade02 respA02
     case respF02 of
-        Left v  -> prettyWriteJSON "RESP FACADE 02 (*ERROR*)" v
+        Left v  -> liftIO v >>= prettyWriteJSON "RESP FACADE 02 (*ERROR*)"
         Right v -> prettyWrite "SERVICE RESPONSE" >> writeLBS v
     writeBS "\n"
     prettyWrite ("END OF CLIENT" :: String)

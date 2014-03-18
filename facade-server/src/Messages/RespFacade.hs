@@ -6,31 +6,28 @@ import           Control.Applicative
 import           Data.Aeson
 import           Control.Monad
 
-import           Messages.Types
+import           Model.URI
+import           Model.UUID
 
 ------------------------------------------------------------------------------ | Data type holding the message's formats Facade Server can send to the client.
 data RespFacade =
     RespFacade01 {
-        authServerURL           :: URI,
-        challengeCredentialCode :: Int,
-        credentialCode          :: Int,
-        userCode                :: Int
-    }
-    deriving (Eq, Show)
+        authServerURL  :: URI,
+        challengeCode  :: UUID,
+        credentialCode :: Int
+    } deriving (Eq, Show)
 
 instance FromJSON RespFacade where
     parseJSON (Object v) =
-        RespFacade01 <$> v .: "url_servidor_autenticacao"
-                     <*> v .: "cod_desafio_autenticacao"
-                     <*> v .: "cod_credencial"
-                     <*> v .: "cod_usuario"
+        RespFacade01 <$> v .: "authServerURL"
+                     <*> v .: "challengeUUID"
+                     <*> v .: "credentialCode"
     parseJSON _ = mzero
 
 instance ToJSON RespFacade where
-    toJSON (RespFacade01 u d c us) =
-        object [ "url_servidor_autenticacao" .= u
-               , "cod_desafio_autenticacao"    .= d
-               , "cod_credencial" .= c
-               , "cod_usuario"    .= us ]
+    toJSON (RespFacade01 asu cc cco) =
+        object [ "authServerURL"  .= asu
+               , "challengeUUID"  .= cc 
+               , "credentialCode" .= cco ]
 
 

@@ -7,7 +7,7 @@ import Data.Aeson
 import Data.ByteString (ByteString)
 import Control.Monad
 
-import Messages.Types
+import Model.URI
 
 ------------------------------------------------------------------------------ | Data type holding the message's formats Auth Server can send to the client.
 data RespAuth =
@@ -23,20 +23,20 @@ data RespAuth =
 
 instance FromJSON RespAuth where
     parseJSON (Object v) =
-            RespAuth01 <$> v .: "cod_desafio"
-                       <*> v .: "cod_usuario"
-                       <*> v .: "url_servidor_autenticacao"
-        <|> RespAuth02 <$> v .: "autenticado"
-                       <*> v .: "nova_credencial"
+            RespAuth01 <$> v .: "challenge_code"
+                       <*> v .: "user_code"
+                       <*> v .: "auth_server_url"
+        <|> RespAuth02 <$> v .: "authenticated_and_authorized"
+                       <*> v .: "new_authorization_credential"
     parseJSON _ = mzero
 
 instance ToJSON RespAuth where
     toJSON (RespAuth01 d u a) =
-        object [ "cod_desafio" .= d
-               , "cod_usuario" .= u 
-               , "url_servidor_autenticacao" .= a ]
+        object [ "challenge_code" .= d
+               , "user_code" .= u 
+               , "auth_server_url" .= a ]
     toJSON (RespAuth02 a c) =
-        object [ "autenticado"     .= a
-               , "nova_credencial" .= c ]
+        object [ "authenticated_and_authorized" .= a
+               , "new_authorization_credential" .= c ]
 
 

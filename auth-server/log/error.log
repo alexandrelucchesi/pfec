@@ -1017,3 +1017,41 @@ ConnectionAbruptlyTerminated
 ConnectionAbruptlyTerminated
 [04/Mar/2014:02:53:53 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
 ConnectionAbruptlyTerminated
+[07/Mar/2014:00:11:26 -0300] Server.httpServe: SHUTDOWN
+[07/Mar/2014:00:11:26 -0300] Server.httpServe: BACKEND STOPPED
+[07/Mar/2014:00:12:49 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9001/,https://0.0.0.0:9000/]
+[07/Mar/2014:00:13:40 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[07/Mar/2014:00:13:53 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[07/Mar/2014:00:13:53 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[07/Mar/2014:00:13:53 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[07/Mar/2014:00:13:55 -0300] SimpleBackend.acceptThread: ConnectionAbruptlyTerminated
+[07/Mar/2014:00:18:30 -0300] Server.httpServe: SHUTDOWN
+[07/Mar/2014:00:18:30 -0300] Server.httpServe: BACKEND STOPPED
+[07/Mar/2014:00:21:51 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9001/,https://0.0.0.0:9000/]
+[07/Mar/2014:00:22:36 -0300] Server.httpServe: SHUTDOWN
+[07/Mar/2014:00:22:36 -0300] Server.httpServe: BACKEND STOPPED
+[07/Mar/2014:00:24:29 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9001/,https://0.0.0.0:9000/]
+[07/Mar/2014:00:25:16 -0300] Server.httpServe: SHUTDOWN
+[07/Mar/2014:00:25:16 -0300] Server.httpServe: BACKEND STOPPED
+[07/Mar/2014:00:27:54 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9001/,https://0.0.0.0:9000/]
+[07/Mar/2014:00:30:41 -0300] Server.httpServe: SHUTDOWN
+[07/Mar/2014:00:30:41 -0300] Server.httpServe: BACKEND STOPPED
+[07/Mar/2014:00:43:04 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9001/,https://0.0.0.0:9000/]
+[07/Mar/2014:01:09:10 -0300] Server.httpServe: SHUTDOWN
+[07/Mar/2014:01:09:10 -0300] Server.httpServe: BACKEND STOPPED
+[07/Mar/2014:02:23:57 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9001/,https://0.0.0.0:9000/]
+[07/Mar/2014:02:24:19 -0300] Server.httpServe: SHUTDOWN
+[07/Mar/2014:02:24:19 -0300] Server.httpServe: BACKEND STOPPED
+[07/Mar/2014:02:30:21 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9001/,https://0.0.0.0:9000/]
+[07/Mar/2014:02:30:31 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[07/Mar/2014:02:30:31 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[13/Mar/2014:21:28:02 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9001/,https://0.0.0.0:9000/]
+[13/Mar/2014:21:46:01 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[13/Mar/2014:21:48:39 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated

@@ -17,9 +17,18 @@ cabal-version:       >=1.10
 
 library
   exposed-modules:
+    Model.Challenge,
+    Model.Contract,
+    Model.Credential,
+    Model.Service,
+    Model.PublicKey,
+    Model.Token,
+    Model.User,
+    Model.URI,
+    Model.UUID,
     Util.Base64,
-    Messages.Types,
-    Messages.HttpResponse
+    Util.JSONWebToken,
+    Util.HttpResponse
   -- other-modules:       
   other-extensions:    OverloadedStrings
   build-depends:       
@@ -28,10 +37,16 @@ library
 
     aeson,
     base64-bytestring,
+    crypto-pubkey,
+    data-default,
+    http-types,
+    jwt-min,
     network,
     snap-core,
     snap-extras,
-    text
+    text,
+    uuid,
+    time
 
   hs-source-dirs:      src
   default-language:    Haskell2010

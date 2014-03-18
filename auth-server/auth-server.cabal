@@ -50,6 +50,7 @@ Executable auth-server
     snaplet-sqlite-simple,
     sqlite-simple,
     text,
+    uuid,
     transformers
 
   if flag(old-base)

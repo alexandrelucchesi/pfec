@@ -51,6 +51,7 @@ Executable rest-client
     facade-server,
     http-conduit,
     http-types,
+    jwt-min,
     network,
     snaplet-sqlite-simple,
     server-common,
