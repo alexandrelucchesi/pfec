@@ -1055,3 +1055,5 @@ ConnectionAbruptlyTerminated
 ConnectionAbruptlyTerminated
 [13/Mar/2014:21:48:39 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
 ConnectionAbruptlyTerminated
+[22/Mar/2014:12:36:13 -0300] Server.httpServe: SHUTDOWN
+[22/Mar/2014:12:36:13 -0300] Server.httpServe: BACKEND STOPPED

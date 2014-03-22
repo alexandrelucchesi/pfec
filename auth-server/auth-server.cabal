@@ -41,6 +41,7 @@ Executable auth-server
     attoparsec,
     containers,
     crypto-api,
+    entropy,
     network,
     random,
     process,

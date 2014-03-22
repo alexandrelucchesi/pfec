@@ -5,38 +5,43 @@ module Messages.RespAuth where
 import Control.Applicative
 import Data.Aeson
 import Data.ByteString (ByteString)
+import Data.Int (Int64)
+import Data.Time (UTCTime)
 import Control.Monad
 
+import Model.UUID
 import Model.URI
 
 ------------------------------------------------------------------------------ | Data type holding the message's formats Auth Server can send to the client.
 data RespAuth =
     RespAuth01 {
-        challengeAuthCode :: Int,
-        userCode          :: Int,
-        authServerURL     :: URI
+        authServerURL     :: URI,
+        challengeCode     :: UUID,
+        userCode          :: Int64
     } | RespAuth02 {
-        isAuthenticated :: Bool,
-        credential      :: ByteString
+        authorizationToken :: ByteString,
+        expirationDate     :: UTCTime
     }
     deriving (Eq, Show)
 
 instance FromJSON RespAuth where
     parseJSON (Object v) =
-            RespAuth01 <$> v .: "challenge_code"
-                       <*> v .: "user_code"
-                       <*> v .: "auth_server_url"
-        <|> RespAuth02 <$> v .: "authenticated_and_authorized"
-                       <*> v .: "new_authorization_credential"
+            RespAuth01 <$> v .: "authServerURL"
+                       <*> v .: "challengeCode"
+                       <*> v .: "userCode"
+        <|> RespAuth02 <$> v .: "authorizationToken"
+                       <*> v .: "expirationDate"
     parseJSON _ = mzero
 
 instance ToJSON RespAuth where
-    toJSON (RespAuth01 d u a) =
-        object [ "challenge_code" .= d
-               , "user_code" .= u 
-               , "auth_server_url" .= a ]
-    toJSON (RespAuth02 a c) =
-        object [ "authenticated_and_authorized" .= a
-               , "new_authorization_credential" .= c ]
+    toJSON (RespAuth01 a c u) =
+        object [ "authServerURL" .= a
+               , "challengeCode" .= c 
+               , "userCode"      .= u
+               ]
+    toJSON (RespAuth02 a e) =
+        object [ "authorizationToken" .= a
+               , "expirationDate"     .= e
+               ]
 
 

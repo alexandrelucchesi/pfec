@@ -5,7 +5,7 @@ module Model.UUID where
 
 import           Control.Applicative ((<$>))
 import           Data.Aeson
-import           Data.Maybe (fromJust)
+import           Data.Maybe (fromMaybe)
 import           Data.String
 import           Data.Text as T (pack, unpack)
 import qualified Data.UUID (UUID, fromString, toString, nil, null)
@@ -23,7 +23,7 @@ instance ToJSON UUID where
     toJSON (UUID u) = String $ T.pack $ Data.UUID.toString u
 
 instance IsString UUID where
-    fromString = fromJust . fromStringSafe
+    fromString s = fromMaybe nil $ fromStringSafe s
 
 fromStringSafe :: String -> Maybe UUID
 fromStringSafe s = UUID <$> Data.UUID.fromString s

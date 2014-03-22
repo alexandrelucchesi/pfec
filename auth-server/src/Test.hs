@@ -2,7 +2,6 @@
 
 module Test where
 
-import           Data.Int
 import           Data.ByteString (ByteString)
 import qualified Data.Map          as M
 import qualified Messages.RqAuth as RQA
@@ -10,18 +9,36 @@ import           Site
 import           Snap.Snaplet.Test
 import qualified Snap.Test         as ST
 
-type ChallengeCredentialCode = Int64
+import qualified Model.UUID as UUID
+
+type ChallengeCredentialUUID = UUID.UUID
 type Credential = ByteString
-testRqAuth01 :: ChallengeCredentialCode -> Credential -> IO ()
-testRqAuth01 challengeCode credential = do
+testRqAuth01 :: ChallengeCredentialUUID -> Credential -> IO ()
+testRqAuth01 challengeUUID credential = do
     let rqBuilder = ST.get "" M.empty
     resp <- runHandler message rqBuilder (handlerRqAuth request) app
     print resp
   where
     message = Just "Requests to Auth Server providing the challenge code and a credential."
     request = RQA.RqAuth01 {
-                  RQA.challengeCredentialCode = challengeCode,
+                  RQA.challengeCredentialUUID = challengeUUID,
                   RQA.credential              = credential
+              }
+
+type ChallengeAuthUUID = UUID.UUID
+type Login = ByteString
+type Password = ByteString
+testRqAuth02 :: ChallengeAuthUUID -> Login -> Password -> IO ()
+testRqAuth02 challengeUUID login password = do
+    let rqBuilder = ST.get "" M.empty
+    resp <- runHandler message rqBuilder (handlerRqAuth request) app
+    print resp
+  where
+    message = Just "Requests to Auth Server providing the challenge code and user login and password."
+    request = RQA.RqAuth02 {
+                  RQA.challengeAuthUUID = challengeUUID,
+                  RQA.login             = login,
+                  RQA.password          = password
               }
 
 

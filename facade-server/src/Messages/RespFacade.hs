@@ -4,6 +4,7 @@ module Messages.RespFacade where
 
 import           Control.Applicative
 import           Data.Aeson
+import           Data.Int (Int64)
 import           Control.Monad
 
 import           Model.URI
@@ -14,7 +15,7 @@ data RespFacade =
     RespFacade01 {
         authServerURL  :: URI,
         challengeCode  :: UUID,
-        credentialCode :: Int
+        credentialCode :: Int64
     } deriving (Eq, Show)
 
 instance FromJSON RespFacade where

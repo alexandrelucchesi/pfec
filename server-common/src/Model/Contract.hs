@@ -13,6 +13,7 @@ import           Model.Service
 import           Model.Credential
 import           Model.Challenge
 import           Model.PublicKey
+import           Model.Token
 import           Model.UUID
 
 data Contract = Contract {
@@ -25,7 +26,8 @@ data Contract = Contract {
               credentials          :: [Credential],
               challengesCredential :: [ChallengeCredential],
               challengesAuth       :: [ChallengeAuth],
-              publicKeys           :: [PublicKey]
+              publicKeys           :: [PublicKey],
+              tokens               :: [Token]
               } deriving (Eq, Show)
               
 instance FromJSON Contract where
@@ -40,10 +42,11 @@ instance FromJSON Contract where
                  <*> v .: "challengesCredential"
                  <*> v .: "challengesAuth"
                  <*> v .: "publicKeys"
+                 <*> v .: "tokens"
     parseJSON _ = mzero
 
 instance ToJSON Contract where
-    toJSON (Contract c n d cd u s cr cc ca p) =
+    toJSON (Contract c n d cd u s cr cc ca p t) =
         object [ "uuid"                 .= c
                , "name"                 .= n
                , "description"          .= d
@@ -54,5 +57,6 @@ instance ToJSON Contract where
                , "challengesCredential" .= cc
                , "challengesAuth"       .= ca
                , "publicKeys"           .= p
+               , "tokens"               .= t
                ]
 

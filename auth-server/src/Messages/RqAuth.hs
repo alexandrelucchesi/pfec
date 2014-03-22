@@ -28,8 +28,6 @@ instance FromJSON RqAuth where
         <|> RqAuth02 <$> v .: "challengeUUID"
                      <*> v .: "login"
                      <*> v .: "password"
-      where
-        errorMsg = "Messages.RqAuth: Could not parse UUID."
     parseJSON _ = mzero
 
 instance ToJSON RqAuth where

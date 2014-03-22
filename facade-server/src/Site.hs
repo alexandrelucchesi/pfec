@@ -78,21 +78,24 @@ forward meth url = do
                                 
 ------------------------------------------------------------------------------ | Handler that treats requests to Facade Server.
 handlerRqFacade :: RQF.RqFacade -> AppHandler ()
-handlerRqFacade (RQF.RqFacade01 contractCode credentialValue) =
-    credentialExists >>= generateChallenge >>= redirectAuth
+handlerRqFacade (RQF.RqFacade01 contractUUID credentialValue) =
+    verifyCredential >>= generateChallenge >>= redirectToAuthServer
   where
-    credentialExists :: AppHandler Contract.Contract
-    credentialExists = do
+    verifyCredential :: AppHandler Contract.Contract
+    verifyCredential = do
+        liftIO $ putStrLn "Verifying contract/credential..."
         contracts <- gets _contracts
-        let maybeContract = L.find (\c -> Contract.uuid c == contractCode
+        let maybeContract = L.find (\c -> Contract.uuid c == contractUUID
                                           && any (\cred -> Credential.value cred == credentialValue)
                                                  (Contract.credentials c)
                                    ) contracts
-        maybe forbidden return maybeContract
+        liftIO $ putStr ">> Valid: "
+        maybe (liftIO (putStrLn "False.") >> forbidden)
+              (\c -> liftIO $ putStrLn "True." >> return c)
+              maybeContract
 
-    generateChallenge :: MonadIO m => Contract.Contract -> m Challenge.ChallengeCredential
+    generateChallenge :: MonadIO m => Contract.Contract -> m (Challenge.ChallengeCredential, Credential.Credential)
     generateChallenge contract = do
-        liftIO $ print contract
         liftIO $ putStrLn "Generating credential challenge..."
         let credentials = Contract.credentials contract
         index <- liftIO $ liftM (fst . randomR (0, length credentials - 1)) newStdGen
@@ -104,64 +107,113 @@ handlerRqFacade (RQF.RqFacade01 contractCode credentialValue) =
             Challenge.answer       = Credential.value credential,
             Challenge.creationDate = now 
         }
-        liftIO $ putStrLn "Challenge is..."
+        liftIO $ putStr ">> Challenge is: "
         liftIO $ print challenge
-        return challenge
+        return (challenge, credential)
 
-    redirectAuth :: MonadIO m => Challenge.Challenge -> m ()
-    redirectAuth _ = do
+    redirectToAuthServer :: (Challenge.Challenge, Credential.Credential) -> AppHandler ()
+    redirectToAuthServer (challenge, credential) = do
         liftIO $ putStrLn "Redirecting to Auth Server..."
+        url <- gets _authServerURL
+        let resp = REF.RespFacade01 {
+                        REF.authServerURL = url,
+                        REF.challengeCode = Challenge.uuid challenge,
+                        REF.credentialCode = Credential.code credential
+                   }
+        jwt <- liftIO $ toB64JSON resp
+        let response = setHeader "JWT" jwt emptyResponse
+        finishWith response
+        
 
-handlerRqFacade (RQF.RqFacade02 contractCode credentialValue authorizationTokenValue) =
-    allow <|> tryRedirectAuth
+handlerRqFacade (RQF.RqFacade02 contractUUID credentialValue authorizationTokenValue) =
+    (allow >>= proxify) <|> tryRedirectAuth
   where
+    allow :: AppHandler Service.Service
     allow = do
         req <- getRequest
-        let requestedService = rqPathInfo req -- Service path (identifier)
+        let requestedService = if C.null (rqPathInfo req) -- Service identifier
+                                   then ""
+                                   else head . C.split '?' $ head . C.split '/' $ rqPathInfo req
             requestedMethod  = C.pack . show . rqMethod $ req
 
         liftIO $ putStrLn $ "Service requested: " ++ show requestedService
 
         contracts <- gets _contracts
-        let maybeContract = L.find (\c -> Contract.uuid c == contractCode 
-                                          && any (\cred -> Credential.value cred == credentialValue)
-                                                 (Contract.credentials c)
-                                   ) contracts
+        let maybeContract = L.find (\c -> Contract.uuid c == contractUUID)
+                                   contracts
         contract <- maybe forbidden return maybeContract
         let services     = Contract.services contract
-            maybeService = L.find (\s -> Service.path s == requestedService
+            maybeService = L.find (\s -> Service.id s == requestedService
                                          && requestedMethod `elem` Service.methods s) services
 
         service <- maybe (notFound "Not found") return maybeService
 
         now <- liftIO $ getCurrentTime
         let canAccess = any (\t -> ((==) authorizationTokenValue . Token.value) t 
-                                   && now < Token.expirationDate t) (Service.tokens service)
+                                   && now < Token.expirationDate t) (Contract.tokens contract)
 
         if canAccess
             then do
                 liftIO $ putStrLn "Access granted!"
-            else pass
+                return service
+            else do
+                liftIO $ putStrLn "Access denied!"
+                pass
 
+    proxify :: Service.Service -> AppHandler ()
+    proxify service = do
+        liftIO $ putStrLn "Proxying connection..."
+        req <- getRequest
+        let method' = methodToStr $ rqMethod req
+            url     = show (Service.url service)
+                      ++ let p = C.unpack . rqPathInfo $ req
+                         in if Prelude.null p
+                               then ""
+                               else dropWhile (\c -> c /= '/' && c /= '?') p
+                      ++ let q = C.unpack . rqQueryString $ req
+                         in if Prelude.null q
+                               then ""
+                               else '?' : q
 
---        if isJust authorCred -- An authorization credential was passed.
---            then if isJust serviceExists
---                    then if canAccess
---                            then forward (rqMethod req) $ fromJust $
---                                serviceExists >>= \url ->
---                                parseURI $ show url ++ 
---                                    let q = C.unpack . rqQueryString $ req
---                                    in if Prelude.null q
---                                            then ""
---                                            else '?' : q
---                            else forbidden -- Can't access! :-(
---                    else notFound "Not found" -- Requested service does not exist!
---            else pass
+        liftIO $ putStrLn $ ">> URL is: " ++ url
 
-    tryRedirectAuth :: MonadIO m => m ()
+        respService <- liftIO $ HC.withSocketsDo $ do 
+            initReq <- HC.parseUrl url
+            let req' = initReq { HC.checkStatus = \_ _ _ -> Nothing
+                               , HC.method = method' }
+            liftIO $ C.putStrLn "Sending request to the specified service..."
+            liftIO $ print req
+            liftIO $ C.putStrLn "---------------------------------------------------------"
+            HC.withManager $ HC.httpLbs req'
+
+        liftIO $ C.putStrLn "Received response..."
+        liftIO $ print respService
+        liftIO $ C.putStrLn "---------------------------------------------------------"
+
+        let resp = emptyResponse { rspHeaders = fromList $ HC.responseHeaders respService
+                                 , rspStatus  = HC.statusCode $ HC.responseStatus respService
+                                 , rspStatusReason = HC.statusMessage $ HC.responseStatus respService }
+        putResponse resp
+        writeLBS $ HC.responseBody respService
+
+        liftIO $ C.putStrLn "Sending it back to client..."
+        getResponse >>= finishWith
+
+      where
+        methodToStr GET        = "GET"
+        methodToStr POST       = "POST"
+        methodToStr PUT        = "PUT"
+        methodToStr DELETE     = "DELETE"
+        methodToStr (Method m) = C.map toUpper m
+        methodToStr _          = error "Site.hs: methodToStr: Not acceptable method."
+
+    tryRedirectAuth :: AppHandler ()
     tryRedirectAuth = do
         liftIO $ putStrLn "Trying to redirect to auth server..."
-
+        handlerRqFacade $ RQF.RqFacade01 {
+                               RQF.contractUUID = contractUUID, 
+                               RQF.credential   = credentialValue 
+                          }
 
 --  where
 --    allow = with db $ do
@@ -240,5 +292,6 @@ app = makeSnaplet "facade-server" "Facade to RESTful web-services." Nothing $ do
     getAuthServerURL config = do
         host <- liftIO $ Config.lookupDefault "localhost" config "host" 
         port :: Word16 <- liftIO $ Config.lookupDefault 8000 config "port"
-        return $ host ++ ":" ++ show port
+        let maybeUrl = parseURI $ "https://" ++ host ++ ":" ++ show port
+        maybe (error "Could not parse Auth Server's URL.") return maybeUrl 
 

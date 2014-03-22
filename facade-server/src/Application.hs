@@ -11,11 +11,12 @@ module Application where
 import Control.Lens
 import Snap
 import Model.Contract
+import Model.URI
 
 ------------------------------------------------------------------------------
 
 data App = App
-    { _authServerURL :: String
+    { _authServerURL :: URI
     , _contracts     :: [Contract]
     }
 

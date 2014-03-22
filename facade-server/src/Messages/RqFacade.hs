@@ -12,30 +12,30 @@ import           Model.UUID
 ------------------------------------------------------------------------------ | Data type holding the message's formats a client can send to Facade Server.
 data RqFacade =
     RqFacade01 {
-        contractCode :: UUID,
+        contractUUID :: UUID,
         credential   :: ByteString
     } | RqFacade02 {
-        contractCode       :: UUID,
+        contractUUID       :: UUID,
         credential'        :: ByteString,
         authorizationToken :: ByteString
     } deriving (Eq, Show)
 
 instance FromJSON RqFacade where
-    parseJSON (Object v) = -- WARNING: The order RqFacade02 -> RqFacade01 matters.
-            RqFacade02 <$> v .: "contractUUID"
+    parseJSON (Object v) =
+        RqFacade01 <$> v .: "contractUUID"
+                   <*> v .: "credential"
+        <|> RqFacade02 <$> v .: "contractUUID"
                        <*> v .: "credential"
                        <*> v .: "authorizationToken"
-        <|> RqFacade01 <$> v .: "contractUUID"
-                       <*> v .: "credential"
     parseJSON _ = mzero
 
 instance ToJSON RqFacade where
-    toJSON (RqFacade01 cc c) =
-        object [ "contractUUID" .= cc
+    toJSON (RqFacade01 u c) =
+        object [ "contractUUID" .= u
                , "credential"   .= c ]
-    toJSON (RqFacade02 cc c at) =
-        object [ "contractUUID"       .= cc
-               , "credential"         .= c 
-               , "authorizationToken" .= at ]
+    toJSON (RqFacade02 u c t) =
+        object [ "contractUUID"       .= u
+               , "credential"         .= c
+               , "authorizationToken" .= t ]
 
 

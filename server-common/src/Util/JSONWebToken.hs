@@ -5,13 +5,15 @@ module Util.JSONWebToken where
 import Control.Monad
 import Data.Aeson
 import qualified Data.ByteString.Char8 as C
-import qualified Data.ByteString.Lazy.Char8 as CL
 import qualified JWT
 import qualified Util.Base64 as B64
 
 ------------------------------------------------------------------------------ | Converts value to JWT encoded.
-toJWT :: ToJSON a => a -> C.ByteString
-toJWT = CL.toStrict . B64.encode . encode
+toB64JSON :: ToJSON a => a -> IO C.ByteString
+toB64JSON = return . B64.encode . encode
+
+fromB64JSON :: FromJSON a => C.ByteString -> IO (Maybe a)
+fromB64JSON = return . decode . B64.decode'
 
 toCompactJWT :: ToJSON a => a -> IO C.ByteString
 toCompactJWT jwtContents = do
