@@ -41,6 +41,7 @@ Executable facade-server
     configurator,
     attoparsec,
     containers,
+    couchdb-conduit,
     crypto-api,
     http-conduit,
     http-types,
@@ -50,8 +51,6 @@ Executable facade-server
     safe,
     server-common,
     snap-extras,
-    snaplet-sqlite-simple,
-    sqlite-simple,
     text,
     transformers
 

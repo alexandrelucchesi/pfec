@@ -25,7 +25,6 @@ import           Data.Word
 import           Snap
 import           Snap.Extras.CoreUtils
 import           Snap.Internal.Http.Types
-import           Snap.Snaplet.SqliteSimple
 import           Snap.Types.Headers
 import           System.Random
 ------------------------------------------------------------------------------

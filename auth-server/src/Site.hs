@@ -23,7 +23,6 @@ import qualified Safe
 import qualified System.Entropy as Entropy
 import           System.Random
 import           Snap
-import           Snap.Snaplet.SqliteSimple
 ------------------------------------------------------------------------------
 import           Application
 import qualified Messages.RqAuth as RQA
