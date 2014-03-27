@@ -1,15 +1,17 @@
-{-# LANGUAGE DeriveGeneric #-} 
-{-# LANGUAGE OverloadedStrings #-} 
+{-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Model.UUID where
 
-import           Control.Applicative ((<$>))
+import           Control.Applicative        ((<$>))
 import           Data.Aeson
-import           Data.Maybe (fromMaybe)
+import           Data.ByteString.Char8      as C (ByteString)
+import           Data.ByteString.Lazy.Char8 as CL (ByteString)
+import           Data.Maybe                 (fromMaybe)
 import           Data.String
-import           Data.Text as T (pack, unpack)
-import qualified Data.UUID (UUID, fromString, toString, nil, null)
-import qualified Data.UUID.V4 (nextRandom)
+import           Data.Text                  as T (pack, unpack)
+import qualified Data.UUID
+import qualified Data.UUID.V4               (nextRandom)
 import           GHC.Generics
 
 newtype UUID = UUID Data.UUID.UUID
@@ -30,6 +32,12 @@ fromStringSafe s = UUID <$> Data.UUID.fromString s
 
 toString :: UUID -> String
 toString (UUID u) = Data.UUID.toString u
+
+toByteString :: UUID -> CL.ByteString
+toByteString (UUID u) = Data.UUID.toLazyASCIIBytes u
+
+toByteString' :: UUID -> C.ByteString
+toByteString' (UUID u) = Data.UUID.toASCIIBytes u
 
 nextRandom :: IO UUID
 nextRandom = UUID <$> Data.UUID.V4.nextRandom

@@ -5,6 +5,7 @@ module Model.Contract where
 import           Control.Applicative
 import           Control.Monad
 import           Data.Aeson
+import           Data.ByteString           (ByteString)
 import           Data.Text                 (Text)
 import           Data.Time                 (UTCTime)
 
@@ -17,7 +18,8 @@ import           Model.Token
 import           Model.UUID
 
 data Contract = Contract {
-              uuid                 :: UUID,
+              uuid                 :: UUID,       -- CouchDB's.
+              revision             :: ByteString, -- CouchDB's.
               name                 :: Text,
               description          :: Text,
               creationDate         :: UTCTime,
@@ -32,7 +34,8 @@ data Contract = Contract {
               
 instance FromJSON Contract where
     parseJSON (Object v) =
-        Contract <$> v .: "uuid"
+        Contract <$> v .: "_id"  -- CouchDB's.
+                 <*> v .: "_rev" -- CouchDB's.
                  <*> v .: "name"
                  <*> v .: "description"
                  <*> v .: "creationDate"
@@ -46,9 +49,8 @@ instance FromJSON Contract where
     parseJSON _ = mzero
 
 instance ToJSON Contract where
-    toJSON (Contract c n d cd u s cr cc ca p t) =
-        object [ "uuid"                 .= c
-               , "name"                 .= n
+    toJSON (Contract _ _ n d cd u s cr cc ca p t) =
+        object [ "name"                 .= n
                , "description"          .= d
                , "creationDate"         .= cd
                , "users"                .= u

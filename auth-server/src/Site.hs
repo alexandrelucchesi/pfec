@@ -11,20 +11,17 @@ module Site where
 
 ------------------------------------------------------------------------------
 import           Control.Monad.IO.Class
-import           Crypto.Random
-import           Data.Aeson
 import qualified Data.ByteString.Char8 as C
-import qualified Data.ByteString.Lazy.Char8 as CL
 import qualified Data.List as L
 import           Data.Maybe
 import           Data.Time
-import qualified Data.Text as T
 import qualified Safe
 import qualified System.Entropy as Entropy
 import           System.Random
 import           Snap
 ------------------------------------------------------------------------------
 import           Application
+import qualified Db
 import qualified Messages.RqAuth as RQA
 import qualified Messages.RespAuth as REA
 import qualified Model.Challenge as Challenge
@@ -33,21 +30,15 @@ import qualified Model.Token as Token
 import qualified Model.User as User
 import qualified Model.UUID as UUID
 import           Model.URI
-import qualified BusinessLogic as Db -- TODO: Move all the business' logic code into this module.
 import qualified Util.Base64 as B64
 import           Util.HttpResponse
 import           Util.JSONWebToken
-
 
 
 ------------------------------------------------------------------------------ | Handler that authenticates users.
 auth :: Handler App App ()
 auth = do
     rq <- getRequest
-    --let rqAuth = do
-    --        info <- getHeader "JWT" rq
-    --        decode . B64.decode . BL.fromStrict $ info
-    --maybe unauthorized handlerRqAuth rqAuth
     case getHeader "JWT" rq of
         Just jwtCompact -> do
             (rqAuth :: Maybe RQA.RqAuth) <- liftIO $ fromCompactJWT jwtCompact
@@ -61,7 +52,7 @@ handlerRqAuth (RQA.RqAuth01 challengeUUID credentialValue) =
     verifyChallengeCredential :: AppHandler Contract.Contract
     verifyChallengeCredential = do
         liftIO $ putStrLn "Verifying credential challenge..."
-        contracts <- gets _contracts
+        contracts <- liftIO Db.selectAllContracts
         let maybeContract =
                 L.find (\c -> any (\chal -> Challenge.uuid chal == challengeUUID
                                             && Challenge.answer chal == credentialValue)
@@ -76,7 +67,7 @@ handlerRqAuth (RQA.RqAuth01 challengeUUID credentialValue) =
         index <- liftIO $ liftM (fst . randomR (0, length users - 1)) newStdGen
         let user = users !! index
         uuid <- liftIO UUID.nextRandom 
-        now <- liftIO $ getCurrentTime
+        now <- liftIO getCurrentTime
         let challenge = Challenge.Challenge {
             Challenge.uuid         = uuid,
             Challenge.answer       = C.concat [User.login user, "-", User.password user],
@@ -84,7 +75,9 @@ handlerRqAuth (RQA.RqAuth01 challengeUUID credentialValue) =
         }
         liftIO $ putStrLn "Challenge is..."
         liftIO $ print challenge
-        -- TODO: Persist challenge in the database!
+        -- Persist challenge in the database!
+        let newChallengeList = challenge : Contract.challengesAuth contract
+        liftIO $ Db.updateContract contract { Contract.challengesAuth = newChallengeList }
         return (challenge, user)
 
     makeResponse :: (Challenge.Challenge, User.User) -> AppHandler ()
@@ -107,7 +100,7 @@ handlerRqAuth (RQA.RqAuth02 challengeUUID login password) =
     verifyChallengeAuth :: AppHandler Contract.Contract
     verifyChallengeAuth = do
         liftIO $ putStrLn "Verifying auth challenge..."
-        contracts <- gets _contracts
+        contracts <- liftIO Db.selectAllContracts
         let answer = C.concat [login, "-", password]
             maybeContract =
                 L.find (\c -> any (\chal -> Challenge.uuid chal == challengeUUID
@@ -127,7 +120,7 @@ handlerRqAuth (RQA.RqAuth02 challengeUUID login password) =
         -- TODO: Improve design in "case of". Duplicated code.
         case maybeToken of
             Just token -> do
-                now <- liftIO $ getCurrentTime
+                now <- liftIO getCurrentTime
                 if Token.expirationDate token > now
                     then do
                         liftIO $ putStr ">> Found: "
@@ -138,8 +131,8 @@ handlerRqAuth (RQA.RqAuth02 challengeUUID login password) =
                         newToken <- generateAuthToken
                         let newTokenList = newToken : Contract.tokens contract
                             newContract = contract { Contract.tokens = newTokenList }
-                        -- TODO: Persist updated contract!
-                        liftIO $ print newContract
+                        -- Persist updated contract!
+                        liftIO $ Db.updateContract newContract
                         return newToken
 
             _ -> do
@@ -147,8 +140,8 @@ handlerRqAuth (RQA.RqAuth02 challengeUUID login password) =
                 newToken <- generateAuthToken
                 let newTokenList = newToken : Contract.tokens contract
                     newContract = contract { Contract.tokens = newTokenList }
-                liftIO $ print newContract
-                -- TODO: Persist updated contract!
+                -- Persist updated contract!
+                liftIO $ Db.updateContract newContract
                 return newToken
       where
         -- The method I'm using to generate random bytes can be an overhead
@@ -159,14 +152,14 @@ handlerRqAuth (RQA.RqAuth02 challengeUUID login password) =
         generateAuthToken = do
             liftIO $ putStrLn "Generating auth token..."
             token <- liftIO $ liftM B64.encode' $ Entropy.getEntropy 64 -- Size in bytes.
-            now <- liftIO $ getCurrentTime
+            now <- liftIO getCurrentTime
             let newToken = Token.Token {
                                 Token.value          = token,
                                 Token.creationDate   = now,
                                 Token.expirationDate = addUTCTime 3600 now
                            }
             liftIO $ putStr ">> New token: "
-            liftIO $ C.putStrLn $ token
+            liftIO $ C.putStrLn token
             return newToken
 
     makeResponse :: Token.Token -> AppHandler ()
@@ -177,65 +170,6 @@ handlerRqAuth (RQA.RqAuth02 challengeUUID login password) =
         let response = setHeader "JWT" jwt emptyResponse
         finishWith response
     
-
---handlerRqAuth rq@(RQA.RqAuth01 cred chalCode contrCode) = do
---    liftIO $ do
---        putStrLn "Processing auth request..."
---        print rq
---        putStrLn "======================================================"
---    r <- query "SELECT cod_usuario FROM tb_desafio WHERE cod_desafio = ? AND resposta_desafio = ?" (chalCode, cred)
---    case r of
---        [(Only _ :: Only Int)] -> do
---            r' <- query "SELECT cod_usuario, login, password FROM tb_usuario WHERE cod_contrato = ? ORDER BY RANDOM() LIMIT 1;" (Only contrCode)
---            case r' of
---                [(userCode', login, pw) :: (Int, String, String)] -> do
---                    datetime <- liftIO $ getCurrentTime
---                    execute "INSERT INTO tb_desafio VALUES (NULL, ?, ?, ?, ?)" (contrCode, userCode', login ++ "-" ++ pw , datetime)
---                    r'' <- query_ "SELECT last_insert_rowid()"
---                    case r'' of
---                        [(Only chalCode' :: Only Int)] -> do
---                            req <- getRequest
---                            let url = "https://" ++ (C.unpack $ rqServerName req)
---                                      ++ ':' : (show $ rqServerPort req)
---                                      ++ "/auth"
---                                response = REA.RespAuth01 chalCode' userCode' (fromJust $ parseURI url)
---                            --modifyResponse (setHeader "JWT" $ BL.toStrict . B64.encode . encode $ response) -- put response in header. 
---                            resp <- liftIO $ toCompactJWT response
---                            modifyResponse (setHeader "JWT" resp) -- put response in header. 
---                        _ -> writeBS "FALHOU!"
---                _ -> writeBS "FALHOU!"
---        _  -> writeBS "FALHOU!"
---
---handlerRqAuth (RQA.RqAuth02 chalCode login senha) = do
---    let chalResp = login `T.append` "-" `T.append` senha
---    r <- query "SELECT cod_contrato, date_time FROM tb_desafio WHERE cod_desafio = ? AND resposta_desafio = ?" (chalCode, chalResp)
---    case r of
---        [(contrCode, datetime) :: (Int, UTCTime)] -> do
---            datetimeNow <- liftIO $ getCurrentTime
---            let diff = diffUTCTime datetimeNow datetime
---            if diff >= 0 && diff <= 10000 -- 3000 segundos, ideal 10s
---                then do
---                    g <- liftIO $ (newGenIO :: IO SystemRandom)
---                    case genBytes 64 g of
---                        Left _          -> writeBS "GEN: It shouldn't happen :-("
---                        Right (cred, _) -> do
---                            r' <- query "SELECT cod_contrato_servico FROM tb_contrato_servico WHERE cod_contrato = ?" (Only contrCode)
---                            case r' of
---                                (xs :: [[Int]]) -> do
---                                    datetime' <- liftIO $ getCurrentTime
---                                    let datetimeExp = addUTCTime 3600 datetime'
---                                        cred' = CL.toStrict $ B64.encode' cred
---                                    mapM_ (\c -> execute "INSERT INTO tb_servico_credencial VALUES (NULL, ?, ?, ?, ?)" (c, cred', datetime, datetimeExp)) (concat xs)  
---                                    let response = REA.RespAuth02 True cred'
---                                    --modifyResponse (setHeader "JWT" $ BL.toStrict . B64.encode . encode $ response) -- put response in header. 
---                                    resp <- liftIO $ toCompactJWT response
---                                    modifyResponse (setHeader "JWT" resp) -- put response in header. 
---                                _ -> writeBS "CAIU AQUI!!!" >> unauthorized
---                else do
---                    writeBS $ C.pack $ "Not Authenticated!\n\nDiff time is: " ++ show diff
---        _ -> writeBS "AQUI!"
-
-
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(C.ByteString, Handler App App ())]
@@ -247,7 +181,6 @@ routes = [ ("/auth", auth)
 -- | The application initializer.
 app :: SnapletInit App App
 app = makeSnaplet "auth-server" "REST-based authentication server." Nothing $ do
-    eitherContract <- liftIO $ liftM eitherDecode $ CL.readFile "model.json"
     addRoutes routes
-    return $ App (either error (:[]) eitherContract)
+    return App
 

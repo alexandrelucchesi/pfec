@@ -10,12 +10,12 @@ module Application where
 ------------------------------------------------------------------------------
 import Control.Lens
 import Snap
-import Model.Contract
+--import Model.Contract
 
 ------------------------------------------------------------------------------
 
 data App = App
-    { _contracts     :: [Contract]
+    { -- _contracts     :: [Contract]
     }
 
 makeLenses ''App

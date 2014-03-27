@@ -17,6 +17,7 @@ cabal-version:       >=1.10
 
 library
   exposed-modules:
+    Db,
     Model.Challenge,
     Model.Contract,
     Model.Credential,
@@ -37,6 +38,7 @@ library
 
     aeson,
     base64-bytestring,
+    couchdb-conduit,
     crypto-pubkey,
     data-default,
     http-types,
@@ -46,7 +48,8 @@ library
     snap-extras == 0.7,
     text,
     uuid,
-    time
+    time,
+    transformers
 
   hs-source-dirs:      src
   default-language:    Haskell2010

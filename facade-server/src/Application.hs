@@ -10,14 +10,14 @@ module Application where
 ------------------------------------------------------------------------------
 import Control.Lens
 import Snap
-import Model.Contract
+--import Model.Contract
 import Model.URI
 
 ------------------------------------------------------------------------------
 
 data App = App
     { _authServerURL :: URI
-    , _contracts     :: [Contract]
+--    , _contracts     :: [Contract]
     }
 
 makeLenses ''App
