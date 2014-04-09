@@ -1,0 +1,12 @@
+{
+    "type": "token",
+    "value": "abc123def456",
+    "contractUUID": "3fa46b22-b2ce-479a-b789-97dea0bbb72c",
+    "serviceUUID": "68596fec-827c-40f2-93f2-8eab6a3e39e4",
+    "allowedMethods": [
+        "GET"
+    ],
+    "expirationDate": "2014-03-24T20:23:42.620Z",
+    "wasUsed": 0
+}
+
