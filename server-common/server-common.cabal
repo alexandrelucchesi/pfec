@@ -17,14 +17,16 @@ cabal-version:       >=1.10
 
 library
   exposed-modules:
-    Db,
+    CouchDB.DBCommon,
+    CouchDB.DBContract,
+    CouchDB.DBService,
+    CouchDB.DBToken,
     Model.Challenge,
     Model.Contract,
     Model.Credential,
     Model.Service,
     Model.PublicKey,
     Model.Token,
-    Model.User,
     Model.URI,
     Model.UUID,
     Util.Base64,
@@ -38,6 +40,8 @@ library
 
     aeson,
     base64-bytestring,
+    containers,
+    conduit,
     couchdb-conduit,
     crypto-pubkey,
     data-default,

@@ -10,14 +10,12 @@ module Application where
 ------------------------------------------------------------------------------
 import Control.Lens
 import Snap
---import Model.Contract
 import Model.URI
 
 ------------------------------------------------------------------------------
 
 data App = App
     { _authServerURL :: URI
---    , _contracts     :: [Contract]
     }
 
 makeLenses ''App
@@ -25,6 +23,7 @@ makeLenses ''App
 ------------------------------------------------------------------------------
 
 type AppHandler = Handler App App
+
 
 
 

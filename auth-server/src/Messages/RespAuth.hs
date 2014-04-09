@@ -17,10 +17,11 @@ data RespAuth =
     RespAuth01 {
         authServerURL     :: URI,
         challengeCode     :: UUID,
-        userCode          :: Int64
+        credentialCode    :: Int64,
+        expirationDate    :: UTCTime
     } | RespAuth02 {
-        authorizationToken :: ByteString,
-        expirationDate     :: UTCTime
+        authorizationToken    :: ByteString,
+        serviceExpirationDate :: UTCTime
     }
     deriving (Eq, Show)
 

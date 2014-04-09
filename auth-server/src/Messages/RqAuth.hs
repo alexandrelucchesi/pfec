@@ -12,12 +12,12 @@ import           Model.UUID
 ------------------------------------------------------------------------------ | Data type holding the message's formats a client can send to Auth Server.
 data RqAuth =
     RqAuth01 {
-        challengeCredentialUUID :: UUID,
-        credential              :: ByteString
+        contractUUID :: UUID,
+        credential   :: ByteString,
+        serviceUUID  :: ByteString
     } | RqAuth02 {
         challengeAuthUUID :: UUID,
-        login             :: ByteString,
-        password          :: ByteString
+        credentialAuth    :: ByteString
     }
     deriving (Eq, Show)
 

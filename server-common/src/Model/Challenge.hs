@@ -8,29 +8,27 @@ import           Data.Aeson
 import           Data.ByteString     (ByteString)
 import           Data.Time           (UTCTime)
 
-import           Model.UUID
+import           Model.UUID (UUID(..))
 
 data Challenge = Challenge {
-               uuid         :: UUID,
-               answer       :: ByteString,
-               creationDate :: UTCTime
+               uuid           :: UUID,
+               answer         :: ByteString,
+               expirationDate :: UTCTime,
+               wasAnswered    :: Bool
                } deriving (Eq, Show)
-
--- Credential challenge (resolved in Facade Server).
-type ChallengeCredential = Challenge
--- Authentication and authorization challenge (resolved in Auth Server).
-type ChallengeAuth       = Challenge
 
 instance FromJSON Challenge where
     parseJSON (Object v) =
-        Challenge <$> v .: "uuid"
+        Challenge <$> v .: "_id"
                   <*> v .: "answer"
-                  <*> v .: "creationDate"
+                  <*> v .: "expirationDate"
+                  <*> v .: "wasAnswered"
     parseJSON _ = mzero
 
 instance ToJSON Challenge where
-    toJSON (Challenge u a c) =
-        object [ "uuid"         .= u,
-                 "answer"       .= a,
-                 "creationDate" .= c ]
-
+    toJSON (Challenge _ a ed wa) =
+        object [ "type"           .= ("challenge" :: ByteString)
+               , "answer"         .= a
+               , "expirationDate" .= ed
+               , "wasAnswered"    .= wa
+               ]
