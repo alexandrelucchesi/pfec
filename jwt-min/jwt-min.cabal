@@ -15,9 +15,14 @@ build-type:          Simple
 -- extra-source-files:  
 cabal-version:       >=1.10
 
-executable main
-  main-is:             Main.hs
-  -- other-modules:       
+library
+  exposed-modules:
+    Base64,
+    JWE,
+    JWS,
+    JWT,
+    Types,
+    Util
   other-extensions:    OverloadedStrings    
   build-depends:       base >=4.6 && <4.7,
                        crypto-api,
@@ -26,6 +31,7 @@ executable main
                        crypto-pubkey-types,
                        crypto-random,
                        cipher-aes,
+                       HsOpenSSL,
                        aeson,
                        aeson-pretty,
                        attoparsec,

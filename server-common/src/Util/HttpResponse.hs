@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-} 
 
-module Messages.HttpResponse where
+module Util.HttpResponse where
 
 import Snap.Core
 import Snap.Extras
@@ -10,14 +10,20 @@ import Snap.Extras
 badRequest :: MonadSnap m => m b
 badRequest = badReq "Bad request"
 
-forbidden :: MonadSnap m => m ()
-forbidden = modifyResponse (setResponseCode 403)
+forbidden :: MonadSnap m => m a
+forbidden = do
+    modifyResponse (setResponseCode 403)
+    r <- getResponse
+    finishWith r
 
 --notFound :: MonadSnap m => m ()
 --notFound = modifyResponse (setResponseCode 404)
 
-unauthorized :: MonadSnap m => m ()
-unauthorized = modifyResponse (setResponseCode 302)
+unauthorized :: MonadSnap m => m a
+unauthorized = do
+    modifyResponse (setResponseCode 302)
+    r <- getResponse
+    finishWith r
 
 ok :: MonadSnap m => m ()
 ok = modifyResponse (setResponseCode 200)

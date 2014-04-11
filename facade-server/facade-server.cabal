@@ -41,6 +41,7 @@ Executable facade-server
     configurator,
     attoparsec,
     containers,
+    couchdb-conduit,
     crypto-api,
     http-conduit,
     http-types,
@@ -50,8 +51,6 @@ Executable facade-server
     safe,
     server-common,
     snap-extras,
-    snaplet-sqlite-simple,
-    sqlite-simple,
     text,
     transformers
 
@@ -86,15 +85,14 @@ Library
   exposed-modules:
     Messages.RqFacade,
     Messages.RespFacade
-  -- other-modules:       
   other-extensions:    OverloadedStrings
   build-depends:       
     base >=4.6 && <4.7,
     bytestring >=0.10 && <0.11,
 
     aeson,
-    text,
-    server-common
+    server-common,
+    text
 
   hs-source-dirs:      src
   default-language:    Haskell2010

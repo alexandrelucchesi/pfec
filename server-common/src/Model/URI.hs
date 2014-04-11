@@ -1,16 +1,13 @@
 {-# LANGUAGE DeriveGeneric #-} 
 {-# LANGUAGE OverloadedStrings #-} 
 
-module Messages.Types where
+module Model.URI where
 
 import           Control.Applicative
-import           Data.Aeson
-import qualified Data.ByteString.Char8 as C
-import qualified Data.ByteString.Lazy.Char8 as CL
+import            Data.Aeson
 import qualified Data.Text as T
 import           GHC.Generics
 import qualified Network.URI
-import qualified Util.Base64 as B64
 
 ------------------------------------------------------------------------------ | Data type representing a URI.
 newtype URI = URI Network.URI.URI
@@ -35,10 +32,4 @@ instance ToJSON URI where
 
 parseURI :: String -> Maybe URI
 parseURI uri = URI <$> Network.URI.parseURI uri
-
------------------------------------------------------------------------------- | Converts value to JWT encoded.
-toJWT :: (ToJSON a) => a -> C.ByteString
-toJWT = CL.toStrict . B64.encode . encode
-
-
 

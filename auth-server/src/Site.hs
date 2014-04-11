@@ -11,89 +11,177 @@ module Site where
 
 ------------------------------------------------------------------------------
 import           Control.Monad.IO.Class
-import           Crypto.Random
-import           Data.Aeson
-import qualified Data.ByteString.Lazy as BL
-import qualified Data.ByteString.Char8 as C
-import qualified Data.ByteString.Lazy.Char8 as CL
+import qualified Data.ByteString.Char8  as C
+import qualified Data.Configurator      as Config
 import           Data.Maybe
 import           Data.Time
-import qualified Data.Text as T
+import           Data.Word              (Word16)
 import           Snap
-import           Snap.Snaplet.SqliteSimple
+import qualified System.Entropy         as Entropy
+import           System.Random
 ------------------------------------------------------------------------------
 import           Application
-import qualified Messages.RqAuth as RQA
-import qualified Messages.RespAuth as REA
-import           Messages.HttpResponse
-import           Messages.Types
-import qualified BusinessLogic as Db -- TODO: Move all the business' logic code into this module.
-import qualified Util.Base64 as B64
+import qualified CouchDB.DBChallenge    as DBChallenge
+import qualified CouchDB.DBContract     as DBContract
+import qualified CouchDB.DBToken        as DBToken
+import qualified Messages.RespAuth      as REA
+import qualified Messages.RqAuth        as RQA
+import qualified Model.Challenge        as Challenge
+import qualified Model.Contract         as Contract
+import qualified Model.Credential       as Credential
+import qualified Model.Token            as Token
+import           Model.URI
+import qualified Util.Base64            as B64
+import           Util.HttpResponse
+import           Util.JSONWebToken
 
+
+------------------------------------------------------------------------------ | Helper function to log things into stdout.
+logStdOut :: MonadIO m => C.ByteString -> m ()
+logStdOut = liftIO . C.putStrLn
+
+------------------------------------------------------------------------------ | Sends response when everything went fine.
+sendResponse :: REA.RespAuth -> AppHandler ()
+sendResponse resp = do
+        logStdOut "Sending response..."
+        jwt <- liftIO $ toB64JSON resp
+        let response = setHeader "JWT" jwt emptyResponse
+        finishWith response
 
 ------------------------------------------------------------------------------ | Handler that authenticates users.
 auth :: Handler App App ()
 auth = do
     rq <- getRequest
-    let rqAuth = do
-            info <- getHeader "JWT" rq
-            decode . B64.decode . BL.fromStrict $ info
-    maybe unauthorized handlerRqAuth rqAuth
-    
-handlerRqAuth :: RQA.RqAuth -> Handler App App ()
-handlerRqAuth rq@(RQA.RqAuth01 cred chalCode contrCode) = do
-    liftIO $ do
-        putStrLn "Processing auth request..."
-        print rq
-        putStrLn "======================================================"
-    r <- query "SELECT cod_usuario FROM tb_desafio WHERE cod_desafio = ? AND resposta_desafio = ?" (chalCode, cred)
-    case r of
-        [(Only _ :: Only Int)] -> do
-            r' <- query "SELECT cod_usuario, login, password FROM tb_usuario WHERE cod_contrato = ? ORDER BY RANDOM() LIMIT 1;" (Only contrCode)
-            case r' of
-                [(userCode', login, pw) :: (Int, String, String)] -> do
-                    datetime <- liftIO $ getCurrentTime
-                    execute "INSERT INTO tb_desafio VALUES (NULL, ?, ?, ?, ?)" (contrCode, userCode', login ++ "-" ++ pw , datetime)
-                    r'' <- query_ "SELECT last_insert_rowid()"
-                    case r'' of
-                        [(Only chalCode' :: Only Int)] -> do
-                            req <- getRequest
-                            let url = "https://" ++ (C.unpack $ rqServerName req)
-                                      ++ ':' : (show $ rqServerPort req)
-                                      ++ "/auth"
-                                response = REA.RespAuth01 chalCode' userCode' (fromJust $ parseURI url)
-                            modifyResponse (setHeader "JWT" $ BL.toStrict . B64.encode . encode $ response) -- put response in header. 
-                        _ -> writeBS "FALHOU!"
-                _ -> writeBS "FALHOU!"
-        _  -> writeBS "FALHOU!"
+    case getHeader "JWT" rq of
+        Just jwtCompact -> do
+            (rqAuth :: Maybe RQA.RqAuth) <- liftIO $ fromB64JSON jwtCompact
+            maybe badRequest (sendResponse <=< handlerRqAuth) rqAuth
+        _ -> badRequest
 
-handlerRqAuth (RQA.RqAuth02 chalCode login senha) = do
-    let chalResp = login `T.append` "-" `T.append` senha
-    r <- query "SELECT cod_contrato, date_time FROM tb_desafio WHERE cod_desafio = ? AND resposta_desafio = ?" (chalCode, chalResp)
-    case r of
-        [(contrCode, datetime) :: (Int, UTCTime)] -> do
-            datetimeNow <- liftIO $ getCurrentTime
-            let diff = diffUTCTime datetimeNow datetime
-            if diff >= 0 && diff <= 10000 -- 3000 segundos, ideal 10s
-                then do
-                    g <- liftIO $ (newGenIO :: IO SystemRandom)
-                    case genBytes 64 g of
-                        Left _          -> writeBS "GEN: It shouldn't happen :-("
-                        Right (cred, _) -> do
-                            r' <- query "SELECT cod_contrato_servico FROM tb_contrato_servico WHERE cod_contrato = ?" (Only contrCode)
-                            case r' of
-                                (xs :: [[Int]]) -> do
-                                    datetime' <- liftIO $ getCurrentTime
-                                    let datetimeExp = addUTCTime 3600 datetime'
-                                        cred' = CL.toStrict $ B64.encode' cred
-                                    mapM_ (\c -> execute "INSERT INTO tb_servico_credencial VALUES (NULL, ?, ?, ?, ?)" (c, cred', datetime, datetimeExp)) (concat xs)  
-                                    let response = REA.RespAuth02 True cred'
-                                    modifyResponse (setHeader "JWT" $ BL.toStrict . B64.encode . encode $ response) -- put response in header. 
-                                _ -> writeBS "CAIU AQUI!!!" >> unauthorized
-                else do
-                    writeBS $ C.pack $ "Not Authenticated!\n\nDiff time is: " ++ show diff
-        _ -> writeBS "AQUI!"
+handlerRqAuth :: RQA.RqAuth -> AppHandler REA.RespAuth
+handlerRqAuth (RQA.RqAuth01 contractUUID) =
+    generateChallenge >>= makeResponse
+  where
+    generateChallenge :: MonadIO m => m (Challenge.Challenge, Credential.Credential)
+    generateChallenge = do
+        logStdOut "Generating challenge..."
+        contract <- liftIO $ DBContract.findByUUID contractUUID -- TODO: Improve findByUUID to return Maybe Contract.
+        let credentials = Contract.credentials contract
+        index <- liftIO $ liftM (fst . randomR (0, length credentials - 1)) newStdGen
+        let credential = credentials !! index
+        now <- liftIO getCurrentTime
 
+        let answer = Credential.value credential
+            expiresAt = addUTCTime 3600 now
+            challenge = Challenge.new contractUUID
+                                      answer
+                                      expiresAt
+
+        -- Persist challenge in the database!
+        challenge' <- liftIO $ DBChallenge.create challenge
+        logStdOut ">> Challenge is: "
+        liftIO $ print challenge'
+        return (challenge', credential)
+
+    makeResponse :: MonadSnap m => (Challenge.Challenge, Credential.Credential) -> m REA.RespAuth
+    makeResponse (challenge, credential) = do
+        req <- getRequest
+        -- Gets its current URL.
+        let url = "https://" ++ C.unpack (rqServerName req)
+                             ++ ':' : show (rqServerPort req)
+                             ++ "/auth"
+            resp = REA.RespAuth01 {
+                        REA.replyTo        = fromJust $ parseURI url,
+                        REA.credentialCode = Credential.code credential,
+                        REA.challengeUUID  = fromJust $ Challenge.uuid challenge,
+                        REA.expiresAt      = Challenge.expiresAt challenge
+                   }
+        return resp
+
+handlerRqAuth (RQA.RqAuth02 challengeUUID contractUUID serviceUUID credential) =
+    verifyChallenge >>= verifyPermissions >> emitAuthToken >>= makeResponse
+  where
+    verifyChallenge :: AppHandler Contract.Contract
+    verifyChallenge = do
+        logStdOut "Verifying challenge..."
+        maybeChallenge <- liftIO $ DBChallenge.findChallenge challengeUUID contractUUID
+
+        challenge <- maybe forbidden return maybeChallenge
+        logStdOut "Challenge exists..."
+
+        unless (not $ Challenge.wasAnswered challenge) $
+               logStdOut "It was already answered!" >> forbidden
+        logStdOut "It was not answered yet..."
+
+        challenge' <- liftIO $ DBChallenge.setAnswered challenge
+        logStdOut "Changed challenge status to ANSWERED!"
+
+        unless (credential == Challenge.answer challenge') $
+               logStdOut "Answer is WRONG!" >> forbidden
+        logStdOut "Answer is CORRECT!"
+
+        liftIO $ Challenge.contract challenge'
+
+    verifyPermissions :: (MonadSnap m) => Contract.Contract -> m ()
+    verifyPermissions contract = do
+        logStdOut "Verifying service permissions..."
+        unless (serviceUUID `elem` Contract.allowedServicesUUIDs contract) $
+               logStdOut "Access DENIED!" >> forbidden
+        logStdOut "Access GRANTED!"
+
+    emitAuthToken :: (MonadIO m) => m Token.Token
+    emitAuthToken = do
+        logStdOut "Emitting authorization token..."
+
+        logStdOut "Searching for a still valid token for the service..."
+        maybeToken <- liftIO $ DBToken.findAvailableToken contractUUID serviceUUID
+
+        -- TODO: Improve design in "case of". Duplicated code.
+        case maybeToken of
+            Just token -> do
+                now <- liftIO getCurrentTime
+                if Token.expiresAt token > now
+                    then do
+                        logStdOut "FOUND: "
+                        logStdOut $ Token.value token
+                        return token
+                    else do
+                        logStdOut "NOT FOUND!"
+                        newToken <- generateAuthToken
+                        liftIO $ DBToken.create newToken -- Persist new token!
+            _ -> do
+                logStdOut "Contract hasn't accessed the specified service yet..."
+                newToken <- generateAuthToken
+                liftIO $ DBToken.create newToken -- Persist new token!
+      where
+        -- The method I'm using to generate random bytes can be an overhead
+        -- in systems which don't have the instruction RDRAND, but it seems
+        -- to be the strongest.
+        -- See this answer: http://stackoverflow.com/questions/20889729/how-to-properly-generate-a-random-bytestring-in-haskell
+        generateAuthToken :: (MonadIO m) => m Token.Token
+        generateAuthToken = do
+            logStdOut "Generating auth token..."
+            tokenValue <- liftIO $ liftM B64.encode' $ Entropy.getEntropy 64 -- Size in bytes.
+            now <- liftIO getCurrentTime
+            let expiresAt = addUTCTime 3600 now
+                allowedMethods = ["GET", "POST", "PUT", "DELETE"] -- TODO: Are we going to restrict on the HTTP method level? If so, change implementation.
+            let newToken = Token.new tokenValue
+                                     contractUUID
+                                     serviceUUID
+                                     allowedMethods
+                                     expiresAt
+
+            logStdOut "New token: "
+            logStdOut tokenValue
+            return newToken
+
+    makeResponse :: Token.Token -> AppHandler REA.RespAuth
+    makeResponse token = do
+        url <- gets _facadeServerURL
+        let resp = REA.RespAuth02 url
+                                  (Token.value token)
+                                  (Token.expiresAt token)
+        return resp
 
 ------------------------------------------------------------------------------
 -- | The application's routes.
@@ -106,7 +194,15 @@ routes = [ ("/auth", auth)
 -- | The application initializer.
 app :: SnapletInit App App
 app = makeSnaplet "auth-server" "REST-based authentication server." Nothing $ do
-    sqlite <- nestSnaplet "db" db sqliteInit
+    config <- liftIO $ Config.load [Config.Required "resources/devel.cfg"]
+    url <- getAuthServerURL config
     addRoutes routes
-    return $ App sqlite
+    wrapSite (logStdOut (C.replicate 25 '-') *>)
+    return $ App url
+  where
+    getAuthServerURL config = do
+        host <- liftIO $ Config.lookupDefault "localhost" config "host"
+        port :: Word16 <- liftIO $ Config.lookupDefault 9000 config "port"
+        let maybeUrl = parseURI $ "https://" ++ host ++ ":" ++ show port
+        maybe (error "Could not parse Facade Server's URL.") return maybeUrl
 

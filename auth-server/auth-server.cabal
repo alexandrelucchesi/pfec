@@ -39,17 +39,18 @@ Executable auth-server
     aeson-pretty,
     base64-bytestring,
     attoparsec,
+    configurator,
     containers,
     crypto-api,
+    couchdb-conduit,
+    entropy,
     network,
     random,
     process,
     safe,
     server-common,
-    snap-extras,
-    snaplet-sqlite-simple,
-    sqlite-simple,
     text,
+    uuid,
     transformers
 
   if flag(old-base)

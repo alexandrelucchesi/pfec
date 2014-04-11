@@ -8,21 +8,20 @@
 module Application where
 
 ------------------------------------------------------------------------------
-import Control.Lens
-import Snap
-import Snap.Snaplet.SqliteSimple
+import           Control.Lens
+import           Model.URI    (URI)
+import           Snap
 
 ------------------------------------------------------------------------------
 
 data App = App
-    { _db  :: Snaplet Sqlite
+    {
+        _facadeServerURL :: URI
     }
 
 makeLenses ''App
 
 ------------------------------------------------------------------------------
-instance HasSqlite (Handler b App) where
-    getSqliteState = with db get
 
 type AppHandler = Handler App App
 

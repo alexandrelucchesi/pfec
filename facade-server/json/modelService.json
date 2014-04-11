@@ -1,0 +1,12 @@
+{
+    "type": "service",
+    "description": "Apache Server",
+    "host": "localhost",
+    "port": 80,
+    "path": "",
+    "methods": [
+      "GET"
+    ]
+}
+
+

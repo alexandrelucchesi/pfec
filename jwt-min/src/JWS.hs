@@ -1,48 +1,27 @@
-{-# LANGUAGE OverloadedStrings, PackageImports #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE PackageImports    #-}
 
 module JWS where
 
-import qualified Data.ByteString as B
-import qualified Data.ByteString.Char8 as C
-import Control.Monad
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as T
-
-import qualified Crypto.PubKey.ECC.ECDSA as ECC
+import qualified Crypto.PubKey.ECC.ECDSA    as ECC
 import qualified Crypto.PubKey.ECC.Generate as ECC
-import qualified Crypto.PubKey.HashDescr as K
-import qualified Crypto.PubKey.RSA as K
-import qualified Crypto.PubKey.RSA.PKCS15 as K
-import qualified Crypto.Types.PubKey.ECC as ECC
-import qualified Crypto.Util as K
-import qualified "crypto-random" Crypto.Random as K
+import qualified Crypto.PubKey.HashDescr    as K
+import qualified Crypto.PubKey.RSA          as K
+import qualified Crypto.PubKey.RSA.PKCS15   as K
+import qualified "crypto-random" Crypto.Random              as K
+import qualified Crypto.Types.PubKey.ECC    as ECC
+import qualified Crypto.Util                as K
+import qualified Data.ByteString            as B
+import qualified Data.ByteString.Char8      as C
+import qualified Data.Text                  as T
+import qualified Data.Text.Encoding         as T
 
-import qualified Base64 as B64
-import Util
-import Types
+import qualified Base64                     as B64
+import           Types
+import           Util
 
 getEncodedJWSHeader :: Alg -> B.ByteString
 getEncodedJWSHeader alg = B64.encode . T.encodeUtf8 . T.pack $ "{\"alg\":\"" ++ show alg ++ "\"}"
-
-sign_ECDSA :: (K.CPRG g) => g -> ECC.PrivateKey -> T.Text -> B.ByteString
-sign_ECDSA g privKey msg =
-    let payload = B64.encode . T.encodeUtf8 $ msg
-        sigInp  = C.intercalate "." [getEncodedJWSHeader ES256, payload] -- sigInp is already in ASCII due to nature of ByteStrings (8-bit each elem).
-        ((ECC.Signature r s), _) = ECC.sign g privKey (K.hashFunction K.hashDescrSHA256) sigInp
-        signature = B64.encode $ K.i2bs 256 r `B.append` K.i2bs 256 s--integerToBS r `B.append` integerToBS s
-    in C.intercalate "." [sigInp, signature]
-
---integerToBS :: Integer -> B.ByteString
---integerToBS v = let hexStr = showHex v ""
---      in B.reverse $ hexStringToBS (pad hexStr) B.empty
---    where
---        pad str -- Pad with zeroes if the integer is not a multiple of 64.
---            | length str `mod` 32 == 0 = str
---            | otherwise                = pad ('0':str)
---        hexStringToBS "" ns       = ns
---        hexStringToBS (x:y:ys) ns =
---            let [(n,_)] = readHex (x:[y])
---            in hexStringToBS ys (B.cons n ns)
 
 signJWS :: K.PrivateKey -> T.Text -> B.ByteString
 signJWS privKey msg =
@@ -84,6 +63,14 @@ verify_ECDSA pubKey msg =
                           else Left "Signature could not be verified."
        else Left "JWS must have 3 parts."
 
+sign_ECDSA :: (K.CPRG g) => g -> ECC.PrivateKey -> T.Text -> B.ByteString
+sign_ECDSA g privKey msg =
+    let payload = B64.encode . T.encodeUtf8 $ msg
+        sigInp  = C.intercalate "." [getEncodedJWSHeader ES256, payload] -- sigInp is already in ASCII due to nature of ByteStrings (8-bit each elem).
+        ((ECC.Signature r s), _) = ECC.sign g privKey (K.hashFunction K.hashDescrSHA256) sigInp
+        signature = B64.encode $ K.i2bs 256 r `B.append` K.i2bs 256 s--integerToBS r `B.append` integerToBS s
+    in C.intercalate "." [sigInp, signature]
+
 test :: IO ()
 test = do
     g <- cprg
@@ -100,7 +87,7 @@ testECC = do
     let ((myPubKey, myPrivKey), g') = ECC.generate g (ECC.getCurveByName ECC.SEC_p256r1)
 --    myPrivKey  <- liftM read $ readFile "data/keys/ecc/sen_key.priv"
 --    myPubKey   <- liftM read $ readFile "data/keys/ecc/sen_key.pub"
-    
+
     let msg = "Hello world... Did you know? Haskell rulez!"
         res = sign_ECDSA g' myPrivKey msg
         status = verify_ECDSA myPubKey res

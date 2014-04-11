@@ -1,42 +1,53 @@
-{-# LANGUAGE OverloadedStrings #-} 
+{-# LANGUAGE OverloadedStrings #-}
 
 module Messages.RqAuth where
 
 import           Control.Applicative
-import           Data.Aeson
-import qualified Data.Text as T
 import           Control.Monad
+import           Data.Aeson
+import           Data.ByteString     (ByteString)
+
+import           Model.UUID          (UUID)
 
 ------------------------------------------------------------------------------ | Data type holding the message's formats a client can send to Auth Server.
+--
+-- Messages' meanings:
+--
+--      RqAuth01 means:
+--          "Hey, I want to authenticate! I'm Batman..."
+--
+--      RqAuth02 means:
+--          "Here's the data you asked! Do you believe me now?
+--          And also, I want to access the service identified by 'serviceUUID'
+--          please..."
 data RqAuth =
     RqAuth01 {
-        credential              :: T.Text,
-        challengeCredentialCode :: Int,
-        contractCode            :: Int
+        contractUUID :: UUID
     } | RqAuth02 {
-        challengeAuthCode :: Int,
-        login             :: T.Text,
-        password          :: T.Text
+        challengeUUID :: UUID,
+        contractUUID' :: UUID,
+        serviceUUID   :: UUID,
+        credential    :: ByteString
     }
     deriving (Eq, Show)
 
 instance FromJSON RqAuth where
     parseJSON (Object v) =
-            RqAuth01 <$> v .: "credencial"
-                     <*> v .: "cod_desafio"
-                     <*> v .: "cod_contrato"
-        <|> RqAuth02 <$> v .: "cod_desafio_auth"
-                     <*> v .: "login"
-                     <*> v .: "senha"
+        -- WARNING: The order of the messages are extremely important here!
+        RqAuth02 <$> v .: "challengeUUID"
+                 <*> v .: "contractUUID"
+                 <*> v .: "serviceUUID"
+                 <*> v .: "credential"
+        <|> RqAuth01 <$> v .: "contractUUID"
     parseJSON _ = mzero
 
 instance ToJSON RqAuth where
-    toJSON (RqAuth01 c d co) =
-        object [ "credencial"   .= c
-               , "cod_desafio"  .= d
-               , "cod_contrato" .= co ]
-    toJSON (RqAuth02 c l p) =
-        object [ "cod_desafio_auth" .= c
-               , "login" .= l
-               , "senha" .= p ]
-
+    toJSON (RqAuth01 cu) =
+        object [ "contractUUID" .= cu
+               ]
+    toJSON (RqAuth02 cu cuu su cv) =
+        object [ "challengeUUID" .= cu
+               , "contractUUID"  .= cuu
+               , "serviceUUID"   .= su
+               , "credential"    .= cv
+               ]
