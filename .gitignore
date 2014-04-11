@@ -9,4 +9,5 @@ cabal-dev
 .cabal-sandbox
 .DS_Store
 cabal.sandbox.config
+deps
 
