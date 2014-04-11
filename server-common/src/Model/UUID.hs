@@ -7,7 +7,7 @@ import           Control.Applicative        ((<$>))
 import           Data.Aeson
 import           Data.ByteString.Char8      as C (ByteString)
 import           Data.ByteString.Lazy.Char8 as CL (ByteString)
-import           Data.Maybe                 (fromMaybe)
+import           Data.Maybe                 (fromJust, fromMaybe)
 import           Data.String
 import           Data.Text                  as T (pack, unpack)
 import qualified Data.UUID
@@ -38,6 +38,12 @@ toByteString (UUID u) = Data.UUID.toLazyASCIIBytes u
 
 toByteString' :: UUID -> C.ByteString
 toByteString' (UUID u) = Data.UUID.toASCIIBytes u
+
+fromByteString' :: C.ByteString -> UUID
+fromByteString' = fromJust . fromByteStringSafe'
+
+fromByteStringSafe' :: C.ByteString -> Maybe UUID
+fromByteStringSafe' bs = UUID <$> Data.UUID.fromASCIIBytes bs
 
 nextRandom :: IO UUID
 nextRandom = UUID <$> Data.UUID.V4.nextRandom

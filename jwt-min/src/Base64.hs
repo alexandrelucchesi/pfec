@@ -1,10 +1,10 @@
-{-# LANGUAGE OverloadedStrings #-} 
+{-# LANGUAGE OverloadedStrings #-}
 
 module Base64 where
 
-import qualified Data.ByteString as B
-import qualified Data.ByteString.Char8 as C
+import qualified Data.ByteString            as B
 import qualified Data.ByteString.Base64.URL as B64
+import qualified Data.ByteString.Char8      as C
 
 -- Handle trailing "=" characters (padding).
 encode :: B.ByteString -> B.ByteString

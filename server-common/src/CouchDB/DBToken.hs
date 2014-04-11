@@ -4,18 +4,18 @@
 
 module CouchDB.DBToken where
 
+import qualified Data.ByteString.Char8             as C
 import           Data.Conduit
-import           Data.Conduit.List as CL
-import qualified Data.ByteString.Char8 as C
-import           Data.Maybe (listToMaybe)
+import           Data.Conduit.List                 as CL
+import           Data.Maybe                        (listToMaybe)
 import           Database.CouchDB.Conduit
 import           Database.CouchDB.Conduit.Explicit
 import           Database.CouchDB.Conduit.View
 
 import           CouchDB.DBCommon
 
-import qualified Model.UUID as UUID
-import qualified Model.Token as Token
+import qualified Model.Token                       as Token
+import qualified Model.UUID                        as UUID
 
 type ContractUUID = UUID.UUID
 type TokenValue = C.ByteString
@@ -27,16 +27,25 @@ findToken contractUUID tokenValue = do
             rowValue =$= toType =$ CL.consume
     return $ listToMaybe tokens
 
-setUsed :: Token.Token -> IO ()
-setUsed token = runCouch conn $ do
-    let uuid = UUID.toByteString' $ Token.uuid token
-        rev  = Token.revision token
-    couchPut dbName uuid rev [] $ token { Token.wasUsed = True }
-    return ()
+type ServiceUUID = UUID.UUID
+findAvailableToken :: ContractUUID -> ServiceUUID -> IO (Maybe Token.Token)
+findAvailableToken contractUUID serviceUUID = do
+    tokens <- runCouch conn $
+        let uuids = fmap UUID.toByteString' [contractUUID, serviceUUID]
+        in couchView_ dbName "token" "listAvailableTokens"
+            [ ("endkey", Just $ encodeKeys uuids)
+            , ("descending", Just "true")
+            , ("limit", Just "1")
+            ] -- Returns the most recent token emitted for that contract/service.
+            $ rowValue =$= toType =$ CL.consume
+    return $ listToMaybe tokens
 
-
-
-
-
-
+create :: Token.Token -> IO Token.Token
+create token = do
+    uuid <- fmap UUID.toByteString' UUID.nextRandom
+    runCouch conn $ do
+        let rev = ""
+        revision <- couchPut dbName uuid rev [] token
+        return token { Token.uuid     = UUID.fromByteStringSafe' uuid
+                     , Token.revision = Just revision }
 

@@ -3,14 +3,14 @@
 
 module BusinessLogic where
 
-import           Data.ByteString.Char8 (ByteString, unpack)
+import           Data.ByteString.Char8     (ByteString, unpack)
 import           Data.Int
-import qualified Data.List as L
-import qualified Data.Text as T
+import qualified Data.List                 as L
+import qualified Data.Text                 as T
 import           Snap.Snaplet
 import           Snap.Snaplet.SqliteSimple
 
-import qualified Database.SQLite.Simple as S
+import qualified Database.SQLite.Simple    as S
 
 import           Application
 import           Messages.Types
@@ -39,7 +39,7 @@ canAccessService contract credential service = do
                             , "INNER JOIN tb_contrato_servico cs"
                             , "INNER JOIN tb_servico_credencial sc"
                             , "ON s.cod_servico = cs.cod_servico AND sc.cod_contrato_servico = cs.cod_contrato_servico"
-                            , "AND cs.cod_contrato = ? AND sc.credencial_auth LIKE ?" 
+                            , "AND cs.cod_contrato = ? AND sc.credencial_auth LIKE ?"
                             , "AND s.url_servico = ? AND sc.datetime_exp > datetime('now')" ]
     [Only status :: Only Int64] <- query (S.Query queryStr) (contract, credential, unpack service)
     return $ status > 0

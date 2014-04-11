@@ -17,15 +17,17 @@ import           Model.Service (Service)
 -- | Data type representing the authorization token to be sent to the
 -- client.
 data Token = Token {
-           uuid           :: UUID,
-           revision       :: ByteString,
+           uuid           :: Maybe UUID,
+           revision       :: Maybe ByteString,
            value          :: ByteString,
            contractUUID   :: UUID,
            serviceUUID    :: UUID,
            allowedMethods :: [Method],
-           wasUsed        :: Bool,
-           expirationDate :: UTCTime
+           expiresAt      :: UTCTime
            } deriving (Eq, Show)
+
+new :: ByteString -> UUID -> UUID -> [Method] -> UTCTime -> Token
+new = Token Nothing Nothing 
 
 contract :: Token -> IO Contract
 contract = undefined
@@ -41,19 +43,17 @@ instance FromJSON Token where
               <*> v .: "contractUUID"
               <*> v .: "serviceUUID"
               <*> v .: "allowedMethods"
-              <*> v .: "wasUsed"
-              <*> v .: "expirationDate"
+              <*> v .: "expiresAt"
     parseJSON _ = mzero
 
 instance ToJSON Token where
-    toJSON (Token _ _ v cu su am wu ed) =
+    toJSON (Token _ _ v cu su am ea) =
         object [ "type"           .= ("token" :: ByteString)
                , "value"          .= v
                , "contractUUID"   .= cu
                , "serviceUUID"    .= su
                , "allowedMethods" .= am
-               , "wasUsed"        .= wu
-               , "expirationDate" .= ed
+               , "expiresAt"      .= ea
                ]
 
 

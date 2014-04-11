@@ -20,6 +20,6 @@ instance FromJSON Credential where
         parseJSON _ = mzero
 
 instance ToJSON Credential where
-        toJSON (Credential c v) =
+        toJSON (Credential c cr) =
             object [ "code"           .= c
-                   , "credential"     .= v ]
+                   , "credential"     .= cr ]

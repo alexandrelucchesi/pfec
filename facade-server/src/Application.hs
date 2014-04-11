@@ -8,9 +8,9 @@
 module Application where
 
 ------------------------------------------------------------------------------
-import Control.Lens
-import Snap
-import Model.URI
+import           Control.Lens
+import           Model.URI    (URI)
+import           Snap
 
 ------------------------------------------------------------------------------
 

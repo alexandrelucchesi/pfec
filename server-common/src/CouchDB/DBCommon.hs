@@ -4,7 +4,7 @@
 
 module CouchDB.DBCommon where
 
-import qualified Data.ByteString.Char8 as C
+import qualified Data.ByteString.Char8    as C
 import           Database.CouchDB.Conduit
 
 dbName :: C.ByteString
@@ -20,5 +20,5 @@ encodeKeys xs =
     surroundByQuotes x =
         let quotes = "\""
         in C.concat [quotes, x, quotes]
-    encloseInBrackets x = '[' `C.cons` x `C.append` "]" 
+    encloseInBrackets x = '[' `C.cons` x `C.append` "]"
 

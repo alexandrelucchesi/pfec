@@ -8,8 +8,8 @@ import           Database.CouchDB.Conduit
 import           Database.CouchDB.Conduit.Explicit
 
 import           CouchDB.DBCommon
-import qualified Model.Service as Service
-import qualified Model.UUID as UUID
+import qualified Model.Service                     as Service
+import qualified Model.UUID                        as UUID
 
 findByUUID :: UUID.UUID -> IO Service.Service
 findByUUID uuid = runCouch conn $ do

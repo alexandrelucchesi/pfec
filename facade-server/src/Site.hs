@@ -8,31 +8,32 @@ module Site where
 ------------------------------------------------------------------------------
 import           Control.Applicative
 import           Control.Monad.IO.Class
-import qualified Data.ByteString.Char8 as C
-import           Data.Char (toUpper)
-import qualified Data.Configurator as Config
-import qualified Network as HC (withSocketsDo)
-import qualified Network.HTTP.Conduit as HC
-import qualified Network.HTTP.Types.Status as HC
+import qualified Data.ByteString.Char8     as C
+import           Data.Char                 (toUpper)
+import qualified Data.Configurator         as Config
 import           Data.Time
 import           Data.Word
+import qualified Network                   as HC (withSocketsDo)
+import qualified Network.HTTP.Conduit      as HC
+import qualified Network.HTTP.Types.Status as HC
 import           Snap
 import           Snap.Internal.Http.Types
 import           Snap.Types.Headers
 ------------------------------------------------------------------------------
 import           Application
-import qualified CouchDB.DBToken as DBToken
-import qualified Messages.RqFacade as RQF
-import qualified Messages.RespFacade as REF
-import qualified Model.Service as Service
-import qualified Model.Token as Token
+import qualified CouchDB.DBToken           as DBToken
+import qualified Messages.RespFacade       as REF
+import qualified Messages.RqFacade         as RQF
+import qualified Model.Service             as Service
+import qualified Model.Token               as Token
 import           Model.URI
-import qualified Model.UUID as UUID
+import qualified Model.UUID                as UUID
 import           Util.HttpResponse
-import           Util.JSONWebToken
-    ( fromCompactJWT
-    , toB64JSON
-    )
+import           Util.JSONWebToken         (fromCompactJWT, fromB64JSON, toB64JSON)
+
+------------------------------------------------------------------------------ | Helper function to log things into stdout.
+logStdOut :: MonadIO m => C.ByteString -> m ()
+logStdOut = liftIO . C.putStrLn
 
 ------------------------------------------------------------------------------ | Handler that represents the Facade Server. It acts like a front controller, interceptor and filter.
 facade :: AppHandler ()
@@ -41,60 +42,11 @@ facade = do
     case getHeader "JWT" rq of
         Just jwtCompact -> do
             liftIO $ print jwtCompact
-            (rqFacade :: Maybe RQF.RqFacade) <- liftIO $ fromCompactJWT jwtCompact
+            (rqFacade :: Maybe RQF.RqFacade) <- liftIO $ fromB64JSON jwtCompact
             maybe badRequest handlerRqFacade rqFacade
         _ -> badRequest
 
 ------------------------------------------------------------------------------ | Handler that treats requests to Facade Server.
---handlerRqFacade :: RQF.RqFacade -> AppHandler ()
---handlerRqFacade (RQF.RqFacade01 contractUUID credentialValue) =
---    verifyCredential >>= generateChallenge >>= redirectToAuthServer
---  where
---    verifyCredential :: AppHandler Contract.Contract
---    verifyCredential = do
---        liftIO $ putStrLn "Verifying contract/credential..."
---        contracts <- liftIO $ Db.selectAllContracts
---        let maybeContract = L.find (\c -> Contract.uuid c == contractUUID
---                                          && any (\cred -> Credential.value cred == credentialValue)
---                                                 (Contract.credentials c)
---                                   ) contracts
---        liftIO $ putStr ">> Valid: "
---        maybe (liftIO (putStrLn "False.") >> forbidden)
---              (\c -> liftIO $ putStrLn "True." >> return c)
---              maybeContract
---
---    generateChallenge :: MonadIO m => Contract.Contract -> m (Challenge.ChallengeCredential, Credential.Credential)
---    generateChallenge contract = do
---        liftIO $ putStrLn "Generating credential challenge..."
---        let credentials = Contract.credentials contract
---        index <- liftIO $ liftM (fst . randomR (0, length credentials - 1)) newStdGen
---        let credential = credentials !! index
---        uuid <- liftIO UUID.nextRandom 
---        now <- liftIO getCurrentTime
---        let challenge = Challenge.Challenge {
---            Challenge.uuid         = uuid,
---            Challenge.answer       = Credential.value credential,
---            Challenge.creationDate = now 
---        }
---        liftIO $ putStr ">> Challenge is: "
---        liftIO $ print challenge
---        -- Persist challenge in the database!
---        let newChallengeList = challenge : Contract.challengesCredential contract
---        liftIO $ Db.updateContract contract { Contract.challengesCredential = newChallengeList }
---        return (challenge, credential)
---
---    redirectToAuthServer :: (Challenge.Challenge, Credential.Credential) -> AppHandler ()
---    redirectToAuthServer (challenge, credential) = do
---        liftIO $ putStrLn "Redirecting to Auth Server..."
---        url <- gets _authServerURL
---        let resp = REF.RespFacade01 { REF.authServerURL = url }
---        jwt <- liftIO $ toB64JSON resp
---        let response = setHeader "JWT" jwt emptyResponse
---        finishWith response
-        
-logStdOut :: MonadIO m => C.ByteString -> m ()
-logStdOut = liftIO . C.putStrLn
-
 handlerRqFacade :: RQF.RqFacade -> AppHandler ()
 handlerRqFacade (RQF.RqFacade01 contractUUID authToken) =
     (allow >>= proxify) <|> redirectToAuthServer
@@ -108,12 +60,9 @@ handlerRqFacade (RQF.RqFacade01 contractUUID authToken) =
                        (\token -> logStdOut "Token found!" >> return token)
                        maybeToken
 
-        now <- liftIO $ getCurrentTime
-        unless (not (Token.wasUsed token) && now < Token.expirationDate token)
+        now <- liftIO getCurrentTime
+        unless ({-not (Token.wasUsed token) &&-} now < Token.expiresAt token)
                (logStdOut "Token is no longer valid!" >> pass)
-
-        logStdOut "Setting token to used..."
-        liftIO $ DBToken.setUsed token
 
         req <- getRequest
         let requestedService = if C.null (rqPathInfo req) -- Service identifier
@@ -123,7 +72,7 @@ handlerRqFacade (RQF.RqFacade01 contractUUID authToken) =
 
         unless (UUID.toByteString' (Token.serviceUUID token) == requestedService
                && requestedMethod `elem` Token.allowedMethods token)
-               (logStdOut "Can't access specified service/method." >> forbidden) 
+               (logStdOut "Can't access specified service/method." >> forbidden)
 
         service <- liftIO $ Token.service token
         logStdOut $ C.pack $ "Service requested: " ++ show service
@@ -146,7 +95,7 @@ handlerRqFacade (RQF.RqFacade01 contractUUID authToken) =
 
         logStdOut $ C.pack $ ">>> URL is: " ++ url
 
-        respService <- liftIO $ HC.withSocketsDo $ do 
+        respService <- liftIO $ HC.withSocketsDo $ do
             initReq <- HC.parseUrl url
             let req' = initReq { HC.checkStatus = \_ _ _ -> Nothing
                                , HC.method = method' }
@@ -159,7 +108,7 @@ handlerRqFacade (RQF.RqFacade01 contractUUID authToken) =
         --logStdOut respService
         --logStdOut "---------------------------------------------------------"
 
-        -- Should we copy the information below? I mean, Headers give information
+        -- TODO: Should we copy the information below? I mean, Headers give information
         -- about the actual server running the service...
         let resp = emptyResponse { rspHeaders = fromList $ HC.responseHeaders respService
                                  , rspStatus  = HC.statusCode $ HC.responseStatus respService
@@ -184,7 +133,7 @@ handlerRqFacade (RQF.RqFacade01 contractUUID authToken) =
         logStdOut "Redirecting to Auth Server..."
         url <- gets _authServerURL
         let resp = REF.RespFacade01 {
-                        REF.authServerURL = url
+                        REF.replyTo = url
                    }
         jwt <- liftIO $ toB64JSON resp
         let response = setHeader "JWT" jwt emptyResponse
@@ -206,10 +155,8 @@ app = makeSnaplet "facade-server" "Facade to RESTful web-services." Nothing $ do
     return $ App url
   where
     getAuthServerURL config = do
-        host <- liftIO $ Config.lookupDefault "localhost" config "host" 
+        host <- liftIO $ Config.lookupDefault "localhost" config "host"
         port :: Word16 <- liftIO $ Config.lookupDefault 8000 config "port"
         let maybeUrl = parseURI $ "https://" ++ host ++ ":" ++ show port
-        maybe (error "Could not parse Auth Server's URL.") return maybeUrl 
-
-
+        maybe (error "Could not parse Auth Server's URL.") return maybeUrl
 

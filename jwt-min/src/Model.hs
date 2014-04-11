@@ -1,18 +1,18 @@
-{-# LANGUAGE OverloadedStrings #-} 
+{-# LANGUAGE OverloadedStrings #-}
 
 module Model where
 
-import Data.Aeson
-import Data.Attoparsec
-import Data.Maybe
-import Control.Applicative
-import Control.Monad
-import Prelude hiding (exp)
+import           Control.Applicative
+import           Control.Monad
+import           Data.Aeson
+import           Data.Attoparsec
+import           Data.Maybe
+import           Prelude               hiding (exp)
 
-import qualified Data.Aeson.Types as A
+import qualified Data.Aeson.Types      as A
 import qualified Data.ByteString.Char8 as C
-import qualified Data.HashMap.Strict as M
-import qualified Data.Text as T
+import qualified Data.HashMap.Strict   as M
+import qualified Data.Text             as T
 import qualified Network.URI
 
 -- Datatypes
@@ -32,9 +32,9 @@ data JWEHeader = JWEHeader {
 } deriving (Eq, Show)
 
 data ClaimsSet = ClaimsSet {
-    iss :: StringOrURI,
-    exp :: Integer, -- TODO: Change to some "IntDate".
-    unregisteredClaims :: M.HashMap T.Text Value 
+    iss                :: StringOrURI,
+    exp                :: Integer, -- TODO: Change to some "IntDate".
+    unregisteredClaims :: M.HashMap T.Text Value
 } deriving (Eq, Show)
 
 data StringOrURI = Arbitrary T.Text
@@ -55,7 +55,7 @@ createJWT s = do
 createJWEHeader :: String -> Maybe (String, JWEHeader)
 createJWEHeader s =
     let bs = C.pack s
-    in case parse json bs of 
+    in case parse json bs of
         (Done rest r) ->
             case A.parseMaybe parseJSON r :: Maybe JWEHeader of
                 (Just h) -> Just (C.unpack rest, h)
@@ -66,7 +66,7 @@ createJWEHeader s =
 createHeader :: String -> Maybe (String, Header)
 createHeader s =
     let bs = C.pack s
-    in case parse json bs of 
+    in case parse json bs of
         (Done rest r) ->
             case A.parseMaybe parseJSON r :: Maybe Header of
                 (Just h) -> Just (C.unpack rest, h)
@@ -77,18 +77,18 @@ createHeader s =
 createClaimsSet :: String -> Maybe (String, ClaimsSet)
 createClaimsSet s =
     let bs = C.pack s
-    in case parse json bs of 
+    in case parse json bs of
         (Done rest r) ->
             case A.parseMaybe parseJSON r :: Maybe ClaimsSet of
                 (Just cs) -> Just (C.unpack rest, cs)
                 _                -> Nothing
         _             -> Nothing
 
--- Instance Declarations 
+-- Instance Declarations
 instance ToJSON JWT where
     toJSON (JWT h cs) =
         object [ "header"    .= toJSON h
-               , "claimsSet" .= toJSON cs ] 
+               , "claimsSet" .= toJSON cs ]
 
 instance FromJSON Header where
     parseJSON (Object v) =

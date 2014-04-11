@@ -7,9 +7,9 @@ import           Control.Applicative
 import           Control.Lens
 import           Control.Monad
 import           Control.Monad.IO.Class
-import           Data.ByteString (ByteString)
+import           Data.ByteString                  (ByteString)
 import           Data.Int
-import qualified Data.List                       as L
+import qualified Data.List                        as L
 import           Data.Maybe
 import qualified Data.Text                        as T
 import           Data.Time                        (UTCTime)
@@ -42,7 +42,7 @@ data User = User
           } deriving (Eq, Show)
 
 data Contract = Contract
-              { contrCode     :: Maybe Int64 
+              { contrCode     :: Maybe Int64
               , contrUsers    :: [User]
               , contrServices :: [Service]
               } deriving (Eq, Show)
@@ -61,7 +61,7 @@ findCredentialById credCode = do
     case r of
          [Only cred :: Only T.Text] -> return $ Just $ Credential (Just credCode) cred
          _            -> return Nothing
-         
+
 findCredentialByName :: T.Text -> Handler App Sqlite (Maybe Credential)
 findCredentialByName cred = do
     r <- query "SELECT cod_credencial FROM tb_credencial WHERE credencial = ?" (Only cred)
@@ -78,7 +78,7 @@ listCredentialsByUserId userId = do
          _ -> return []
 
 findUserById :: Int64 -> Handler App Sqlite (Maybe User)
-findUserById userId = do 
+findUserById userId = do
     r <- query "SELECT login, password FROM tb_usuario WHERE cod_usuario = ?" (Only userId)
     credentials <- listCredentialsByUserId userId
     case r of
@@ -99,7 +99,7 @@ listUsersByContractId contrId = do
         _ -> return []
 
 findContractById :: Int64 -> Handler App Sqlite (Maybe Contract)
-findContractById contrId = do 
+findContractById contrId = do
     r <- query "SELECT cod_contrato FROM tb_contrato WHERE cod_contrato = ?" (Only contrId)
     users <- listUsersByContractId contrId
     services <- listServicesByContractId contrId
@@ -108,7 +108,7 @@ findContractById contrId = do
         _ -> return Nothing
 
 findContractByUserId :: Int64 -> Handler App Sqlite (Maybe Contract)
-findContractByUserId userId = do 
+findContractByUserId userId = do
     r <- query "SELECT cod_contrato FROM tb_usuario WHERE cod_usuario = ?" (Only userId)
     case r of
         [Only contrId :: Only Int64] -> findContractById contrId
@@ -149,7 +149,7 @@ canAccessService contract credential service = do
                             , "INNER JOIN tb_contrato_servico cs"
                             , "INNER JOIN tb_servico_credencial sc"
                             , "ON s.cod_servico = cs.cod_servico AND sc.cod_contrato_servico = cs.cod_contrato_servico"
-                            , "AND cs.cod_contrato = ? AND sc.credencial_auth LIKE ?" 
+                            , "AND cs.cod_contrato = ? AND sc.credencial_auth LIKE ?"
                             , "AND s.url_servico = ? AND sc.datetime_exp > datetime('now')" ]
     [Only status :: Only Int64] <- query (S.Query queryStr) (contract, credential, show service)
     return $ status > 0

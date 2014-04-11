@@ -6,20 +6,16 @@ module CouchDB.DBContract where
 
 import           Control.Applicative
 import           Control.Monad.IO.Class            (MonadIO, liftIO)
-import           Data.Aeson 
-import qualified Data.ByteString.Char8 as C
+import           Data.Aeson
+import qualified Data.ByteString.Char8             as C
 import           Database.CouchDB.Conduit
 import           Database.CouchDB.Conduit.Explicit
 
 import           CouchDB.DBCommon
-import qualified Model.Contract as Contract
-    ( Contract(..)
-    )
-import qualified Model.UUID as UUID
-    ( UUID(..)
-    , toByteString'
-    , nextRandom
-    )
+import qualified Model.Contract                    as Contract (Contract (..))
+import qualified Model.UUID                        as UUID (UUID (..),
+                                                            nextRandom,
+                                                            toByteString')
 
 -- TODO: Catch exceptions.
 findByUUID :: UUID.UUID -> IO Contract.Contract
@@ -48,7 +44,7 @@ selectAll = do
 
 create :: Contract.Contract -> IO Contract.Contract
 create contract = do
-    uuid <- liftIO UUID.nextRandom 
+    uuid <- liftIO UUID.nextRandom
     update contract { Contract.uuid     = uuid
                     , Contract.revision = "" }
 

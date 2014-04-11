@@ -8,14 +8,15 @@
 module Application where
 
 ------------------------------------------------------------------------------
-import Control.Lens
-import Snap
---import Model.Contract
+import           Control.Lens
+import           Model.URI    (URI)
+import           Snap
 
 ------------------------------------------------------------------------------
 
 data App = App
-    { -- _contracts     :: [Contract]
+    {
+        _facadeServerURL :: URI
     }
 
 makeLenses ''App

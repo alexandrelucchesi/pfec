@@ -1,24 +1,24 @@
-{-# LANGUAGE OverloadedStrings #-} 
-{-# LANGUAGE ScopedTypeVariables #-} 
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Brubles where
 
-import Data.Aeson
-import qualified Data.ByteString as B
-import qualified Data.ByteString.Char8 as C
+import           Control.Monad
+import qualified Crypto.Padding             as K
+import           Data.Aeson
+import qualified Data.ByteString            as B
+import qualified Data.ByteString.Char8      as C
 import qualified Data.ByteString.Lazy.Char8 as CL
-import Control.Monad
-import qualified Crypto.Padding as K
-import qualified Data.Text as T
-import qualified Data.Text.IO as T
-import qualified Data.Text.Encoding as T
+import qualified Data.Text                  as T
+import qualified Data.Text.Encoding         as T
+import qualified Data.Text.IO               as T
 
-import qualified JWE as E
-import qualified JWS as S
+import qualified JWE                        as E
+import qualified JWS                        as S
 import qualified JWT
-import Util
+import           Util
 --import Messages.Types hiding (fromCompactJWT)
-import Messages.RqFacade
+import           Messages.RqFacade
 
 main :: IO ()
 main = do
@@ -52,7 +52,7 @@ test = do
                          , authorCredential = Just "abc"
                          }
         jwe = S.signJWS clientPrivKey (T.decodeUtf8 . CL.toStrict . encode $ msg)
-        jwt = JWT.encrypt g serverPubKey (T.decodeUtf8 jwe) 
+        jwt = JWT.encrypt g serverPubKey (T.decodeUtf8 jwe)
 
     C.putStrLn jwt
 
@@ -60,7 +60,7 @@ test = do
 --    serverPrivKey <- liftM read $ readFile "/Users/alexandrelucchesi/Development/haskell/pfec/server-common/resources/keys/rsa-key.priv"
 --    clientPubKey  <- liftM read $ readFile "/Users/alexandrelucchesi/Development/haskell/pfec/server-common/resources/keys/TJDFT/rsa-key.pub"
 
---    let (header, jwe') = E.decryptJWE serverPrivKey jwt 
+--    let (header, jwe') = E.decryptJWE serverPrivKey jwt
 --        (Right msg')   = S.verifyJWS clientPubKey (T.encodeUtf8 jwe')
     (res :: Maybe RqFacade) <- fromCompactJWT jwt
 --    res <- fromCompactJWT jwt

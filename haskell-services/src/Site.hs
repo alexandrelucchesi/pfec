@@ -12,8 +12,8 @@ module Site
 import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.IO.Class
-import           Data.ByteString (ByteString)
-import qualified Data.ByteString.Char8 as C
+import           Data.ByteString        (ByteString)
+import qualified Data.ByteString.Char8  as C
 import           Snap.Core
 import           Snap.Snaplet
 ------------------------------------------------------------------------------
@@ -30,14 +30,14 @@ add = do
             y' <- y >>= (fst <$>) . C.readInt
             return $ x' + y'
     writeBS . C.pack $ "Sum is: " ++ show res
-    
+
 
 ------------------------------------------------------------------------------ | Service that adds to numbers.
 askGoogle :: Snap ()
 askGoogle = redirect "http://www.google.com"
 
 
------------------------------------------------------------------------------- | Service that says hello every time it's called. 
+------------------------------------------------------------------------------ | Service that says hello every time it's called.
 hello :: Snap ()
 hello = writeBS "Hello!"
 

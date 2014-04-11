@@ -2,66 +2,77 @@
 
 module Test where
 
-import           Data.ByteString (ByteString)
+import           Control.Applicative
+import           Control.Monad.IO.Class
+import           Data.Aeson
+import           Data.ByteString   (ByteString)
+import qualified Data.ByteString.Lazy.Char8 as CL
 import qualified Data.Map          as M
-import qualified Messages.RqAuth as RQA
+import qualified Messages.RqAuth   as RQA
+import qualified Messages.RespAuth as REA
 import           Site
+import           Snap.Internal.Http.Types
 import           Snap.Snaplet.Test
 import qualified Snap.Test         as ST
+import           Snap.Iteratee     as IT
 
-import qualified Model.UUID as UUID
+import qualified Model.UUID        as UUID
+import           Util.JSONWebToken
+import           Util.Base64       as B64
 
-type ChallengeCredentialUUID = UUID.UUID
-type Credential = ByteString
-testRqAuth01 :: ChallengeCredentialUUID -> Credential -> IO ()
-testRqAuth01 challengeUUID credential = do
-    let rqBuilder = ST.get "" M.empty
-    resp <- runHandler message rqBuilder (handlerRqAuth request) app
-    print resp
+runTest :: ToJSON a => Maybe String -> a -> IO ()
+runTest message request = do
+    let rqBuilder = do
+            ST.get "" M.empty
+            req <- liftIO $ toB64JSON request
+            ST.addHeader "JWT" req 
+            ST.setSecure True   -- Enables HTTPs
+    resp <- runHandler message rqBuilder auth app
+    either print
+           (\r -> do
+                putStrLn $ replicate 80 '-'
+                ST.dumpResponse r                
+                putStrLn $ replicate 80 '-'
+                print $ B64.decode' <$> getHeader "JWT" r
+           ) resp 
+
+-- Left the code below for the sake of anger.
+-- I spent hours struggling to understand this shit of Iterators,
+-- Iteratees, Enumerators, Enumeratees.
+-- I made it work (code below), but then I found the 'dumpResponse'
+-- function above... Fuck you!
+--    case resp of
+--        (Left msg) -> print msg
+--        (Right resp') -> do
+--            putStr "JWT Header: " >> print (getHeader "JWT" resp')
+--            putStrLn "Response Body: "
+--            let enumerator = rspBodyToEnum $ rspBody resp'
+--                enumeratee = enumBuilderToByteString
+--                iteratee = IT.printChunks True
+--                newEnumerator = enumerator $= enumeratee
+--            IT.runIteratee iteratee >>= IT.run_ . newEnumerator
+
+testRqAuth01 :: ContractUUID -> IO ()
+testRqAuth01 contractUUID = runTest message request
   where
-    message = Just "Requests to Auth Server providing the challenge code and a credential."
+    message = Just "Requests an authentication to Auth Server, providing the contract UUID"
     request = RQA.RqAuth01 {
-                  RQA.challengeCredentialUUID = challengeUUID,
-                  RQA.credential              = credential
+                  RQA.contractUUID = contractUUID
               }
 
-type ChallengeAuthUUID = UUID.UUID
-type Login = ByteString
-type Password = ByteString
-testRqAuth02 :: ChallengeAuthUUID -> Login -> Password -> IO ()
-testRqAuth02 challengeUUID login password = do
-    let rqBuilder = ST.get "" M.empty
-    resp <- runHandler message rqBuilder (handlerRqAuth request) app
-    print resp
+type ChallengeUUID = UUID.UUID
+type ContractUUID = UUID.UUID
+type ServiceUUID = UUID.UUID
+type Credential = ByteString
+testRqAuth02 :: ChallengeUUID -> ContractUUID -> ServiceUUID -> Credential -> IO ()
+testRqAuth02 challengeUUID contractUUID serviceUUID credential =
+    runTest message request
   where
-    message = Just "Requests to Auth Server providing the challenge code and user login and password."
+    message = Just "Requests an authorization token to Auth Server answering the challenge: providing the challenge UUID, the contract UUID, service UUID and a credential."
     request = RQA.RqAuth02 {
-                  RQA.challengeAuthUUID = challengeUUID,
-                  RQA.login             = login,
-                  RQA.password          = password
+                  RQA.challengeUUID = challengeUUID,
+                  RQA.contractUUID' = contractUUID,
+                  RQA.serviceUUID   = serviceUUID,
+                  RQA.credential    = credential
               }
-
-
---type AuthorizationToken = ByteString
---type Method = ByteString
---type Service = ByteString
---testRqFacade02 :: ContractCode -> Credential -> AuthorizationToken -> Method -> Service -> IO ()
---testRqFacade02 contractCode credential authorizationToken method service = do
---    let rqBuilder =
---            case method of
---                "POST"   -> ST.postUrlEncoded service M.empty 
---                "PUT"    -> ST.put service "application/json" "{}"
---                "DELETE" -> ST.delete service M.empty
---                _        -> ST.get service M.empty
---    resp <- runHandler message rqBuilder (handlerRqFacade request) app
---    print resp
---  where
---    message = Just "Requests to Facade server providing "
---    request = RQF.RqFacade02 {
---                  RQF.contractCode       = contractCode,
---                  RQF.credential'        = credential,
---                  RQF.authorizationToken = authorizationToken
---              }
-
-
 

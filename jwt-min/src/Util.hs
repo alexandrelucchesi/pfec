@@ -1,17 +1,18 @@
-{-# LANGUAGE OverloadedStrings, PackageImports #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE PackageImports    #-}
 
 module Util where
 
-import Control.Monad
-import qualified Crypto.PubKey.RSA as K
-import qualified Crypto.Types.PubKey.ECC as ECC
+import           Control.Monad
 import qualified Crypto.PubKey.ECC.Generate as ECC
-import qualified "crypto-random" Crypto.Random as K
-import qualified Data.ByteString as B
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as T
+import qualified Crypto.PubKey.RSA          as K
+import qualified "crypto-random" Crypto.Random              as K
+import qualified Crypto.Types.PubKey.ECC    as ECC
+import qualified Data.ByteString            as B
+import qualified Data.Text                  as T
+import qualified Data.Text.Encoding         as T
 
-import qualified Base64 as B64
+import qualified Base64                     as B64
 
 cek :: (K.CPRG c) => c -> (B.ByteString, c)
 cek = K.cprgGenerate 32
@@ -40,7 +41,7 @@ genRS256Keys = do
     writeFile "data/keys/rsa/rec_key.priv" $ show recipientPrivKey
     writeFile "data/keys/rsa/sen_key.pub"  $ show senderPubKey
     writeFile "data/keys/rsa/sen_key.priv" $ show senderPrivKey
-    
+
 genECCKeys :: IO ()
 genECCKeys = do
     g <- cprg

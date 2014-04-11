@@ -39,6 +39,7 @@ Executable auth-server
     aeson-pretty,
     base64-bytestring,
     attoparsec,
+    configurator,
     containers,
     crypto-api,
     couchdb-conduit,

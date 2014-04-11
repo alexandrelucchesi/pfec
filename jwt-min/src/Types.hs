@@ -1,6 +1,6 @@
 module Types where
 
-import Data.Text
+import           Data.Text
 
 type JWSPayload   = Text
 type JWEPlaintext = Text
@@ -29,7 +29,7 @@ data JWTHeader =
 data JWSHeader = JWSHeader {
     jWSHeaderAlg :: Alg
 } deriving (Eq, Show)
-    
+
 data JWEHeader = JWEHeader {
     jWEHeaderAlg :: Alg,
     jWEHeaderEnc :: Enc

@@ -11,29 +11,42 @@ module Site where
 
 ------------------------------------------------------------------------------
 import           Control.Monad.IO.Class
-import qualified Data.ByteString.Char8 as C
-import qualified Data.List as L
+import qualified Data.ByteString.Char8  as C
+import qualified Data.Configurator      as Config
 import           Data.Maybe
 import           Data.Time
-import qualified Safe
-import qualified System.Entropy as Entropy
-import           System.Random
+import           Data.Word              (Word16)
 import           Snap
+import qualified System.Entropy         as Entropy
+import           System.Random
 ------------------------------------------------------------------------------
 import           Application
-import qualified Db
-import qualified Messages.RqAuth as RQA
-import qualified Messages.RespAuth as REA
-import qualified Model.Challenge as Challenge
-import qualified Model.Contract as Contract
-import qualified Model.Token as Token
-import qualified Model.User as User
-import qualified Model.UUID as UUID
+import qualified CouchDB.DBChallenge    as DBChallenge
+import qualified CouchDB.DBContract     as DBContract
+import qualified CouchDB.DBToken        as DBToken
+import qualified Messages.RespAuth      as REA
+import qualified Messages.RqAuth        as RQA
+import qualified Model.Challenge        as Challenge
+import qualified Model.Contract         as Contract
+import qualified Model.Credential       as Credential
+import qualified Model.Token            as Token
 import           Model.URI
-import qualified Util.Base64 as B64
+import qualified Util.Base64            as B64
 import           Util.HttpResponse
 import           Util.JSONWebToken
 
+
+------------------------------------------------------------------------------ | Helper function to log things into stdout.
+logStdOut :: MonadIO m => C.ByteString -> m ()
+logStdOut = liftIO . C.putStrLn
+
+------------------------------------------------------------------------------ | Sends response when everything went fine.
+sendResponse :: REA.RespAuth -> AppHandler ()
+sendResponse resp = do
+        logStdOut "Sending response..."
+        jwt <- liftIO $ toB64JSON resp
+        let response = setHeader "JWT" jwt emptyResponse
+        finishWith response
 
 ------------------------------------------------------------------------------ | Handler that authenticates users.
 auth :: Handler App App ()
@@ -41,108 +54,105 @@ auth = do
     rq <- getRequest
     case getHeader "JWT" rq of
         Just jwtCompact -> do
-            (rqAuth :: Maybe RQA.RqAuth) <- liftIO $ fromCompactJWT jwtCompact
-            maybe badRequest handlerRqAuth rqAuth
+            (rqAuth :: Maybe RQA.RqAuth) <- liftIO $ fromB64JSON jwtCompact
+            maybe badRequest (sendResponse <=< handlerRqAuth) rqAuth
         _ -> badRequest
-    
-handlerRqAuth :: RQA.RqAuth -> AppHandler ()
-handlerRqAuth (RQA.RqAuth01 challengeUUID credentialValue) =
-    verifyChallengeCredential >>= generateChallengeAuth >>= makeResponse
-  where
-    verifyChallengeCredential :: AppHandler Contract.Contract
-    verifyChallengeCredential = do
-        liftIO $ putStrLn "Verifying credential challenge..."
-        contracts <- liftIO Db.selectAllContracts
-        let maybeContract =
-                L.find (\c -> any (\chal -> Challenge.uuid chal == challengeUUID
-                                            && Challenge.answer chal == credentialValue)
-                                  (Contract.challengesCredential c))
-                       contracts
-        maybe forbidden return maybeContract
 
-    generateChallengeAuth :: (MonadIO m) => Contract.Contract -> m (Challenge.ChallengeAuth, User.User)
-    generateChallengeAuth contract = do
-        liftIO $ putStrLn "Generating auth challenge..."
-        let users = Contract.users contract
-        index <- liftIO $ liftM (fst . randomR (0, length users - 1)) newStdGen
-        let user = users !! index
-        uuid <- liftIO UUID.nextRandom 
+handlerRqAuth :: RQA.RqAuth -> AppHandler REA.RespAuth
+handlerRqAuth (RQA.RqAuth01 contractUUID) =
+    generateChallenge >>= makeResponse
+  where
+    generateChallenge :: MonadIO m => m (Challenge.Challenge, Credential.Credential)
+    generateChallenge = do
+        logStdOut "Generating challenge..."
+        contract <- liftIO $ DBContract.findByUUID contractUUID -- TODO: Improve findByUUID to return Maybe Contract.
+        let credentials = Contract.credentials contract
+        index <- liftIO $ liftM (fst . randomR (0, length credentials - 1)) newStdGen
+        let credential = credentials !! index
         now <- liftIO getCurrentTime
-        let challenge = Challenge.Challenge {
-            Challenge.uuid         = uuid,
-            Challenge.answer       = C.concat [User.login user, "-", User.password user],
-            Challenge.creationDate = now 
-        }
-        liftIO $ putStrLn "Challenge is..."
-        liftIO $ print challenge
+
+        let answer = Credential.value credential
+            expiresAt = addUTCTime 3600 now
+            challenge = Challenge.new contractUUID
+                                      answer
+                                      expiresAt
+
         -- Persist challenge in the database!
-        let newChallengeList = challenge : Contract.challengesAuth contract
-        liftIO $ Db.updateContract contract { Contract.challengesAuth = newChallengeList }
-        return (challenge, user)
+        challenge' <- liftIO $ DBChallenge.create challenge
+        logStdOut ">> Challenge is: "
+        liftIO $ print challenge'
+        return (challenge', credential)
 
-    makeResponse :: (Challenge.Challenge, User.User) -> AppHandler ()
-    makeResponse (challenge, user) = do
+    makeResponse :: MonadSnap m => (Challenge.Challenge, Credential.Credential) -> m REA.RespAuth
+    makeResponse (challenge, credential) = do
         req <- getRequest
-        let url = "https://" ++ (C.unpack $ rqServerName req)
-                             ++ ':' : (show $ rqServerPort req)
+        -- Gets its current URL.
+        let url = "https://" ++ C.unpack (rqServerName req)
+                             ++ ':' : show (rqServerPort req)
                              ++ "/auth"
-            resp = REA.RespAuth01 (fromJust $ parseURI url)
-                                  (Challenge.uuid challenge)
-                                  (User.code user)
-        jwt <- liftIO $ toB64JSON resp
-        let response = setHeader "JWT" jwt emptyResponse
-        finishWith response
+            resp = REA.RespAuth01 {
+                        REA.replyTo        = fromJust $ parseURI url,
+                        REA.credentialCode = Credential.code credential,
+                        REA.challengeUUID  = fromJust $ Challenge.uuid challenge,
+                        REA.expiresAt      = Challenge.expiresAt challenge
+                   }
+        return resp
 
-handlerRqAuth (RQA.RqAuth02 challengeUUID login password) =
-    verifyChallengeAuth >>= emitAuthToken >>= makeResponse
-
+handlerRqAuth (RQA.RqAuth02 challengeUUID contractUUID serviceUUID credential) =
+    verifyChallenge >>= verifyPermissions >> emitAuthToken >>= makeResponse
   where
-    verifyChallengeAuth :: AppHandler Contract.Contract
-    verifyChallengeAuth = do
-        liftIO $ putStrLn "Verifying auth challenge..."
-        contracts <- liftIO Db.selectAllContracts
-        let answer = C.concat [login, "-", password]
-            maybeContract =
-                L.find (\c -> any (\chal -> Challenge.uuid chal == challengeUUID
-                                            && Challenge.answer chal == answer)
-                                  (Contract.challengesAuth c))
-                       contracts
-        maybe forbidden return maybeContract
+    verifyChallenge :: AppHandler Contract.Contract
+    verifyChallenge = do
+        logStdOut "Verifying challenge..."
+        maybeChallenge <- liftIO $ DBChallenge.findChallenge challengeUUID contractUUID
 
-    emitAuthToken :: (MonadIO m) => Contract.Contract -> m Token.Token
-    emitAuthToken contract = do
-        liftIO $ putStrLn "Emitting authorization token..."
-        liftIO $ putStrLn "Searching for a still valid token..."
-        let maybeToken =
-                Safe.lastMay $ L.sortBy (\t1 t2 -> Token.expirationDate t1
-                                            `compare` Token.expirationDate t2)
-                                        (Contract.tokens contract)
+        challenge <- maybe forbidden return maybeChallenge
+        logStdOut "Challenge exists..."
+
+        unless (not $ Challenge.wasAnswered challenge) $
+               logStdOut "It was already answered!" >> forbidden
+        logStdOut "It was not answered yet..."
+
+        challenge' <- liftIO $ DBChallenge.setAnswered challenge
+        logStdOut "Changed challenge status to ANSWERED!"
+
+        unless (credential == Challenge.answer challenge') $
+               logStdOut "Answer is WRONG!" >> forbidden
+        logStdOut "Answer is CORRECT!"
+
+        liftIO $ Challenge.contract challenge'
+
+    verifyPermissions :: (MonadSnap m) => Contract.Contract -> m ()
+    verifyPermissions contract = do
+        logStdOut "Verifying service permissions..."
+        unless (serviceUUID `elem` Contract.allowedServicesUUIDs contract) $
+               logStdOut "Access DENIED!" >> forbidden
+        logStdOut "Access GRANTED!"
+
+    emitAuthToken :: (MonadIO m) => m Token.Token
+    emitAuthToken = do
+        logStdOut "Emitting authorization token..."
+
+        logStdOut "Searching for a still valid token for the service..."
+        maybeToken <- liftIO $ DBToken.findAvailableToken contractUUID serviceUUID
+
         -- TODO: Improve design in "case of". Duplicated code.
         case maybeToken of
             Just token -> do
                 now <- liftIO getCurrentTime
-                if Token.expirationDate token > now
+                if Token.expiresAt token > now
                     then do
-                        liftIO $ putStr ">> Found: "
-                        liftIO $ C.putStrLn $ Token.value token
+                        logStdOut "FOUND: "
+                        logStdOut $ Token.value token
                         return token
                     else do
-                        liftIO $ putStrLn ">> Not found."
+                        logStdOut "NOT FOUND!"
                         newToken <- generateAuthToken
-                        let newTokenList = newToken : Contract.tokens contract
-                            newContract = contract { Contract.tokens = newTokenList }
-                        -- Persist updated contract!
-                        liftIO $ Db.updateContract newContract
-                        return newToken
-
+                        liftIO $ DBToken.create newToken -- Persist new token!
             _ -> do
-                liftIO $ putStrLn ">> Contract has no token."
+                logStdOut "Contract hasn't accessed the specified service yet..."
                 newToken <- generateAuthToken
-                let newTokenList = newToken : Contract.tokens contract
-                    newContract = contract { Contract.tokens = newTokenList }
-                -- Persist updated contract!
-                liftIO $ Db.updateContract newContract
-                return newToken
+                liftIO $ DBToken.create newToken -- Persist new token!
       where
         -- The method I'm using to generate random bytes can be an overhead
         -- in systems which don't have the instruction RDRAND, but it seems
@@ -150,26 +160,29 @@ handlerRqAuth (RQA.RqAuth02 challengeUUID login password) =
         -- See this answer: http://stackoverflow.com/questions/20889729/how-to-properly-generate-a-random-bytestring-in-haskell
         generateAuthToken :: (MonadIO m) => m Token.Token
         generateAuthToken = do
-            liftIO $ putStrLn "Generating auth token..."
-            token <- liftIO $ liftM B64.encode' $ Entropy.getEntropy 64 -- Size in bytes.
+            logStdOut "Generating auth token..."
+            tokenValue <- liftIO $ liftM B64.encode' $ Entropy.getEntropy 64 -- Size in bytes.
             now <- liftIO getCurrentTime
-            let newToken = Token.Token {
-                                Token.value          = token,
-                                Token.creationDate   = now,
-                                Token.expirationDate = addUTCTime 3600 now
-                           }
-            liftIO $ putStr ">> New token: "
-            liftIO $ C.putStrLn token
+            let expiresAt = addUTCTime 3600 now
+                allowedMethods = ["GET", "POST", "PUT", "DELETE"] -- TODO: Are we going to restrict on the HTTP method level? If so, change implementation.
+            let newToken = Token.new tokenValue
+                                     contractUUID
+                                     serviceUUID
+                                     allowedMethods
+                                     expiresAt
+
+            logStdOut "New token: "
+            logStdOut tokenValue
             return newToken
 
-    makeResponse :: Token.Token -> AppHandler ()
+    makeResponse :: Token.Token -> AppHandler REA.RespAuth
     makeResponse token = do
-        let resp = REA.RespAuth02 (Token.value token)
-                                  (Token.expirationDate token)
-        jwt <- liftIO $ toB64JSON resp
-        let response = setHeader "JWT" jwt emptyResponse
-        finishWith response
-    
+        url <- gets _facadeServerURL
+        let resp = REA.RespAuth02 url
+                                  (Token.value token)
+                                  (Token.expiresAt token)
+        return resp
+
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(C.ByteString, Handler App App ())]
@@ -181,6 +194,15 @@ routes = [ ("/auth", auth)
 -- | The application initializer.
 app :: SnapletInit App App
 app = makeSnaplet "auth-server" "REST-based authentication server." Nothing $ do
+    config <- liftIO $ Config.load [Config.Required "resources/devel.cfg"]
+    url <- getAuthServerURL config
     addRoutes routes
-    return App
+    wrapSite (logStdOut (C.replicate 25 '-') *>)
+    return $ App url
+  where
+    getAuthServerURL config = do
+        host <- liftIO $ Config.lookupDefault "localhost" config "host"
+        port :: Word16 <- liftIO $ Config.lookupDefault 9000 config "port"
+        let maybeUrl = parseURI $ "https://" ++ host ++ ":" ++ show port
+        maybe (error "Could not parse Facade Server's URL.") return maybeUrl
 
