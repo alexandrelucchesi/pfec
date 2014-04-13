@@ -109,6 +109,12 @@ handlerRqAuth (RQA.RqAuth02 challengeUUID contractUUID serviceUUID credential) =
         challenge <- maybe forbidden return maybeChallenge
         logStdOut "Challenge exists..."
 
+        now <- liftIO getCurrentTime
+        unless (now < Challenge.expiresAt challenge) $
+               -- TODO: Should we generate a new challenge here and send it back
+               -- to the client?
+               logStdOut "Specified challenge has expired!" >> forbidden
+
         unless (not $ Challenge.wasAnswered challenge) $
                logStdOut "It was already answered!" >> forbidden
         logStdOut "It was not answered yet..."

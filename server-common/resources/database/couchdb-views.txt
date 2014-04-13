@@ -1,0 +1,32 @@
+===================================================================================
+listAvailableTokens
+===================================================================================
+
+function(doc) {
+  if (doc.type && doc.type == 'token') {
+      emit([doc.contractUUID, doc.serviceUUID, doc.expiresAt], doc);
+  }
+}
+
+===================================================================================
+listTokensWithContractUUID
+===================================================================================
+function(doc) {
+  if (doc.type && doc.type == 'token') {
+      emit([doc.contractUUID, doc.value], doc);
+  }
+}
+
+===================================================================================
+listChallengesWithContractUUID
+===================================================================================
+
+function(doc) {
+  if (doc.type && doc.type == 'challenge') {
+      emit([doc._id, doc.contractUUID], doc);
+  }
+}
+
+
+
+
