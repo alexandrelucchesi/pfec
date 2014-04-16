@@ -11,6 +11,7 @@ import           Control.Monad.IO.Class
 import qualified Data.ByteString.Char8     as C
 import           Data.Char                 (toUpper)
 import qualified Data.Configurator         as Config
+import           Data.Maybe
 import           Data.Time
 import           Data.Word
 import qualified Network                   as HC (withSocketsDo)
@@ -21,28 +22,60 @@ import           Snap.Internal.Http.Types
 import           Snap.Types.Headers
 ------------------------------------------------------------------------------
 import           Application
+import qualified CouchDB.DBContract        as DBContract
 import qualified CouchDB.DBToken           as DBToken
 import qualified Messages.RespFacade       as REF
 import qualified Messages.RqFacade         as RQF
+import qualified Model.Contract             as Contract
 import qualified Model.Service             as Service
 import qualified Model.Token               as Token
 import           Model.URI
 import qualified Model.UUID                as UUID
 import           Util.HttpResponse
-import           Util.JSONWebToken         (fromCompactJWT, fromB64JSON, toB64JSON)
+import           Util.JSONWebToken
+    ( decrypt
+    , verify
+    , serverPrivKey
+    , signAndEncrypt
+    )
+import           Util.Typeclasses
 
 ------------------------------------------------------------------------------ | Helper function to log things into stdout.
 logStdOut :: MonadIO m => C.ByteString -> m ()
 logStdOut = liftIO . C.putStrLn
 
+------------------------------------------------------------------------------ | Parses a JWT token in the compact form to a RqFacade data type.
+fromJWT :: C.ByteString -> AppHandler (Maybe RQF.RqFacade)
+fromJWT jwtCompact = do
+    privKey <- liftIO serverPrivKey
+    let (res :: Maybe (RQF.RqFacade, C.ByteString)) = decrypt privKey jwtCompact
+    case res of
+        Just (rqAuth, msg) -> do
+            -- TODO: Improve findByUUID to return Maybe Contract.
+            contract <- liftIO $ DBContract.findByUUID $ getContractUUID rqAuth 
+            let maybePubKey = listToMaybe $ Contract.publicKeys contract
+            status <- maybe ((logStdOut . C.pack) ("Contract " ++ show (Contract.uuid contract) ++ " has no public keys.")
+                            >> return False)
+                            (return . (`verify` msg))
+                            maybePubKey
+            logStdOut . C.pack $ "Signature "
+                ++ (if status then "was" else "could not be")
+                ++ " verified!"
+            -- Accessing the contract of the current request is a recorrent
+            -- task. So we put it into the State Monad so that we can access it
+            -- without querying the database again.
+            -- Eg: When generating the response we need the contract's public key.
+            modify (\s -> s { _maybeContract = Just contract } )
+            return $ if status then Just rqAuth else Nothing
+        _ -> return Nothing
 ------------------------------------------------------------------------------ | Handler that represents the Facade Server. It acts like a front controller, interceptor and filter.
 facade :: AppHandler ()
+
 facade = do
     rq <- getRequest
     case getHeader "JWT" rq of
         Just jwtCompact -> do
-            liftIO $ print jwtCompact
-            (rqFacade :: Maybe RQF.RqFacade) <- liftIO $ fromB64JSON jwtCompact
+            rqFacade <- fromJWT jwtCompact
             maybe badRequest handlerRqFacade rqFacade
         _ -> badRequest
 
@@ -128,14 +161,18 @@ handlerRqFacade (RQF.RqFacade01 contractUUID authToken) =
         methodToStr (Method m) = C.map toUpper m
         methodToStr _          = error "Site.hs: methodToStr: Not acceptable method."
 
+    -- TODO: Wouldn't it be better a simple HTTP redirect (302)?
     redirectToAuthServer :: AppHandler ()
     redirectToAuthServer = do
         logStdOut "Redirecting to Auth Server..."
         url <- gets _authServerURL
+        Just contract <- gets _maybeContract
         let resp = REF.RespFacade01 {
                         REF.replyTo = url
                    }
-        jwt <- liftIO $ toB64JSON resp
+            pubKey = fromJust $ listToMaybe $ Contract.publicKeys contract
+        privKey <- liftIO serverPrivKey
+        jwt <- liftIO $ signAndEncrypt privKey pubKey resp 
         let response = setHeader "JWT" jwt emptyResponse
         finishWith response
 
@@ -152,7 +189,7 @@ app = makeSnaplet "facade-server" "Facade to RESTful web-services." Nothing $ do
     url <- getAuthServerURL config
     addRoutes routes
     wrapSite (logStdOut (C.replicate 25 '-') *>)
-    return $ App url
+    return $ App url Nothing
   where
     getAuthServerURL config = do
         host <- liftIO $ Config.lookupDefault "localhost" config "host"

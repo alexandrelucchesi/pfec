@@ -8,6 +8,7 @@ import           Data.Aeson
 import           Data.ByteString     (ByteString)
 
 import           Model.UUID          (UUID)
+import           Util.Typeclasses
 
 ------------------------------------------------------------------------------ | Data type holding the message's formats a client can send to Facade Server.
 --
@@ -29,4 +30,13 @@ instance FromJSON RqFacade where
         RqFacade01 <$> v .: "contractUUID"
                    <*> v .: "authorizationToken"
     parseJSON _ = mzero
+
+instance ToJSON RqFacade where
+    toJSON (RqFacade01 cu at) =
+        object [ "contractUUID"       .= cu
+               , "authorizationToken" .= at
+               ]
+
+instance HasContractUUID RqFacade where
+    getContractUUID (RqFacade01 cu _) = cu
 

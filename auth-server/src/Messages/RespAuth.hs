@@ -2,6 +2,8 @@
 
 module Messages.RespAuth where
 
+import           Control.Applicative
+import           Control.Monad
 import           Data.Aeson
 import           Data.ByteString (ByteString)
 import           Data.Int        (Int64)
@@ -51,4 +53,16 @@ instance ToJSON RespAuth where
                , "authorizationToken" .= at
                , "expiresAt"          .= ea
                ]
+
+instance FromJSON RespAuth where
+    parseJSON (Object v) =
+        RespAuth01 <$> v .: "replyTo"
+                   <*> v .: "credentialCode"
+                   <*> v .: "challengeUUID"
+                   <*> v .: "expiresAt"
+        <|> RespAuth02 <$> v .: "replyTo"
+                       <*> v .: "authorizationToken"
+                       <*> v .: "expiresAt"
+    parseJSON _ = mzero
+
 

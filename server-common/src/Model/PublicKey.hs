@@ -10,7 +10,7 @@ import qualified Crypto.PubKey.RSA as RSA (PublicKey)
 
 data PublicKey = RSAPublicKey {
                rsaKey :: RSA.PublicKey
-               } deriving (Eq, Show)
+               } deriving (Eq, Read, Show)
 
 instance FromJSON PublicKey where
         parseJSON (Object v) =

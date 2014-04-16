@@ -21,26 +21,27 @@ import           Types
 import           Util
 
 getEncodedJWSHeader :: Alg -> B.ByteString
-getEncodedJWSHeader alg = B64.encode . T.encodeUtf8 . T.pack $ "{\"alg\":\"" ++ show alg ++ "\"}"
+getEncodedJWSHeader alg = B64.encode . C.pack $ "{\"alg\":\"" ++ show alg ++ "\"}"
 
-signJWS :: K.PrivateKey -> T.Text -> B.ByteString
+signJWS :: K.PrivateKey -> C.ByteString -> B.ByteString
 signJWS privKey msg =
-    let payload = B64.encode . T.encodeUtf8 $ msg
-        sigInp  = C.intercalate "." [jwsHeader, payload] -- sigInp is already in ASCII due to nature of ByteStrings (8-bit each elem).
+    let header = B64.encode jwsHeader
+        payload = B64.encode msg
+        sigInp  = C.intercalate "." [header, payload] -- sigInp is already in ASCII due to nature of ByteStrings (8-bit each elem).
         signature = K.sign Nothing K.hashDescrSHA256 privKey sigInp
         sig = either (error . show) B64.encode signature
     in C.intercalate "." [sigInp, sig]
 
-verifyJWS :: K.PublicKey -> B.ByteString -> Either String T.Text
+verifyJWS :: K.PublicKey -> B.ByteString -> Either String C.ByteString
 verifyJWS pubKey msg =
     let parts = C.split '.' msg
     in if length parts == 3
-          then let header  = parts !!0
-                   payload = parts !!1
-                   sig'    = B64.decode $ parts !!2
+          then let header  = parts !! 0
+                   payload = parts !! 1
+                   sig'    = B64.decode $ parts !! 2
                    msg'    = C.intercalate "." [header, payload]
                in if K.verify K.hashDescrSHA256 pubKey msg' sig'
-                     then Right (T.decodeUtf8 . B64.decode $ payload)
+                     then Right (B64.decode payload)
                      else Left "Signature could not be verified."
           else Left "JWS must have 3 parts."
 

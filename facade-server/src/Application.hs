@@ -9,6 +9,7 @@ module Application where
 
 ------------------------------------------------------------------------------
 import           Control.Lens
+import           Model.Contract    (Contract)
 import           Model.URI    (URI)
 import           Snap
 
@@ -16,6 +17,7 @@ import           Snap
 
 data App = App
     { _authServerURL :: URI
+    , _maybeContract :: Maybe Contract
     }
 
 makeLenses ''App

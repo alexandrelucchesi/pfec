@@ -8,6 +8,7 @@ import           Data.Aeson
 import           Data.ByteString     (ByteString)
 
 import           Model.UUID          (UUID)
+import           Util.Typeclasses
 
 ------------------------------------------------------------------------------ | Data type holding the message's formats a client can send to Auth Server.
 --
@@ -51,3 +52,8 @@ instance ToJSON RqAuth where
                , "serviceUUID"   .= su
                , "credential"    .= cv
                ]
+
+instance HasContractUUID RqAuth where
+    getContractUUID (RqAuth01 cu) = cu
+    getContractUUID (RqAuth02 _ cu _ _) = cu
+

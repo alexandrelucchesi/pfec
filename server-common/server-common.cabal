@@ -32,7 +32,8 @@ library
     Model.UUID,
     Util.Base64,
     Util.JSONWebToken,
-    Util.HttpResponse
+    Util.HttpResponse,
+    Util.Typeclasses
   -- other-modules:       
 --  extensions:    OverloadedStrings
   default-extensions:  OverloadedStrings

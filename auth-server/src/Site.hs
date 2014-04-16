@@ -34,19 +34,53 @@ import           Model.URI
 import qualified Util.Base64            as B64
 import           Util.HttpResponse
 import           Util.JSONWebToken
-
+    ( decrypt
+    , verify
+    , serverPrivKey
+    , signAndEncrypt
+    )
+import           Util.Typeclasses
 
 ------------------------------------------------------------------------------ | Helper function to log things into stdout.
 logStdOut :: MonadIO m => C.ByteString -> m ()
 logStdOut = liftIO . C.putStrLn
 
+
 ------------------------------------------------------------------------------ | Sends response when everything went fine.
 sendResponse :: REA.RespAuth -> AppHandler ()
 sendResponse resp = do
         logStdOut "Sending response..."
-        jwt <- liftIO $ toB64JSON resp
+        Just contract <- gets _maybeContract
+        let pubKey = fromJust $ listToMaybe $ Contract.publicKeys contract
+        privKey <- liftIO serverPrivKey
+        jwt <- liftIO $ signAndEncrypt privKey pubKey resp 
         let response = setHeader "JWT" jwt emptyResponse
         finishWith response
+
+------------------------------------------------------------------------------ | Parses a JWT token in the compact form to a RqAuth data type.
+fromJWT :: C.ByteString -> AppHandler (Maybe RQA.RqAuth)
+fromJWT jwtCompact = do
+    privKey <- liftIO serverPrivKey
+    let (res :: Maybe (RQA.RqAuth, C.ByteString)) = decrypt privKey jwtCompact
+    case res of
+        Just (rqAuth, msg) -> do
+            -- TODO: Improve findByUUID to return Maybe Contract.
+            contract <- liftIO $ DBContract.findByUUID $ getContractUUID rqAuth 
+            let maybePubKey = listToMaybe $ Contract.publicKeys contract
+            status <- maybe ((logStdOut . C.pack) ("Contract " ++ show (Contract.uuid contract) ++ " has no public keys.")
+                            >> return False)
+                            (return . (`verify` msg))
+                            maybePubKey
+            logStdOut . C.pack $ "Signature "
+                ++ (if status then "was" else "could not be")
+                ++ " verified!"
+            -- Accessing the contract of the current request is a recorrent
+            -- task. So we put it into the State Monad so that we can access it
+            -- without querying the database again.
+            -- Eg: When generating the response we need the contract's public key.
+            modify (\s -> s { _maybeContract = Just contract } )
+            return $ if status then Just rqAuth else Nothing
+        _ -> return Nothing
 
 ------------------------------------------------------------------------------ | Handler that authenticates users.
 auth :: Handler App App ()
@@ -54,7 +88,7 @@ auth = do
     rq <- getRequest
     case getHeader "JWT" rq of
         Just jwtCompact -> do
-            (rqAuth :: Maybe RQA.RqAuth) <- liftIO $ fromB64JSON jwtCompact
+            rqAuth <- fromJWT jwtCompact
             maybe badRequest (sendResponse <=< handlerRqAuth) rqAuth
         _ -> badRequest
 
@@ -62,10 +96,11 @@ handlerRqAuth :: RQA.RqAuth -> AppHandler REA.RespAuth
 handlerRqAuth (RQA.RqAuth01 contractUUID) =
     generateChallenge >>= makeResponse
   where
-    generateChallenge :: MonadIO m => m (Challenge.Challenge, Credential.Credential)
+    generateChallenge :: AppHandler (Challenge.Challenge, Credential.Credential)
     generateChallenge = do
         logStdOut "Generating challenge..."
-        contract <- liftIO $ DBContract.findByUUID contractUUID -- TODO: Improve findByUUID to return Maybe Contract.
+        --contract <- liftIO $ DBContract.findByUUID contractUUID
+        (Just contract) <- gets _maybeContract
         let credentials = Contract.credentials contract
         index <- liftIO $ liftM (fst . randomR (0, length credentials - 1)) newStdGen
         let credential = credentials !! index
@@ -126,7 +161,12 @@ handlerRqAuth (RQA.RqAuth02 challengeUUID contractUUID serviceUUID credential) =
                logStdOut "Answer is WRONG!" >> forbidden
         logStdOut "Answer is CORRECT!"
 
-        liftIO $ Challenge.contract challenge'
+        --contract <- liftIO $ Challenge.contract challenge'
+        (Just contract) <- gets _maybeContract
+
+        -- TODO: Should we pass it to the next function or retrieve the
+        -- contract through State Monad's "get"?
+        return contract
 
     verifyPermissions :: (MonadSnap m) => Contract.Contract -> m ()
     verifyPermissions contract = do
@@ -204,7 +244,7 @@ app = makeSnaplet "auth-server" "REST-based authentication server." Nothing $ do
     url <- getAuthServerURL config
     addRoutes routes
     wrapSite (logStdOut (C.replicate 25 '-') *>)
-    return $ App url
+    return $ App url Nothing
   where
     getAuthServerURL config = do
         host <- liftIO $ Config.lookupDefault "localhost" config "host"

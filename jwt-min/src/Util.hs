@@ -24,13 +24,16 @@ cprg :: IO K.SystemRNG
 cprg = liftM K.cprgCreate K.createEntropyPool
 
 jweHeader :: B.ByteString
-jweHeader = B64.encode . T.encodeUtf8 $ "{\"alg\":\"RSA1_5\",\"enc\":\"A128CBC-HS256\"}"
+jweHeader = --B64.encode . T.encodeUtf8 $ "{\"alg\":\"RSA1_5\",\"enc\":\"A128CBC-HS256\"}"
+    "{\"alg\":\"RSA1_5\",\"enc\":\"A128CBC-HS256\"}"
 
 jwsHeader :: B.ByteString
-jwsHeader = B64.encode . T.encodeUtf8 $ "{\"alg\":\"RS256\"}"
+jwsHeader = --B64.encode . T.encodeUtf8 $ "{\"alg\":\"RS256\"}"
+    "{\"alg\":\"RS256\"}"
 
 jwtHeader :: B.ByteString
-jwtHeader = B64.encode . T.encodeUtf8 $ "{\"alg\":\"RSA1_5\",\"enc\":\"A128CBC-HS256\",\"cty\":\"JWT\"}"
+jwtHeader = --B64.encode . T.encodeUtf8 $ "{\"alg\":\"RSA1_5\",\"enc\":\"A128CBC-HS256\",\"cty\":\"JWT\"}"
+    "{\"alg\":\"RSA1_5\",\"enc\":\"A128CBC-HS256\",\"cty\":\"JWT\"}"
 
 genRS256Keys :: IO ()
 genRS256Keys = do

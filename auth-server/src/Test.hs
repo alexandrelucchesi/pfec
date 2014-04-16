@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Test where
 
-import           Control.Applicative
+import           Control.Monad
 import           Control.Monad.IO.Class
 import           Data.Aeson
 import           Data.ByteString   (ByteString)
-import qualified Data.ByteString.Lazy.Char8 as CL
 import qualified Data.Map          as M
 import qualified Messages.RqAuth   as RQA
 import qualified Messages.RespAuth as REA
@@ -14,17 +14,17 @@ import           Site
 import           Snap.Internal.Http.Types
 import           Snap.Snaplet.Test
 import qualified Snap.Test         as ST
-import           Snap.Iteratee     as IT
 
 import qualified Model.UUID        as UUID
 import           Util.JSONWebToken
-import           Util.Base64       as B64
 
 runTest :: ToJSON a => Maybe String -> a -> IO ()
 runTest message request = do
+    privKey <- liftM read $ readFile "/Users/alexandrelucchesi/Development/haskell/pfec/jwt-min/data/keys/rsa/sen_key.priv"
+    pubKey <- serverPubKey
     let rqBuilder = do
             ST.get "" M.empty
-            req <- liftIO $ toB64JSON request
+            req <- liftIO $ signAndEncrypt privKey pubKey request 
             ST.addHeader "JWT" req 
             ST.setSecure True   -- Enables HTTPs
     resp <- runHandler message rqBuilder auth app
@@ -33,7 +33,10 @@ runTest message request = do
                 putStrLn $ replicate 80 '-'
                 ST.dumpResponse r                
                 putStrLn $ replicate 80 '-'
-                print $ B64.decode' <$> getHeader "JWT" r
+                --print $ B64.decode' <$> getHeader "JWT" r
+                let (r' :: Maybe REA.RespAuth) = liftM fst $
+                        decrypt privKey =<< getHeader "JWT" r
+                print r'
            ) resp 
 
 -- Left the code below for the sake of anger.

@@ -9,6 +9,7 @@ module Application where
 
 ------------------------------------------------------------------------------
 import           Control.Lens
+import           Model.Contract    (Contract)
 import           Model.URI    (URI)
 import           Snap
 
@@ -16,7 +17,12 @@ import           Snap
 
 data App = App
     {
-        _facadeServerURL :: URI
+        _facadeServerURL :: URI,
+        -- Accessing the contract of the current request is a recorrent
+        -- task. So we put it into the State Monad so that we can access it
+        -- without querying the database again.
+        -- Eg: When generating the response we need the contract's public key.
+        _maybeContract   :: Maybe Contract
     }
 
 makeLenses ''App
