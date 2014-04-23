@@ -2,19 +2,22 @@
 
 module Base64 where
 
-import qualified Data.ByteString            as B
 import qualified Data.ByteString.Base64.URL as B64
 import qualified Data.ByteString.Char8      as C
 
--- Handle trailing "=" characters (padding).
-encode :: B.ByteString -> B.ByteString
---encode = C.filter (/= '=') . B64.encode
-encode = B64.encode
+encode :: C.ByteString -> C.ByteString
+encode = unpad . B64.encode
 
-decode :: B.ByteString -> B.ByteString
---decode bs
---    | B.length bs `mod` 32 == 0 = either (C.pack . id) id $ B64.decode bs
---    | otherwise                 = decode $ C.append bs "="
-decode bs = either error id $ B64.decode bs
+decode :: C.ByteString -> C.ByteString
+decode bs = either error id $ B64.decode $ pad bs
 
+pad :: C.ByteString -> C.ByteString
+pad bs
+    | nPads /= 0 = C.append bs $ C.replicate (4 - nPads) '='
+    | otherwise  = bs
+  where
+    nPads = C.length bs `mod` 4
+
+unpad :: C.ByteString -> C.ByteString
+unpad = C.reverse . C.dropWhile (== '=') . C.reverse
 

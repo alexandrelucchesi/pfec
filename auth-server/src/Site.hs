@@ -62,6 +62,7 @@ fromJWT :: C.ByteString -> AppHandler (Maybe RQA.RqAuth)
 fromJWT jwtCompact = do
     privKey <- liftIO serverPrivKey
     let (res :: Maybe (RQA.RqAuth, C.ByteString)) = decrypt privKey jwtCompact
+    liftIO $ print res
     case res of
         Just (rqAuth, msg) -> do
             -- TODO: Improve findByUUID to return Maybe Contract.
