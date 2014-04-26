@@ -20,7 +20,7 @@ data Contract = Contract {
               name                 :: Text,
               description          :: Text,
               creationDate         :: UTCTime,
-              credentials          :: [Credential],
+              credentials          :: [Credential], -- TODO: Change to HashMap.
               allowedServicesUUIDs :: [ServiceUUID],
               publicKeys           :: [PublicKey]
               } deriving (Eq, Show)

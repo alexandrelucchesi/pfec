@@ -3,6 +3,7 @@
 module Messages.RespFacade where
 
 import           Control.Applicative
+import           Control.Monad
 import           Data.Aeson
 import           Model.URI
 
@@ -19,4 +20,5 @@ instance ToJSON RespFacade where
 instance FromJSON RespFacade where
     parseJSON (Object v) =
         RespFacade01 <$> v .: "replyTo"
+    parseJSON _ = mzero
 

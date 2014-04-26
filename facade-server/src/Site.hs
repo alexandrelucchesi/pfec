@@ -70,9 +70,9 @@ fromJWT jwtCompact = do
         _ -> return Nothing
 ------------------------------------------------------------------------------ | Handler that represents the Facade Server. It acts like a front controller, interceptor and filter.
 facade :: AppHandler ()
-
 facade = do
     rq <- getRequest
+    liftIO $ putStrLn $ "IS CONNECTION SECURE? " ++ show (rqIsSecure rq)
     case getHeader "JWT" rq of
         Just jwtCompact -> do
             rqFacade <- fromJWT jwtCompact
@@ -174,7 +174,7 @@ handlerRqFacade (RQF.RqFacade01 contractUUID authToken) =
         privKey <- liftIO serverPrivKey
         jwt <- liftIO $ signAndEncrypt privKey pubKey resp 
         let response = setHeader "JWT" jwt emptyResponse
-        finishWith response
+        finishWith $ setResponseCode 302 response -- 302 = Redirect.
 
 ------------------------------------------------------------------------------
 -- | The application's routes.

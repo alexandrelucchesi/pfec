@@ -1397,3 +1397,272 @@ A web handler threw an exception. Details:
 InvalidHeader "\142.5bsBLgTL7CoMScY0Nv1cTd7KUFB4vyi-r8aKVKeY3odICB85P655bmjMMUXy2CcB4KOEMJU-rq_7PWmTYl-kW8UfdhaRpzUaTOdY9oIiphSPC0VOjKAK4eRGAewPr6vBN0-DdaBa7deMgELT0hfayWmFEAmczesC-bGhrpJwzCWBSKtYrhPi80-hTGTLWoPMMYGHb4y_VkSNiX3cjPUtZlxzrJuNDrFttFVEeVjnbpKcjPqCwrTZk7mOqE_mrxsg_AjpgxPdE8zKtJ40-GlpOuvU8czfT2cklZLXqlH7X7van4RupwM_IHm7zuYHVVW45D2Knb44YpZvNf11K5sRAvjVyUZ3PzkSC8ndbhvPIy-He9pzW3JUwOEG3DuM272BICjYAiOX9b3cqP8UfDvD-hkr9skiBLM6ro7eMfGH5p_DO68z0v0tOK0gFTbqGR9zng0o0QiSWJfjCYpG4mW-KEDef2LU5mkZRpzDk4Gl9RqnxOo1MSM5AEUNt16WIby3bbNtofeCetnManeE0rFQpeJgOhl5PDGHzgtCVaF_zEgpdDC0jaTraONLhAijMh-m0y-qMLxex9LdwY-zY1i7D0wIkcydIGZt-oKGSjoOiKCkvG9lyGmgwBkAQLPsHNUIiVoAPMrhCJD3Pxj5gGga3FQJFtzT9iAcIMVEyAcTb5NDKghvLy1Je_M9-T37U4BeeZrfXju4lQZRbxvPQTUDNg==.emz8_JsOwXDsBpsOvsQDqTr2QSYoZ7uak5iSIheWU9o="
 [22/Mar/2014:12:36:06 -0300] Server.httpServe: SHUTDOWN
 [22/Mar/2014:12:36:06 -0300] Server.httpServe: BACKEND STOPPED
+[26/Apr/2014:14:23:20 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[26/Apr/2014:14:38:30 -0300] During processing of request from 127.0.0.1:53827
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53827\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:40:06 -0300] During processing of request from 127.0.0.1:53858
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53858\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Invalid service UUID!
+[26/Apr/2014:14:41:32 -0300] During processing of request from 127.0.0.1:53876
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53876\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:41:38 -0300] During processing of request from 127.0.0.1:53876
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53876\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:44:42 -0300] During processing of request from 127.0.0.1:53902
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53902\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:45:23 -0300] During processing of request from 127.0.0.1:53902
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53902\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:45:49 -0300] During processing of request from 127.0.0.1:53902
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53902\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:45:58 -0300] During processing of request from 127.0.0.1:53902
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53902\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:46:26 -0300] During processing of request from 127.0.0.1:53902
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53902\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:46:33 -0300] During processing of request from 127.0.0.1:53902
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53902\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:47:32 -0300] During processing of request from 127.0.0.1:53902
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53902\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:47:42 -0300] During processing of request from 127.0.0.1:53902
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53902\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:47:48 -0300] During processing of request from 127.0.0.1:53902
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53902\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:48:11 -0300] During processing of request from 127.0.0.1:53902
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53902\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:48:42 -0300] During processing of request from 127.0.0.1:53902
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53902\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:49:14 -0300] During processing of request from 127.0.0.1:53902
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53902\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:49:40 -0300] During processing of request from 127.0.0.1:53902
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53902\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:49:54 -0300] During processing of request from 127.0.0.1:53902
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53902\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:50:16 -0300] During processing of request from 127.0.0.1:53902
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53902\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:50:26 -0300] Server.httpServe: SHUTDOWN
+[26/Apr/2014:14:50:26 -0300] Server.httpServe: BACKEND STOPPED
+[26/Apr/2014:14:50:32 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[26/Apr/2014:14:50:35 -0300] During processing of request from 127.0.0.1:53951
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:53951\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:14:52:29 -0300] Server.httpServe: SHUTDOWN
+[26/Apr/2014:14:52:29 -0300] Server.httpServe: BACKEND STOPPED
+[26/Apr/2014:15:01:12 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[26/Apr/2014:15:01:17 -0300] During processing of request from 127.0.0.1:54021
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54021\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: status\n    contextpath: /\n    URI: /status\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+GHC error:
+
+cannot satisfy -package-id server-common-0.1.0.0-ab8fdee0905b727b9b9c0aa8f0f03fdd
+    (use -v for more information)
+[26/Apr/2014:15:01:17 -0300] During processing of request from 127.0.0.1:54021
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54021\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: */*\n Host: localhost:7000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: favicon.ico\n    contextpath: /\n    URI: /favicon.ico\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+GHC error:
+
+cannot satisfy -package-id server-common-0.1.0.0-ab8fdee0905b727b9b9c0aa8f0f03fdd
+    (use -v for more information)
+[26/Apr/2014:15:01:20 -0300] During processing of request from 127.0.0.1:54021
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54021\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: status\n    contextpath: /\n    URI: /status\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+GHC error:
+
+cannot satisfy -package-id server-common-0.1.0.0-ab8fdee0905b727b9b9c0aa8f0f03fdd
+    (use -v for more information)
+[26/Apr/2014:15:01:20 -0300] During processing of request from 127.0.0.1:54021
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54021\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: */*\n Host: localhost:7000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: favicon.ico\n    contextpath: /\n    URI: /favicon.ico\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+GHC error:
+
+cannot satisfy -package-id server-common-0.1.0.0-ab8fdee0905b727b9b9c0aa8f0f03fdd
+    (use -v for more information)
+[26/Apr/2014:15:03:30 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[26/Apr/2014:15:03:30 -0300] Error on startup: 
+bind: resource busy (Address already in use)
+[26/Apr/2014:15:04:17 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[26/Apr/2014:15:04:45 -0300] During processing of request from 127.0.0.1:54042
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54042\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:15:16:09 -0300] During processing of request from 127.0.0.1:54098
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54098\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:15:20:14 -0300] During processing of request from 127.0.0.1:54140
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54140\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:15:21:50 -0300] During processing of request from 127.0.0.1:54148
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54148\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:15:22:28 -0300] During processing of request from 127.0.0.1:54148
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54148\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:15:23:26 -0300] During processing of request from 127.0.0.1:54148
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54148\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:15:23:50 -0300] During processing of request from 127.0.0.1:54148
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54148\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:15:25:12 -0300] During processing of request from 127.0.0.1:54172
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54172\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:15:27:15 -0300] During processing of request from 127.0.0.1:54184
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54184\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Maybe.fromJust: Nothing
+[26/Apr/2014:15:30:25 -0300] During processing of request from 127.0.0.1:54198
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54198\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: */*\n Host: localhost:7000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: favicon.ico\n    contextpath: /\n    URI: /favicon.ico\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+src/Site.hs:178:27:
+    Couldn't match expected type `Handler App App [Char]'
+                with actual type `(App -> String) -> AppHandler String'
+    In the second argument of `liftM', namely `getUrlPrefix'
+    In a stmt of a 'do' block: liftM (++ C.unpack i) getUrlPrefix
+    In the expression:
+      do { r <- getRequest;
+           (Just serv) <- gets _currentService;
+           let i = C.concat ...;
+           liftM (++ C.unpack i) getUrlPrefix }
+[26/Apr/2014:15:30:27 -0300] During processing of request from 127.0.0.1:54198
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54198\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+src/Site.hs:178:27:
+    Couldn't match expected type `Handler App App [Char]'
+                with actual type `(App -> String) -> AppHandler String'
+    In the second argument of `liftM', namely `getUrlPrefix'
+    In a stmt of a 'do' block: liftM (++ C.unpack i) getUrlPrefix
+    In the expression:
+      do { r <- getRequest;
+           (Just serv) <- gets _currentService;
+           let i = C.concat ...;
+           liftM (++ C.unpack i) getUrlPrefix }
+[26/Apr/2014:15:30:28 -0300] During processing of request from 127.0.0.1:54198
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54198\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: */*\n Host: localhost:7000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: favicon.ico\n    contextpath: /\n    URI: /favicon.ico\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Compile errors:
+
+src/Site.hs:178:27:
+    Couldn't match expected type `Handler App App [Char]'
+                with actual type `(App -> String) -> AppHandler String'
+    In the second argument of `liftM', namely `getUrlPrefix'
+    In a stmt of a 'do' block: liftM (++ C.unpack i) getUrlPrefix
+    In the expression:
+      do { r <- getRequest;
+           (Just serv) <- gets _currentService;
+           let i = C.concat ...;
+           liftM (++ C.unpack i) getUrlPrefix }
+[26/Apr/2014:15:31:23 -0300] During processing of request from 127.0.0.1:54198
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54198\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Pattern match failure in do expression at src/Site.hs:290:9-26
+[26/Apr/2014:15:34:13 -0300] During processing of request from 127.0.0.1:54221
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54221\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Pattern match failure in do expression at src/Site.hs:287:9-26
+[26/Apr/2014:15:36:50 -0300] During processing of request from 127.0.0.1:54238
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54238\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Pattern match failure in do expression at src/Site.hs:287:9-26
+[26/Apr/2014:17:14:31 -0300] During processing of request from 127.0.0.1:54698
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54698\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Header JWT not found.
+[26/Apr/2014:17:21:14 -0300] During processing of request from 127.0.0.1:54767
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54767\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: status\n    contextpath: /\n    URI: /status\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Invalid service UUID!
+[26/Apr/2014:17:22:24 -0300] During processing of request from 127.0.0.1:54767
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:54767\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/get/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Header JWT not found.
+[26/Apr/2014:17:38:49 -0300] Server.httpServe: SHUTDOWN
+[26/Apr/2014:17:38:49 -0300] Server.httpServe: BACKEND STOPPED
+[26/Apr/2014:17:39:35 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]

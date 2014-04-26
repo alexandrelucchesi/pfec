@@ -41,7 +41,6 @@ Executable facade-server
     configurator,
     attoparsec,
     containers,
-    couchdb-conduit,
     crypto-api,
     http-conduit,
     http-types,

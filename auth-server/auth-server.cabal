@@ -42,7 +42,6 @@ Executable auth-server
     configurator,
     containers,
     crypto-api,
-    couchdb-conduit,
     entropy,
     network,
     random,

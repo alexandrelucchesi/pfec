@@ -87,6 +87,7 @@ fromJWT jwtCompact = do
 auth :: Handler App App ()
 auth = do
     rq <- getRequest
+    liftIO $ putStrLn $ "IS CONNECTION SECURE? " ++ show (rqIsSecure rq)
     case getHeader "JWT" rq of
         Just jwtCompact -> do
             rqAuth <- fromJWT jwtCompact

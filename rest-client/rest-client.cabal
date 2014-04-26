@@ -53,9 +53,7 @@ Executable rest-client
     http-types,
     jwt-min,
     network,
-    snaplet-sqlite-simple,
     server-common,
-    sqlite-simple,
     text,
     transformers
 

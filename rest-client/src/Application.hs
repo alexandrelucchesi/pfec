@@ -9,23 +9,31 @@ module Application where
 ------------------------------------------------------------------------------
 import           Control.Lens
 import           Snap
-import           Snap.Snaplet.SqliteSimple
 
+import           Control.Concurrent.MVar (MVar)
+import           Data.ByteString (ByteString)
+import           Data.Time (UTCTime)
+import           Model.Contract (Contract)
+import           Model.UUID (UUID)
 import qualified Network.HTTP.Conduit      as HC
 ------------------------------------------------------------------------------
+data Token = Token
+    { value          :: ByteString
+    , service        :: UUID
+    , allowedMethods :: [ByteString]
+    , expiresAt      :: UTCTime
+    } deriving (Eq, Show)
+
 data App = App
-    { _facadeURL :: String
-    , _db        :: Snaplet Sqlite
-    , _httpMngr  :: HC.Manager
+    { _contract       :: Contract
+    , _activeTokens   :: MVar [Token] -- TODO: Change to HashMap (Key: ServiceUUID)
+    , _authURL        :: String
+    , _facadeURL      :: String
+    , _httpMngr       :: HC.Manager
     }
 
 makeLenses ''App
 
-instance HasSqlite (Handler b App) where
-    getSqliteState = with db get
-
-
 ------------------------------------------------------------------------------
 type AppHandler = Handler App App
-
 

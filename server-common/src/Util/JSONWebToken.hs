@@ -72,3 +72,4 @@ verify pubKey jwsContents =
 signAndEncrypt :: ToJSON a => PrivateKey -> PublicKey -> a -> IO C.ByteString
 signAndEncrypt privKey pubKey = JWT.toCompact privKey (rsaKey pubKey)
 
+

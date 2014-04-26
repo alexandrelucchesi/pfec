@@ -10,248 +10,268 @@ module Site
   ) where
 
 ------------------------------------------------------------------------------
+import           Control.Concurrent.MVar
 import           Control.Monad.IO.Class
 import           Data.Aeson
 import           Data.Aeson.Encode.Pretty
 import           Data.ByteString            (ByteString)
 import qualified Data.ByteString.Char8      as C
 import qualified Data.ByteString.Lazy.Char8 as CL
+import           Data.Char
 import qualified Data.Configurator          as Config
 import qualified Data.List                  as L
 import           Data.Maybe
-import qualified Data.Text.Encoding         as T
+import           Data.Time                  (getCurrentTime)
 import           Data.Word
 import qualified Network                    as HC (withSocketsDo)
 import qualified Network.Connection         as HC
 import qualified Network.HTTP.Conduit       as HC
 import qualified Network.HTTP.Types.Status  as HC
 import           Snap
-import           Snap.Snaplet.SqliteSimple
 ------------------------------------------------------------------------------
 import           Application
-import qualified BusinessLogic              as Db
-import qualified JWT
 import qualified Messages.RespAuth          as REA
 import qualified Messages.RespFacade        as REF
 import qualified Messages.RqAuth            as RQA
 import qualified Messages.RqFacade          as RQF
-import           Messages.Types             hiding (fromCompactJWT,
-                                             toCompactJWT)
-import qualified Util.Base64                as B64
-
+import qualified Model.Contract             as Contract
+import qualified Model.Credential           as Credential
+import           Model.UUID                 as UUID
+import qualified Util.JSONWebToken          as JWT
 
 ------------------------------------------------------------------------------
--- | Print the facade URL set.
-status :: Handler App App ()
+-- | Print the application state.
+status :: AppHandler ()
 status = do
-    url <- gets _facadeURL
-    writeBS $ C.pack url
+    contr <- gets _contract
+    tokensMVar <- gets _activeTokens
+    tokens <- liftIO $ readMVar tokensMVar
+    urlAuth <- gets _authURL
+    urlFacade <- gets _facadeURL
+    let hdr = ["Contract", "Tokens", "Auth Server", "Facade Server"] :: [String]
+        str = [show contr, show tokens, show urlAuth, show urlFacade]
+    writeBS $ C.intercalate "\n\n" $ fmap (C.pack . show) (zip hdr str)
 
 ------------------------------------------------------------------------------
 -- | Show usage information.
 usage :: Snap ()
 usage = writeBS "GET /client/<HTTP Method>/<Service + ServiceParams>"
 
+-- TODO: Verify signature.
+fromJWT :: FromJSON a => C.ByteString -> IO (Maybe a)
+fromJWT jwtCompact = do
+    privKey <- liftM read $ readFile "/Users/alexandrelucchesi/Development/haskell/pfec/jwt-min/data/keys/rsa/sen_key.priv"
+    return $ liftM fst $ JWT.decrypt privKey jwtCompact
+
+toJWT :: ToJSON a => a -> IO C.ByteString
+toJWT request = do
+    privKey <- liftM read $ readFile "/Users/alexandrelucchesi/Development/haskell/pfec/jwt-min/data/keys/rsa/sen_key.priv"
+    pubKey <- JWT.serverPubKey
+    liftIO $ JWT.signAndEncrypt privKey pubKey request
+
+
 class FromJSON a => Resp a
 instance Resp REF.RespFacade
 instance Resp REA.RespAuth
-
------------------------------------------------------------------------------- | Parses response.
---parseResponse :: (Resp a) => Maybe String -> HC.Response b -> a
---parseResponse msg resp =
---    let res = eitherDecode . B64.decode $ jwtHeaderContents
---    in either (error . (++) (if isJust msg then fromJust msg ++ "\n" else "")) id res
---  where
---    jwtHeaderContents =
---        let header = L.find (\(h,_) -> h == "JWT") $ HC.responseHeaders resp
---        in case header of
---                (Just (_, contents)) -> CL.fromStrict contents
---                _        -> error $ (++) (if isJust msg then fromJust msg ++ "\n" else "") "Header JWT not found."
-
-parseResponse :: (Resp a) => Maybe String -> HC.Response b -> IO a
-parseResponse msg resp = do
-    res <- liftIO $ {- (fromCompactJWT . CL.toStrict . B64.decode) -} fromCompactJWT jwtHeaderContents
-    maybe (error $ if isJust msg then fromJust msg ++ "\n" else "") return res
+parseResponse :: (Resp a) => HC.Response b -> IO a
+parseResponse resp = do
+    res <- fromJWT jwtHeaderContents
+    maybe (error "Error parsing response.") return res
   where
     jwtHeaderContents =
         let header = L.find (\(h,_) -> h == "JWT") $ HC.responseHeaders resp
         in case header of
                 (Just (_, contents)) -> contents
-                _        -> error $ (++) (if isJust msg then fromJust msg ++ "\n" else "") "Header JWT not found."
+                _        -> error "Header JWT not found."
 
------------------------------------------------------------------------------- | Executes a request using http-conduit.
-execRequest :: (ToJSON a, Resp b) => Maybe String -> a -> Maybe URI -> Handler App App b
-execRequest errorMsg jwt uri = do
-    m <- getParam "httpMethod"
+-- TODO: Change to Either String Token and add error message.
+--type HTTPMethod = ByteString
+--stillValidToken :: UUID -> HTTPMethod -> AppHandler (Maybe Token)
+--stillValidToken serviceUUID m = do
+--    tokensMVar <- gets _activeTokens
+--    tokens <- liftIO $ readMVar tokensMVar
+--    let maybeToken = L.find (\t -> service t == serviceUUID)
+--                            tokens
+--    case maybeToken of
+--        Just token -> do
+--            now <- liftIO getCurrentTime
+--            if expiresAt token > now
+--              then return $ if elem (C.map toUpper m) $ allowedMethods token
+--                                then Just token
+--                                else Nothing -- Can't access using the specified method.
+--               else do -- Token is expired!
+--                    liftIO $ modifyMVar_ tokensMVar -- Removes from token list.
+--                                (return . filter ((==) serviceUUID . service))
+--                    return Nothing
+--        _ -> return Nothing
 
-    url <- case uri of
-        (Just u) -> return $ show u
-        _        -> do
-            r <- getRequest
-            let i = C.concat [ rqPathInfo r
-                             , let q = rqQueryString r
-                               in if C.null q
-                                    then ""
-                                    else C.append "?" q ]
-            liftM (++ (C.unpack i)) getUrlPrefix
+currentService :: AppHandler UUID
+currentService = do
+    r <- getRequest
+    let maybeService = UUID.fromByteStringSafe' (rqPathInfo r)
+    maybe (error "Invalid service UUID!") return maybeService
 
-    liftIO $ putStrLn $ "URL is: " ++ show url
-
-    manager <- gets _httpMngr
-    resp <- liftIO $ HC.withSocketsDo $ do
-        initReq <- HC.parseUrl url
-        jwtCompact <- toCompactJWT jwt
-        let hdrs = ("JWT", jwtCompact) : (HC.requestHeaders initReq)
-            req = initReq { HC.checkStatus = \_ _ _ -> Nothing
-                          , HC.method = fromMaybe "GET" m
-                          , HC.requestHeaders = hdrs }
-        liftIO $ putStrLn "============ REQUEST ==================="
-        liftIO $ print req
-        HC.httpLbs req manager
-    liftIO $ putStrLn "============ RESPONSE =================="
-    liftIO $ print resp
-    liftIO $ parseResponse errorMsg resp
-
-toCompactJWT :: ToJSON a => a -> IO C.ByteString
-toCompactJWT jwtContents = do
-    serverPubKey <- liftM read $ readFile "resources/rsa-server-key.pub"
-    myPrivKey    <- liftM read $ readFile "resources/rsa-key.priv"
-    JWT.toCompact myPrivKey serverPubKey jwtContents
-
-fromCompactJWT :: FromJSON a => C.ByteString -> IO (Maybe a)
-fromCompactJWT jwtContents = do
-    myPrivKey    <- liftM read $ readFile "resources/rsa-key.priv"
-    serverPubKey <- liftM read $ readFile "resources/rsa-server-key.pub"
-    JWT.fromCompact myPrivKey serverPubKey jwtContents
------------------------------------------------------------------------------- | Requests Facade a service.
--- TODO: Unify rqFacade01 e rqFacade02 here!
-rqFacade01 :: Handler App App REF.RespFacade
-
-rqFacade01 = do
-    let request = RQF.RqFacade01 { RQF.contractCode = 1
-                                 , RQF.authCredential = "xyz123"
-                                 , RQF.authorCredential = Nothing }
-
-    -- DEBUG
-    prettyWriteJSON "REQ FACADE 01" request
-
-    execRequest (Just "Could not parse RespFacade01.") request Nothing
-
------------------------------------------------------------------------------- | Requests Facade a service.
-rqFacade02 :: REA.RespAuth -> Handler App App (Either (IO REF.RespFacade) CL.ByteString)
-rqFacade02 rq@(REA.RespAuth02 _ _) =
-    if not (REA.isAuthenticated rq)
-        then error errorMsg
-        else do
-            -- DEBUG
-            prettyWriteJSON "REQ FACADE 02" request
-
-            m <- getParam "httpMethod"
-            r <- getRequest
-            let i = C.concat [ rqPathInfo r
-                             , let q = rqQueryString r
-                               in if C.null q
-                                    then ""
-                                    else C.append "?" q ]
-            url <- liftM (++ (C.unpack i)) getUrlPrefix
-            liftIO $ putStrLn $ "URL is: " ++ show url
-            manager <- gets _httpMngr
-            resp <- liftIO $ HC.withSocketsDo $ do
-                initReq <- HC.parseUrl url
-                jwtCompact <- toCompactJWT request
-                let hdrs = ("JWT", jwtCompact) : (HC.requestHeaders initReq)
-                    req = initReq { HC.checkStatus = \_ _ _ -> Nothing
-                                  , HC.method = fromMaybe "GET" m
-                                  , HC.requestHeaders = hdrs }
-                HC.httpLbs req manager
-
-            return $ if HC.statusCode (HC.responseStatus resp) == 302 -- redirect
-                then Left $ parseResponse (return errorMsg) resp
-                else Right $ HC.responseBody resp
-
+rqAuth :: AppHandler Token
+rqAuth = getToken
+    <|> (rqAuth01 >>= processRespAuth01
+        >>= rqAuth02 >>= processRespAuth02)
   where
-    request = RQF.RqFacade01 { RQF.contractCode   = 1
-                             , RQF.authCredential = "xyz123"
-                             , RQF.authorCredential = Just $ T.decodeUtf8 $ REA.credential rq }
-    errorMsg = "rqFacade02: Could not authenticate user."
+    getToken = do
+        serviceUUID <- currentService
+        meth <- fromMaybe "GET" <$> getParam "httpMethod"
 
-rqFacade02 _ = error "rqFacade02: It shouldn't happen! :-("
+        tokensMVar <- gets _activeTokens
+        tokens <- liftIO $ readMVar tokensMVar
+        let maybeToken = L.find (\t -> service t == serviceUUID)
+                                tokens
+        case maybeToken of
+            Just token -> do
+                now <- liftIO getCurrentTime
+                if expiresAt token > now
+                  then if elem (C.map toUpper meth) $ allowedMethods token
+                            then return token
+                             else pass -- Can't access using the specified method.
+                   else do -- Token is expired!
+                        liftIO $ modifyMVar_ tokensMVar -- Removes from token list.
+                                    (return . filter ((==) serviceUUID . service))
+                        pass
+            _ -> pass
 
------------------------------------------------------------------------------- | Requests Authentication providing specified info.
-rqAuth01 :: REF.RespFacade -> Handler App App REA.RespAuth
-rqAuth01 rq@(REF.RespFacade01 _ _ _ _) = do
-    r <- with db $ Db.findCredentialById $ fromIntegral (REF.credentialCode rq)
-    let cred = if isJust r then fromJust r else error errorMsg
-        rqAuth = RQA.RqAuth01 { RQA.credential = Db.credentialCred cred
-                              , RQA.challengeCredentialCode = REF.challengeCredentialCode rq
-                              , RQA.contractCode = 1 }
+    execAuthRequest jwt = do
+        url <- getUrlPrefix _authURL
+        liftIO $ putStrLn $ "URL is: " ++ show url
 
-    -- DEBUG
-    prettyWriteJSON "REQ AUTH 01" rqAuth
+        manager <- gets _httpMngr
+        resp <- liftIO $ HC.withSocketsDo $ do
+            initReq <- HC.parseUrl url
+            jwtCompact <- toJWT jwt
+            let hdrs = ("JWT", jwtCompact) : HC.requestHeaders initReq
+                req = initReq { HC.checkStatus = \_ _ _ -> Nothing
+                              , HC.requestHeaders = hdrs }
+            liftIO $ putStrLn "============ REQUEST ==================="
+            liftIO $ print req
+            HC.httpLbs req manager
+        liftIO $ putStrLn "============ RESPONSE =================="
+        liftIO $ print resp
+        liftIO $ parseResponse resp
 
-    execRequest (Just errorMsg) rqAuth (Just $ REF.authServerURL rq)
+    rqAuth01 = do
+        contractUUID <- Contract.uuid <$> gets _contract
+        let request = RQA.RqAuth01 contractUUID
+        prettyWriteJSON "REQ AUTH 01" request
+        execAuthRequest request
 
+    processRespAuth01 resp@(REA.RespAuth01 _ credCode chalUUID _) = do
+        prettyWriteJSON "RESP AUTH 01" resp
+        contr <- gets _contract
+        let (Just cred) = L.find (\c -> credCode == Credential.code c)
+                                 (Contract.credentials contr)
+            credValue    = Credential.value cred
+        return (chalUUID, credValue) -- Returns the challenge and its response.
+    processRespAuth01 _ = undefined
+
+    rqAuth02 (challengeUUID, credential) = do
+        contractUUID <- Contract.uuid <$> gets _contract
+        serviceUUID <- currentService
+        let request = RQA.RqAuth02 challengeUUID contractUUID
+                                   serviceUUID credential
+        -- DEBUG
+        prettyWriteJSON "REQ AUTH 02" request
+        execAuthRequest request
+
+    processRespAuth02 resp@(REA.RespAuth02 _ authToken expires) = do
+        prettyWriteJSON "RESP AUTH 02" resp
+        serviceUUID <- currentService
+        let newToken = Token { value = authToken
+                             , service = serviceUUID
+                             , allowedMethods = ["GET", "POST", "PUT", "DELETE"]
+                             , expiresAt = expires }
+        tokens <- gets _activeTokens
+        liftIO $ modifyMVar_ tokens (return . (newToken :))
+        return newToken
+    processRespAuth02 _ = undefined
+
+rqFacade :: Token -> AppHandler ()
+rqFacade token =
+    rqFacade01 >>= processRespFacade01
   where
-    errorMsg = "rqAuth01: Could not find credential: " ++ show (REF.credentialCode rq)
+    getServiceURL = do
+        r <- getRequest
+        serv <- currentService
+        let i = C.concat [ UUID.toByteString' serv
+                         , let q = rqQueryString r
+                           in if C.null q
+                                then ""
+                                else C.append "?" q ]
+        liftM (++ C.unpack i) $ getUrlPrefix _facadeURL
 
------------------------------------------------------------------------------- | Sends to Auth server the requested user credentials (login || password).
-rqAuth02 :: REA.RespAuth -> Handler App App REA.RespAuth
-rqAuth02 rq@(REA.RespAuth01 _ _ _) = do
-    r <- with db $ Db.findUserById (fromIntegral $ REA.userCode rq)
-    case r of
-        Just u -> do
-            let rqAuth = RQA.RqAuth02 { RQA.challengeAuthCode = REA.challengeAuthCode rq
-                                      , RQA.login = Db.userLogin u
-                                      , RQA.password = Db.userPassword u }
+    rqFacade01 = do
+        maybeMethod <- getParam "httpMethod"
+        -- TODO: Fix Client/Facade Server to handle uppercase/lowercase
+        -- better for HTTP methods.
+        let meth = maybe "GET" (C.map toUpper) maybeMethod
 
-            -- DEBUG
-            prettyWriteJSON "REQ AUTH 02" rqAuth
+        url <- getServiceURL
+        liftIO $ putStrLn $ "URL is: " ++ show url
 
-            execRequest (Just errorMsg) rqAuth (Just $ REA.authServerURL rq)
-        _ -> error errorMsgDb
-  where
-    errorMsgDb = "rqAuth02: Could not find user with id: " ++ show (REA.userCode rq)
-    errorMsg = "rqAuth02: Could not parse RespAuth02."
+        contractUUID <- Contract.uuid <$> gets _contract
 
-rqAuth02 _ = error "rqAuth02: It shouldn't happen! :-("
+        let request  = RQF.RqFacade01 contractUUID (value token)
 
+        prettyWriteJSON "REQ FACADE" request
+
+        manager <- gets _httpMngr
+        resp <- liftIO $ HC.withSocketsDo $ do
+            initReq <- HC.parseUrl url
+            privKey <- liftM read $ readFile "/Users/alexandrelucchesi/Development/haskell/pfec/jwt-min/data/keys/rsa/sen_key.priv"
+            pubKey <- JWT.serverPubKey
+            jwtCompact <- liftIO $ JWT.signAndEncrypt privKey pubKey request
+            let hdrs = ("JWT", jwtCompact) : HC.requestHeaders initReq
+                req = initReq { HC.checkStatus = \_ _ _ -> Nothing
+                              , HC.method = meth
+                              , HC.requestHeaders = hdrs }
+            HC.httpLbs req manager
+
+        if HC.statusCode (HC.responseStatus resp) /= 200 -- Not OK!
+            then do
+                (resp' :: REF.RespFacade) <- liftIO $ parseResponse resp
+                return $ Left resp'
+            else return $ Right $ HC.responseBody resp
+
+    processRespFacade01 (Left resp) = do
+        prettyWriteJSON "RESP FACADE 01 (*ERROR*)" resp
+        -- client -- We could call 'client' function here again (maybe the
+        -- token expired before arriving at facade server), but we could
+        -- fall into infinite loops because currently there's no control of
+        -- the number of jumps between auth and facade server.
+    processRespFacade01 (Right responseBody) = do
+        prettyWrite "SERVICE RESPONSE"
+        writeLBS responseBody
 
 ------------------------------------------------------------------------------
 -- | Client main handler.
-client :: Handler App App ()
+client ::AppHandler ()
 client = do
-    --liftIO $ putStrLn "\n\n\n"
-    respF01 <- rqFacade01
-    prettyWriteJSON "RESP FACADE 01" respF01
-    respA01 <- rqAuth01 respF01
-    prettyWriteJSON "RESP AUTH 01" respA01
-    respA02 <- rqAuth02 respA01
-    prettyWriteJSON "RESP AUTH 02" respA02
-    respF02 <- rqFacade02 respA02
-    case respF02 of
-        Left v  -> liftIO v >>= prettyWriteJSON "RESP FACADE 02 (*ERROR*)"
-        Right v -> prettyWrite "SERVICE RESPONSE" >> writeLBS v
-    writeBS "\n"
-    prettyWrite ("END OF CLIENT" :: String)
-
+    rqAuth >>= rqFacade
 
 ------------------------------------------------------------------------------
 -- | Util.
-getUrlPrefix :: Handler App App String
-getUrlPrefix = do
-    url <- gets _facadeURL
+-- (App -> String) = _facadeURL or _authURL.
+getUrlPrefix :: (App -> String) -> AppHandler String
+getUrlPrefix lens = do
+    url <- gets lens
     return $ "https://" ++ url ++ "/"
 
 prettyWriteJSON :: (ToJSON a) => String -> a -> Handler App App ()
 prettyWriteJSON header v = do
-    writeBS $ C.pack $ (take 30 $ repeat '-') ++ " " ++ header ++ " " ++ (take (60 - length header) $ repeat '-')
+    writeBS $ C.pack $ replicate 30 '-' ++ " " ++ header ++ " " ++ replicate (60 - length header) '-'
     writeBS "\n"
     writeBS $ CL.toStrict (encodePretty v)
     writeBS "\n"
 
 prettyWrite :: String -> Handler App App ()
 prettyWrite v = do
-    writeBS $ C.pack $ (take 30 $ repeat '-') ++ " " ++ v ++ " " ++ (take (60 - length (show v)) $ repeat '-')
+    writeBS $ C.pack $ replicate 30 '-' ++ " " ++ v ++ " " ++ replicate (60 - length (show v)) '-'
     writeBS "\n"
 
 ------------------------------------------------------------------------------
@@ -268,18 +288,26 @@ app :: SnapletInit App App
 app = makeSnaplet "client-proxy" "REST-based client." Nothing $ do
     -- config <- getSnapletUserConfig -- For some reason, it does not work
     -- properly with cabal sandboxes.
+    contr <- liftIO $ fromMaybe (error "Could not parse \'contract\'.json.")
+                       <$> decode <$> CL.readFile "resources/contract.json"
+    tokens <- liftIO $ newMVar []
     config <- liftIO $ Config.load [Config.Required "resources/devel.cfg"]
-    url    <- getFacadeURL config
-    sqlite <- nestSnaplet "db" db sqliteInit
+    authUrl <- getAuthURL config
+    facadeUrl <- getFacadeURL config
     -- According to the documentation at:
     -- (http://hackage.haskell.org/package/http-conduit-2.0.0.7/docs/Network-HTTP-Conduit.html#t:Request), creating a new manager is an expensive operation. So, we create it only once on application start and share it accross all the requests.
-    mngr   <- liftIO $ noSSLVerifyManager
+    mngr <- liftIO noSSLVerifyManager
     addRoutes routes
-    return $ App url sqlite mngr
+    return $ App contr tokens authUrl facadeUrl mngr
   where
+    getAuthURL config = do
+        host <- liftIO $ Config.lookupDefault "localhost" config "authHost"
+        port :: Word16 <- liftIO $ Config.lookupDefault 9000 config "authPort"
+        return $ host ++ ":" ++ show port
+
     getFacadeURL config = do
-        host <- liftIO $ Config.lookupDefault "localhost" config "host"
-        port :: Word16 <- liftIO $ Config.lookupDefault 8000 config "port"
+        host <- liftIO $ Config.lookupDefault "localhost" config "facadeHost"
+        port :: Word16 <- liftIO $ Config.lookupDefault 8000 config "facadePort"
         return $ host ++ ":" ++ show port
 
     noSSLVerifyManager = let tlsSettings = HC.TLSSettingsSimple {
