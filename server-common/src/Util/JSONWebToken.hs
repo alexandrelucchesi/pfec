@@ -41,12 +41,10 @@ fromB64JSON = return . decode . B64.decode'
 --    JWT.fromCompact myPrivKey theirPubKey jwtContents
 
 serverPrivKey :: IO PrivateKey
-serverPrivKey = liftM read $ readFile --"../server-common/resources/keys/rsa-key.priv"
-    "/Users/alexandrelucchesi/Development/haskell/pfec/jwt-min/data/keys/rsa/rec_key.priv"
+serverPrivKey = liftM read $ readFile "../server-common/resources/keys/rsa-key.priv"
 
 serverPubKey :: IO PublicKey
-serverPubKey = liftM (RSAPublicKey . read) $ readFile --"../server-common/resources/keys/rsa-key.pub"
-    "/Users/alexandrelucchesi/Development/haskell/pfec/jwt-min/data/keys/rsa/rec_key.pub"
+serverPubKey = liftM (RSAPublicKey . read) $ readFile "../server-common/resources/keys/rsa-key.pub"
 
 -- Returns a value and the message whose signature must be verified.
 decrypt :: FromJSON a => PrivateKey -> C.ByteString -> Maybe (a, C.ByteString)

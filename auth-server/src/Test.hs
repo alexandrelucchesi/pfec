@@ -20,7 +20,7 @@ import           Util.JSONWebToken
 
 runTest :: ToJSON a => Maybe String -> a -> IO ()
 runTest message request = do
-    privKey <- liftM read $ readFile "/Users/alexandrelucchesi/Development/haskell/pfec/jwt-min/data/keys/rsa/sen_key.priv"
+    privKey <- liftM read $ readFile "../jwt-min/data/keys/rsa/sen_key.priv"
     pubKey <- serverPubKey
     let rqBuilder = do
             ST.get "" M.empty

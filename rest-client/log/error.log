@@ -1666,3 +1666,8 @@ Header JWT not found.
 [26/Apr/2014:17:38:49 -0300] Server.httpServe: SHUTDOWN
 [26/Apr/2014:17:38:49 -0300] Server.httpServe: BACKEND STOPPED
 [26/Apr/2014:17:39:35 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[29/Apr/2014:14:48:15 -0300] Server.httpServe: SHUTDOWN
+[29/Apr/2014:14:48:15 -0300] Server.httpServe: BACKEND STOPPED
+[29/Apr/2014:15:13:07 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[29/Apr/2014:15:14:00 -0300] Server.httpServe: SHUTDOWN
+[29/Apr/2014:15:14:00 -0300] Server.httpServe: BACKEND STOPPED

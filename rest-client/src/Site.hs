@@ -60,12 +60,12 @@ usage = writeBS "GET /client/<HTTP Method>/<Service + ServiceParams>"
 -- TODO: Verify signature.
 fromJWT :: FromJSON a => C.ByteString -> IO (Maybe a)
 fromJWT jwtCompact = do
-    privKey <- liftM read $ readFile "/Users/alexandrelucchesi/Development/haskell/pfec/jwt-min/data/keys/rsa/sen_key.priv"
+    privKey <- liftM read $ readFile "../jwt-min/data/keys/rsa/sen_key.priv"
     return $ liftM fst $ JWT.decrypt privKey jwtCompact
 
 toJWT :: ToJSON a => a -> IO C.ByteString
 toJWT request = do
-    privKey <- liftM read $ readFile "/Users/alexandrelucchesi/Development/haskell/pfec/jwt-min/data/keys/rsa/sen_key.priv"
+    privKey <- liftM read $ readFile "../jwt-min/data/keys/rsa/sen_key.priv"
     pubKey <- JWT.serverPubKey
     liftIO $ JWT.signAndEncrypt privKey pubKey request
 
@@ -83,27 +83,6 @@ parseResponse resp = do
         in case header of
                 (Just (_, contents)) -> contents
                 _        -> error "Header JWT not found."
-
--- TODO: Change to Either String Token and add error message.
---type HTTPMethod = ByteString
---stillValidToken :: UUID -> HTTPMethod -> AppHandler (Maybe Token)
---stillValidToken serviceUUID m = do
---    tokensMVar <- gets _activeTokens
---    tokens <- liftIO $ readMVar tokensMVar
---    let maybeToken = L.find (\t -> service t == serviceUUID)
---                            tokens
---    case maybeToken of
---        Just token -> do
---            now <- liftIO getCurrentTime
---            if expiresAt token > now
---              then return $ if elem (C.map toUpper m) $ allowedMethods token
---                                then Just token
---                                else Nothing -- Can't access using the specified method.
---               else do -- Token is expired!
---                    liftIO $ modifyMVar_ tokensMVar -- Removes from token list.
---                                (return . filter ((==) serviceUUID . service))
---                    return Nothing
---        _ -> return Nothing
 
 currentService :: AppHandler UUID
 currentService = do
@@ -223,7 +202,7 @@ rqFacade token =
         manager <- gets _httpMngr
         resp <- liftIO $ HC.withSocketsDo $ do
             initReq <- HC.parseUrl url
-            privKey <- liftM read $ readFile "/Users/alexandrelucchesi/Development/haskell/pfec/jwt-min/data/keys/rsa/sen_key.priv"
+            privKey <- liftM read $ readFile "../jwt-min/data/keys/rsa/sen_key.priv"
             pubKey <- JWT.serverPubKey
             jwtCompact <- liftIO $ JWT.signAndEncrypt privKey pubKey request
             let hdrs = ("JWT", jwtCompact) : HC.requestHeaders initReq

@@ -1060,3 +1060,8 @@ ConnectionAbruptlyTerminated
 [26/Apr/2014:15:01:02 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9001/,https://0.0.0.0:9000/]
 [26/Apr/2014:17:36:10 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
 [26/Apr/2014:17:36:29 -0300] SimpleBackend.acceptThread: ConnectionAbruptlyTerminated
+[29/Apr/2014:14:48:17 -0300] Server.httpServe: SHUTDOWN
+[29/Apr/2014:14:48:17 -0300] Server.httpServe: BACKEND STOPPED
+[29/Apr/2014:15:13:01 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9001/,https://0.0.0.0:9000/]
+[29/Apr/2014:15:14:03 -0300] Server.httpServe: SHUTDOWN
+[29/Apr/2014:15:14:03 -0300] Server.httpServe: BACKEND STOPPED

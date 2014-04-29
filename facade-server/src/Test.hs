@@ -25,7 +25,7 @@ type Method = ByteString
 type Service = ByteString
 testRqFacade01 :: ContractUUID -> AuthorizationToken -> Method -> Service -> IO ()
 testRqFacade01 contractUUID authorizationToken method service = do
-    privKey <- liftM read $ readFile "/Users/alexandrelucchesi/Development/haskell/pfec/jwt-min/data/keys/rsa/sen_key.priv"
+    privKey <- liftM read $ readFile "../jwt-min/data/keys/rsa/sen_key.priv"
     pubKey <- serverPubKey
     let rqBuilder = do
             case C.map toUpper method of
