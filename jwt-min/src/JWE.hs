@@ -32,7 +32,7 @@ jweEncryptedKey cprg' pubKey cek' =
 encrypt_AES_128_CBC_HMAC_SHA_256 :: B.ByteString -> B.ByteString -> B.ByteString -> (B.ByteString, B.ByteString)
 encrypt_AES_128_CBC_HMAC_SHA_256 key iv' plaintext =
     let macKey  = B.take 16 key -- first 16 bytes is the MAC key.
-        encKey  = B.take 16 (B.reverse key) -- last 16 bytes is the Encryption key.
+        encKey  = B.reverse . B.take 16 . B.reverse $ key -- last 16 bytes is the Encryption key.
         aesCtx  = K.initAES encKey
         cipher  = K.encryptCBC aesCtx iv' plaintext -- encrypt using Cypher Block Chaining mode.
         hmacInp = iv' `B.append` cipher
@@ -70,7 +70,7 @@ jweDecryptedKey privKey encKey =
 decrypt_AES_128_CBC_HMAC_SHA_256 :: B.ByteString -> B.ByteString -> B.ByteString -> B.ByteString -> B.ByteString
 decrypt_AES_128_CBC_HMAC_SHA_256 key iv' ciphertxt authTag =
     let mac_key  = B.take 16 key
-        enc_key  = B.take 16 (B.reverse key)
+        enc_key  = B.reverse . B.take 16 . B.reverse $ key
         aesCtx   = K.initAES enc_key
         msg      = K.unpadPKCS5 $ K.decryptCBC aesCtx iv' ciphertxt
         hmacInp  = iv' `B.append` ciphertxt

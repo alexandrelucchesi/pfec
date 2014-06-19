@@ -1260,3 +1260,6 @@
 127.0.0.1 - - [26/Apr/2014:17:42:44 -0300] "GET /68596fec-827c-40f2-93f2-8eab6a3e39e4 HTTP/1.1" 302 - - "-"
 127.0.0.1 - - [26/Apr/2014:17:43:02 -0300] "GET /68596fec-827c-40f2-93f2-8eab6a3e39e4 HTTP/1.1" 302 - - "-"
 127.0.0.1 - - [29/Apr/2014:15:13:21 -0300] "GET /68596fec-827c-40f2-93f2-8eab6a3e39e4 HTTP/1.1" 200 - - "-"
+127.0.0.1 - - [19/Jun/2014:13:34:41 -0300] "GET / HTTP/1.1" 400 - - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36"
+127.0.0.1 - - [19/Jun/2014:13:34:41 -0300] "GET /favicon.ico HTTP/1.1" 400 - - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36"
+127.0.0.1 - - [19/Jun/2014:13:41:57 -0300] "GET /68596fec-827c-40f2-93f2-8eab6a3e39e4 HTTP/1.1" 200 - - "-"

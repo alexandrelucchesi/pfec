@@ -1133,3 +1133,22 @@ Invalid content.
 [29/Apr/2014:15:12:57 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8001/,https://0.0.0.0:8000/]
 [29/Apr/2014:15:14:06 -0300] Server.httpServe: SHUTDOWN
 [29/Apr/2014:15:14:06 -0300] Server.httpServe: BACKEND STOPPED
+[19/Jun/2014:13:30:27 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8001/,https://0.0.0.0:8000/]
+[19/Jun/2014:13:34:07 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[19/Jun/2014:13:34:07 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[19/Jun/2014:13:34:07 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[19/Jun/2014:13:34:12 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[19/Jun/2014:13:34:12 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[19/Jun/2014:13:34:12 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[19/Jun/2014:13:34:19 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[19/Jun/2014:13:34:19 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[19/Jun/2014:13:34:19 -0300] SimpleBackend.acceptThread: ProtocolError "error:1407609C:SSL routines:SSL23_GET_CLIENT_HELLO:http request"
+[19/Jun/2014:13:34:37 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[19/Jun/2014:13:34:37 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[19/Jun/2014:13:34:37 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[19/Jun/2014:13:38:19 -0300] Server.httpServe: SHUTDOWN
+[19/Jun/2014:13:38:19 -0300] Server.httpServe: BACKEND STOPPED
+[19/Jun/2014:13:39:42 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8001/,https://0.0.0.0:8000/]

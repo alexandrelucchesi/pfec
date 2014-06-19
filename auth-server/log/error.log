@@ -1065,3 +1065,15 @@ ConnectionAbruptlyTerminated
 [29/Apr/2014:15:13:01 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9001/,https://0.0.0.0:9000/]
 [29/Apr/2014:15:14:03 -0300] Server.httpServe: SHUTDOWN
 [29/Apr/2014:15:14:03 -0300] Server.httpServe: BACKEND STOPPED
+[19/Jun/2014:13:30:19 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9001/,https://0.0.0.0:9000/]
+[19/Jun/2014:13:34:49 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[19/Jun/2014:13:34:49 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[19/Jun/2014:13:38:21 -0300] Server.httpServe: SHUTDOWN
+[19/Jun/2014:13:38:21 -0300] Server.httpServe: BACKEND STOPPED
+[19/Jun/2014:13:39:37 -0300] Server.httpServe: START, binding to [http://0.0.0.0:9001/,https://0.0.0.0:9000/]
+[19/Jun/2014:13:39:46 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
+[19/Jun/2014:13:39:46 -0300] ["127.0.0.1"]: an exception escaped to toplevel:
+ConnectionAbruptlyTerminated
