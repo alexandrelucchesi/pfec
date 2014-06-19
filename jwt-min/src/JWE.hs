@@ -36,7 +36,7 @@ encrypt_AES_128_CBC_HMAC_SHA_256 key iv' plaintext =
         aesCtx  = K.initAES encKey
         cipher  = K.encryptCBC aesCtx iv' plaintext -- encrypt using Cypher Block Chaining mode.
         hmacInp = iv' `B.append` cipher
-        authTag = K.hmac K.hash 16 macKey hmacInp -- computes Mac Authentication Code using SHA-256 algorithm.
+        authTag = B.take 16 $ K.hmac K.hash 16 macKey hmacInp -- computes Mac Authentication Code using SHA-256 algorithm.
     --in (B64.encode cipher, B64.encode authTag)
     in (cipher, authTag)
 
@@ -74,10 +74,11 @@ decrypt_AES_128_CBC_HMAC_SHA_256 key iv' ciphertxt authTag =
         aesCtx   = K.initAES enc_key
         msg      = K.unpadPKCS5 $ K.decryptCBC aesCtx iv' ciphertxt
         hmacInp  = iv' `B.append` ciphertxt
-        authTag' = K.hmac K.hash 16 mac_key hmacInp
+        authTag' = B.take 16 $ K.hmac K.hash 16 mac_key hmacInp
     in if authTag' == authTag
           then msg
-          else error $ "Decrypt: Auth Tag: " ++ show authTag' ++
+          else error $ "Decrypt: Auth Tag: " ++ show authTag ++
+                  "\nAuth Tag': " ++ show authTag' ++
                   "\nMessage: " ++ show msg
 
 decrypt_RSA :: K.PrivateKey -> B.ByteString -> T.Text
