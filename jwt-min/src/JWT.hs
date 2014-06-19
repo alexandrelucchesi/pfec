@@ -33,8 +33,8 @@ toCompact :: ToJSON a => K.PrivateKey -> K.PublicKey -> a -> IO C.ByteString
 toCompact myPrivKey theirPubKey jwtContents = do
     g <- cprg
     let msg = CL.toStrict . encode $ jwtContents
-        jwe = S.signJWS myPrivKey msg
-    return $ encrypt g theirPubKey jwe
+        jws = S.signJWS myPrivKey msg
+    return $ encrypt g theirPubKey jws
 
 --fromCompact :: FromJSON a => K.PrivateKey -> K.PublicKey -> C.ByteString -> IO (Maybe a)
 --fromCompact myPrivKey theirPubKey jwtCompact = do

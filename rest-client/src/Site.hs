@@ -136,7 +136,8 @@ rqAuth = getToken
 
     rqAuth01 = do
         contractUUID <- Contract.uuid <$> gets _contract
-        let request = RQA.RqAuth01 contractUUID
+        now <- liftIO getCurrentTime
+        let request = RQA.RqAuth01 contractUUID now
         prettyWriteJSON "REQ AUTH 01" request
         execAuthRequest request
 
@@ -152,8 +153,9 @@ rqAuth = getToken
     rqAuth02 (challengeUUID, credential) = do
         contractUUID <- Contract.uuid <$> gets _contract
         serviceUUID <- currentService
+        now <- liftIO getCurrentTime
         let request = RQA.RqAuth02 challengeUUID contractUUID
-                                   serviceUUID credential
+                                   serviceUUID credential now
         -- DEBUG
         prettyWriteJSON "REQ AUTH 02" request
         execAuthRequest request
@@ -217,7 +219,7 @@ rqFacade token =
                 return $ Left resp'
             else return $ Right $ HC.responseBody resp
 
-    processRespFacade01 (Left resp) = do
+    processRespFacade01 (Left resp) =
         prettyWriteJSON "RESP FACADE 01 (*ERROR*)" resp
         -- client -- We could call 'client' function here again (maybe the
         -- token expired before arriving at facade server), but we could
@@ -230,8 +232,7 @@ rqFacade token =
 ------------------------------------------------------------------------------
 -- | Client main handler.
 client ::AppHandler ()
-client = do
-    rqAuth >>= rqFacade
+client = rqAuth >>= rqFacade
 
 ------------------------------------------------------------------------------
 -- | Util.

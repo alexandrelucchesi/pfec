@@ -1167,3 +1167,11 @@ ConnectionAbruptlyTerminated
 [19/Jun/2014:14:48:19 -0300] Server.httpServe: SHUTDOWN
 [19/Jun/2014:14:48:19 -0300] Server.httpServe: BACKEND STOPPED
 [19/Jun/2014:15:08:00 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8001/,https://0.0.0.0:8000/]
+[19/Jun/2014:15:42:47 -0300] Server.httpServe: SHUTDOWN
+[19/Jun/2014:15:42:47 -0300] Server.httpServe: BACKEND STOPPED
+[19/Jun/2014:15:53:31 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8001/,https://0.0.0.0:8000/]
+[19/Jun/2014:15:54:17 -0300] Server.httpServe: SHUTDOWN
+[19/Jun/2014:15:54:17 -0300] Server.httpServe: BACKEND STOPPED
+[19/Jun/2014:16:03:06 -0300] Server.httpServe: START, binding to [http://0.0.0.0:8001/,https://0.0.0.0:8000/]
+[19/Jun/2014:16:03:19 -0300] Server.httpServe: SHUTDOWN
+[19/Jun/2014:16:03:19 -0300] Server.httpServe: BACKEND STOPPED
