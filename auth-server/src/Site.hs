@@ -96,7 +96,7 @@ auth = do
         _ -> badRequest
 
 handlerRqAuth :: RQA.RqAuth -> AppHandler REA.RespAuth
-handlerRqAuth (RQA.RqAuth01 contractUUID) =
+handlerRqAuth (RQA.RqAuth01 contractUUID _) =
     generateChallenge >>= makeResponse
   where
     generateChallenge :: AppHandler (Challenge.Challenge, Credential.Credential)
@@ -136,7 +136,7 @@ handlerRqAuth (RQA.RqAuth01 contractUUID) =
                    }
         return resp
 
-handlerRqAuth (RQA.RqAuth02 challengeUUID contractUUID serviceUUID credential) =
+handlerRqAuth (RQA.RqAuth02 challengeUUID contractUUID serviceUUID credential _) =
     verifyChallenge >>= verifyPermissions >> emitAuthToken >>= makeResponse
   where
     verifyChallenge :: AppHandler Contract.Contract

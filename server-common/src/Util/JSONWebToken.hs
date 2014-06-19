@@ -47,7 +47,7 @@ serverPubKey = liftM (RSAPublicKey . read) $ readFile "../server-common/resource
 -- Returns a value and the message whose signature must be verified.
 decrypt :: FromJSON a => PrivateKey -> C.ByteString -> Maybe (a, C.ByteString)
 decrypt privKey jweContents =
-    -- TODO: Handler header properly. I'm ignoring it because we're using
+    -- TODO: Handle header properly. I'm ignoring it because we're using
     -- only one algorithm.
     let (_, jwsContents) = JWE.decryptJWE privKey jweContents
     in case C.split '.' jwsContents of
@@ -67,5 +67,4 @@ verify pubKey jwsContents =
 
 signAndEncrypt :: ToJSON a => PrivateKey -> PublicKey -> a -> IO C.ByteString
 signAndEncrypt privKey pubKey = JWT.toCompact privKey (rsaKey pubKey)
-
 

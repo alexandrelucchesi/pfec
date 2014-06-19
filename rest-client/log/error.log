@@ -1671,3 +1671,115 @@ Header JWT not found.
 [29/Apr/2014:15:13:07 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
 [29/Apr/2014:15:14:00 -0300] Server.httpServe: SHUTDOWN
 [29/Apr/2014:15:14:00 -0300] Server.httpServe: BACKEND STOPPED
+[19/Jun/2014:13:30:35 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[19/Jun/2014:13:33:57 -0300] During processing of request from 127.0.0.1:62882
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:62882\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: status\n    contextpath: /\n    URI: /status\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+GHC error:
+
+cannot satisfy -package-id jwt-min-0.1.0.0-1593a2158354d953b4c66237ff5bb1dd
+    (use -v for more information)
+[19/Jun/2014:13:33:57 -0300] During processing of request from 127.0.0.1:62882
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:62882\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36\n Accept: */*\n Host: localhost:7000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: favicon.ico\n    contextpath: /\n    URI: /favicon.ico\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+GHC error:
+
+cannot satisfy -package-id jwt-min-0.1.0.0-1593a2158354d953b4c66237ff5bb1dd
+    (use -v for more information)
+[19/Jun/2014:13:39:32 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[19/Jun/2014:13:39:32 -0300] Error on startup: 
+bind: resource busy (Address already in use)
+[19/Jun/2014:13:39:56 -0300] During processing of request from 127.0.0.1:62925
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:62925\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: status\n    contextpath: /\n    URI: /status\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+GHC error:
+
+cannot satisfy -package-id jwt-min-0.1.0.0-1593a2158354d953b4c66237ff5bb1dd
+    (use -v for more information)
+[19/Jun/2014:13:39:56 -0300] During processing of request from 127.0.0.1:62925
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:62925\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36\n Accept: */*\n Host: localhost:7000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: favicon.ico\n    contextpath: /\n    URI: /favicon.ico\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+GHC error:
+
+cannot satisfy -package-id jwt-min-0.1.0.0-1593a2158354d953b4c66237ff5bb1dd
+    (use -v for more information)
+[19/Jun/2014:13:39:59 -0300] During processing of request from 127.0.0.1:62925
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:62925\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: status\n    contextpath: /\n    URI: /status\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+GHC error:
+
+cannot satisfy -package-id jwt-min-0.1.0.0-1593a2158354d953b4c66237ff5bb1dd
+    (use -v for more information)
+[19/Jun/2014:13:39:59 -0300] During processing of request from 127.0.0.1:62925
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:62925\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36\n Accept: */*\n Host: localhost:7000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: favicon.ico\n    contextpath: /\n    URI: /favicon.ico\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+GHC error:
+
+cannot satisfy -package-id jwt-min-0.1.0.0-1593a2158354d953b4c66237ff5bb1dd
+    (use -v for more information)
+[19/Jun/2014:13:40:05 -0300] During processing of request from 127.0.0.1:62925
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:62925\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: \n    contextpath: /\n    URI: /\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+GHC error:
+
+cannot satisfy -package-id jwt-min-0.1.0.0-1593a2158354d953b4c66237ff5bb1dd
+    (use -v for more information)
+[19/Jun/2014:13:40:05 -0300] During processing of request from 127.0.0.1:62925
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:62925\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36\n Accept: */*\n Host: localhost:7000\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: favicon.ico\n    contextpath: /\n    URI: /favicon.ico\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+GHC error:
+
+cannot satisfy -package-id jwt-min-0.1.0.0-1593a2158354d953b4c66237ff5bb1dd
+    (use -v for more information)
+[19/Jun/2014:13:41:22 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[19/Jun/2014:13:44:05 -0300] Server.httpServe: SHUTDOWN
+[19/Jun/2014:13:44:05 -0300] Server.httpServe: BACKEND STOPPED
+[19/Jun/2014:14:02:44 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[19/Jun/2014:14:02:44 -0300] Server.httpServe: SHUTDOWN
+[19/Jun/2014:14:02:44 -0300] Server.httpServe: BACKEND STOPPED
+[19/Jun/2014:14:03:06 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[19/Jun/2014:14:03:33 -0300] During processing of request from 127.0.0.1:63057
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:63057\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/GET/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/GET/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Header JWT not found.
+[19/Jun/2014:14:04:15 -0300] During processing of request from 127.0.0.1:63057
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:63057\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/GET/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/GET/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Header JWT not found.
+[19/Jun/2014:14:04:39 -0300] Server.httpServe: SHUTDOWN
+[19/Jun/2014:14:04:39 -0300] Server.httpServe: BACKEND STOPPED
+[19/Jun/2014:14:23:37 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[19/Jun/2014:14:23:45 -0300] During processing of request from 127.0.0.1:63070
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:63070\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/GET/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/GET/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Header JWT not found.
+[19/Jun/2014:14:28:49 -0300] Server.httpServe: SHUTDOWN
+[19/Jun/2014:14:28:49 -0300] Server.httpServe: BACKEND STOPPED
+[19/Jun/2014:14:47:46 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[19/Jun/2014:14:47:57 -0300] During processing of request from 127.0.0.1:63098
+request:
+"Request <\n    server-name: localhost\n    remote: 127.0.0.1:63098\n    local: 127.0.0.1:7000\n    Headers:\n      ========================================\n          User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36\n Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n Host: localhost:7000\n Cache-Control: max-age=0\n Accept-Language: en-US,en;q=0.8,pt-BR;q=0.6,pt;q=0.4\n Accept-Encoding: gzip,deflate,sdch\n Connection: keep-alive\n      ========================================\n    content-length: Nothing\n    method: GET\n    version: (1,1)\n    cookies:\n      ========================================\n      \n      ========================================\n    pathinfo: client/GET/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    contextpath: /\n    URI: /client/GET/68596fec-827c-40f2-93f2-8eab6a3e39e4\n    params:\n      ========================================\n      \n      ========================================\n>"
+A web handler threw an exception. Details:
+Header JWT not found.
+[19/Jun/2014:14:48:16 -0300] Server.httpServe: SHUTDOWN
+[19/Jun/2014:14:48:16 -0300] Server.httpServe: BACKEND STOPPED
+[19/Jun/2014:15:07:59 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[19/Jun/2014:15:42:51 -0300] Server.httpServe: SHUTDOWN
+[19/Jun/2014:15:42:51 -0300] Server.httpServe: BACKEND STOPPED
+[19/Jun/2014:15:53:31 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[19/Jun/2014:15:54:17 -0300] Server.httpServe: SHUTDOWN
+[19/Jun/2014:15:54:17 -0300] Server.httpServe: BACKEND STOPPED
+[19/Jun/2014:16:03:07 -0300] Server.httpServe: START, binding to [http://0.0.0.0:7000/]
+[19/Jun/2014:16:03:19 -0300] Server.httpServe: SHUTDOWN
+[19/Jun/2014:16:03:19 -0300] Server.httpServe: BACKEND STOPPED
