@@ -1,3 +1,4 @@
+{-# LANGUAGE Trustworthy #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE PackageImports    #-}
 
@@ -112,6 +113,16 @@ test_AES_128_CBC_HMAC_SHA_256 = do
     print $ C.split '.' cipher
    -- C.putStrLn $ fst origin
     C.putStrLn $ snd origin
+
+test_monografia :: IO B.ByteString
+test_monografia = do
+    pubKey <- readFile "rsa.pub" >>= return . read
+--    privKey <- readFile "rsa.priv" >>= return . read
+    g <- cprg
+    let contentEncKey = B.pack [254,159,204,155,64,235,105,28,72,143,214,255,98,1,103,209,244,200,157,59,108,209,149,236,2,212,148,111,57,97,234,162]
+        (key,_) = jweEncryptedKey g pubKey contentEncKey
+    return key
+
 
 test_RSA :: IO ()
 test_RSA = do

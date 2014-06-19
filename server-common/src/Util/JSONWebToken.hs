@@ -1,3 +1,4 @@
+{-# LANGUAGE Trustworthy #-} 
 {-# LANGUAGE OverloadedStrings #-} 
 
 module Util.JSONWebToken where
@@ -6,9 +7,6 @@ import Control.Applicative
 import Control.Monad
 import Data.Aeson
 import qualified Data.ByteString.Char8 as C
-import qualified Data.ByteString.Lazy.Char8 as CL
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as T
 import qualified JWT
 import qualified JWE
 import qualified JWS

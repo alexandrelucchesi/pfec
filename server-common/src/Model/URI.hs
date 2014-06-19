@@ -1,10 +1,11 @@
+{-# LANGUAGE Trustworthy #-} 
 {-# LANGUAGE DeriveGeneric #-} 
 {-# LANGUAGE OverloadedStrings #-} 
 
 module Model.URI where
 
 import           Control.Applicative
-import            Data.Aeson
+import           Data.Aeson
 import qualified Data.Text as T
 import           GHC.Generics
 import qualified Network.URI

@@ -1,13 +1,11 @@
+{-# LANGUAGE Trustworthy    #-}
 {-# LANGUAGE FlexibleContexts    #-}
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module CouchDB.DBContract where
 
-import           Control.Applicative
 import           Control.Monad.IO.Class            (MonadIO, liftIO)
-import           Data.Aeson
-import qualified Data.ByteString.Char8             as C
 import           Database.CouchDB.Conduit
 import           Database.CouchDB.Conduit.Explicit
 
@@ -23,19 +21,19 @@ findByUUID uuid = runCouch conn $ do
     (_, contract) <- couchGet dbName (UUID.toByteString' uuid) []
     return contract
 
-newtype DocId = DocId C.ByteString
-    deriving (Eq, Show)
-
-instance FromJSON DocId where
-    parseJSON (Object v) =
-        DocId <$> v .: "id"
-
-data AllDocs = AllDocs [DocId]
-    deriving (Eq, Show)
-
-instance FromJSON AllDocs where
-    parseJSON (Object v) =
-        AllDocs <$> v .: "rows"
+--newtype DocId = DocId C.ByteString
+--    deriving (Eq, Show)
+--
+--instance FromJSON DocId where
+--    parseJSON (Object v) =
+--        DocId <$> v .: "id"
+--
+--data AllDocs = AllDocs [DocId]
+--    deriving (Eq, Show)
+--
+--instance FromJSON AllDocs where
+--    parseJSON (Object v) =
+--        AllDocs <$> v .: "rows"
 
 selectAll :: IO [Contract.Contract]
 selectAll = do

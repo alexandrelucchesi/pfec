@@ -1,3 +1,4 @@
+{-# LANGUAGE Trustworthy #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE PackageImports    #-}
 
@@ -9,10 +10,6 @@ import qualified Crypto.PubKey.RSA          as K
 import qualified "crypto-random" Crypto.Random              as K
 import qualified Crypto.Types.PubKey.ECC    as ECC
 import qualified Data.ByteString            as B
-import qualified Data.Text                  as T
-import qualified Data.Text.Encoding         as T
-
-import qualified Base64                     as B64
 
 cek :: (K.CPRG c) => c -> (B.ByteString, c)
 cek = K.cprgGenerate 32

@@ -1,3 +1,4 @@
+{-# LANGUAGE Trustworthy    #-}
 {-# LANGUAGE FlexibleContexts    #-}
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}

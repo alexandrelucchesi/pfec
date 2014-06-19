@@ -1,3 +1,4 @@
+{-# LANGUAGE Safe #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Base64 where

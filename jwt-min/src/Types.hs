@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-}
+
 module Types where
 
 import           Data.Text

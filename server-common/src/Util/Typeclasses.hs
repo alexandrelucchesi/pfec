@@ -1,3 +1,5 @@
+{-# LANGUAGE Safe #-} 
+
 module Util.Typeclasses where
 
 import           Model.UUID (UUID)

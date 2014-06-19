@@ -1,3 +1,4 @@
+{-# LANGUAGE Trustworthy #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE PackageImports    #-}
 
@@ -76,11 +77,28 @@ test :: IO ()
 test = do
     g <- cprg
     let ((pubKey, privKey), _) = K.generate g 256 0x10001
-        msg = "Live long and prosper."
+--        msg = "Live long and prosper."
+        msg = "{\"contractUUID\":\"1d15162a-7120-4210-9f47-edfd699e1e54\"}"
         res = signJWS privKey msg
         status = verifyJWS pubKey res
+    print pubKey
+    print privKey
     putStrLn "Is signature valid?"
     putStrLn $ "-- " ++ show status
+
+testMonografia :: IO ()
+testMonografia = do
+    pubKey <- readFile "rsa.pub" >>= return . read
+    privKey <- readFile "rsa.priv" >>= return . read
+    let msg = "{\"contractUUID\":\"1d15162a-7120-4210-9f47-edfd699e1e54\"}"
+        res = signJWS privKey msg
+        status = verifyJWS pubKey res
+--    print pubKey
+--    print privKey
+    print res
+    putStrLn "Is signature valid?"
+    putStrLn $ "-- " ++ show status
+
 
 testECC :: IO ()
 testECC = do
