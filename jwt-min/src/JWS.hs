@@ -90,7 +90,7 @@ testMonografia :: IO ()
 testMonografia = do
     pubKey <- readFile "rsa.pub" >>= return . read
     privKey <- readFile "rsa.priv" >>= return . read
-    let msg = "{\"contractUUID\":\"1d15162a-7120-4210-9f47-edfd699e1e54\"}"
+    let msg = "{\"contractUUID\":\"1d15162a-7120-4210-9f47-edfd699e1e54\",\"sentAt\":\"2014-06-19T19:42:39.110Z\"}"
         res = signJWS privKey msg
         status = verifyJWS pubKey res
 --    print pubKey
